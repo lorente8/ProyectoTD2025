@@ -8,4 +8,25 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+# Introducción
 
+
+cargamos las librerias
+
+```{r include=FALSE}
+#Nos aseguramos de que no haya nada cargado en el Environment
+rm(list=ls())
+
+# Especificamos las librerías necesarias en esta lista
+packages = c("knitr","tidyverse", "ggplot2", "dplyr", "pdftools", "stringr", "corrplot")
+# Cargar los paquetes, sino están intalados, se instalarán automáticamente y serán cargados
+package.check <- lapply(packages, FUN = function(x) {
+  if (!require(x, character.only = TRUE)) {
+    install.packages(x, dependencies = TRUE,repos='http://cran.rediris.es')
+    library(x, character.only = TRUE)
+  }
+})
+```
+
+# Importación de los datos
+## Carga de ficheros
