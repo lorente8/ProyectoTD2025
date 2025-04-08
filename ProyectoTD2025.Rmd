@@ -11,8 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # Introducción
 
 
-cargamos las librerias
-
+cargamos las librerias necesarias:
 ```{r include=FALSE}
 #Nos aseguramos de que no haya nada cargado en el Environment
 rm(list=ls())
@@ -27,6 +26,23 @@ package.check <- lapply(packages, FUN = function(x) {
   }
 })
 ```
+
+
+Hemos cambiado los nombres a los archivos para que no den error con el siguiente codigo pero lo dejo como comentario paar no sobreescribir los archivos al ejecutar mas de una vez: 
+```{r}
+# Obtener lista de archivos PDF en la carpeta
+archivos <- list.files(path =  "./data" , pattern = "\\.pdf$", full.names = FALSE, ignore.case = TRUE)
+
+# Renombrar archivos secuencialmente
+for (i in seq_along(archivos)) {
+  nombre_actual <- file.path(ruta_carpeta, archivos[i])
+  extension <- file_ext(archivos[i])
+  nombre_nuevo <- file.path(ruta_carpeta, paste0("M", i, ".", extension))
+  
+  file.rename(from = nombre_actual, to = nombre_nuevo)
+}
+```
+
 
 # Importación de los datos
 ## Carga de ficheros
