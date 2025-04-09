@@ -132,7 +132,18 @@ for (archivo in archivos) {
 ```
 
 
+Creamos un data frame con los datos:
+```{r}
+df <- data.frame(comercio, empresa, direccion, cp, telefono, fecha, hora, 
+                 op, fs, productos, total, forma_pago, base_imp, cuota,
+                 stringsAsFactors = FALSE)
 
+#Modificamos las clases de los datos
+df$fecha <- as.Date(df$fecha,format = "%d/%m/%Y")
+df$total <- as.numeric(gsub(pattern = ",",replacement = ".",df$total))
+df$base_imp <- as.numeric(gsub(pattern = ",",replacement = ".",df$base_imp))
+df$cuota <- as.numeric(gsub(pattern = ",",replacement = ".",df$cuota))
+```
 
 
 
