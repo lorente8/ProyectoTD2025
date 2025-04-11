@@ -1,0 +1,187 @@
+---
+title: "ProyectoTD2025"
+author: "Mar Alemany"
+date: "2025-03-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Introducción
+
+
+cargamos las librerias necesarias:
+```{r include=FALSE}
+#Nos aseguramos de que no haya nada cargado en el Environment
+rm(list=ls())
+
+# Especificamos las librerías necesarias en esta lista
+packages = c("knitr","tidyverse", "ggplot2", "dplyr", "pdftools", "stringr", "corrplot")
+# Cargar los paquetes, sino están intalados, se instalarán automáticamente y serán cargados
+package.check <- lapply(packages, FUN = function(x) {
+  if (!require(x, character.only = TRUE)) {
+    install.packages(x, dependencies = TRUE,repos='http://cran.rediris.es')
+    library(x, character.only = TRUE)
+  }
+})
+```
+
+
+Hemos cambiado los nombres a los archivos para que no den error con el siguiente codigo pero lo dejo como comentario para no sobreescribir los archivos al ejecutar mas de una vez: 
+-----------------------------------------------------------------------------------
+# Obtener lista de archivos PDF en la carpeta
+archivos <- list.files(path =  "./data" , pattern = "\\.pdf$", full.names = FALSE, ignore.case = TRUE)
+
+# Renombrar archivos secuencialmente
+for (i in seq_along(archivos)) {
+  nombre_actual <- file.path(ruta_carpeta, archivos[i])
+  extension <- file_ext(archivos[i])
+  nombre_nuevo <- file.path(ruta_carpeta, paste0("M", i, ".", extension))
+  
+  file.rename(from = nombre_actual, to = nombre_nuevo)
+}
+----------------------------------------------------------------------------------
+
+
+
+
+# Importación de los datos
+
+cargamos los archivos de la carpeta
+```{r}
+# Obtener lista de archivos PDF en la carpeta
+archivos <- list.files(path =  "./data" , pattern = "\\.pdf$", full.names = TRUE, ignore.case = TRUE)
+#print(archivos)
+```
+
+
+
+Definimos vectores para almacenar los datos de los tickets
+```{r}
+comercio <- c() #nombre del comercio
+empresa <- c() #tipo y código de empresa
+direccion <- c() 
+cp <- c() #código postal
+telefono <- c() #Misma línea, tendremos que separar estos valores
+fecha <- c()
+hora <- c()
+op <- c()
+fs <- c()#factura
+productos <- c() #lista con los productos comprados
+total <- c() #total de la compra
+forma_pago <- c()
+
+#IVA
+base_imp <- c() #Base imponible
+cuota <- c() #Cuota 
+
+```
+
+
+Extraemos la informacion de cada ticket y lo añadimos al vector correspondiente:
+```{r}
+for (archivo in archivos) {
+  
+  pdf <- pdf_text(archivo) #leemos le archivo pdf
+  ticket <- trimws(strsplit(pdf,split = "\n")[[1]]) #separamos por líneas
+  ticket <- ticket[grep(".", ticket)] #quitamos las líneas vacías
+
+  #procesamos los datos del ticket
+  linea_comercio <- ticket[1]
+  linea_direccion <- ticket[2]
+  linea_cp <- ticket[3]
+  linea_telefono <- ticket[4]
+  linea_fecha_hora_op <- ticket[5]
+  linea_fs <- ticket[6]
+  p = 8 
+  linea_productos <- ticket[p]
+    #unimos todos los productos en un solo caracter
+  while (ticket[p+1] != ticket[grep("TOTAL", ticket)[1]]){
+    p = p + 1
+    linea_productos <- paste(linea_productos, ticket[p],sep = ";")
+  }
+  linea_total <- ticket[grep("TOTAL", ticket)[1]]
+  linea_forma_pago <- ticket[p+2]
+  linea_iva <- ticket[grep("TOTAL", ticket)[2]]
+  
+  #extaremos los datos
+  com <- strsplit(linea_comercio,", ")[[1]]
+  comercio <- c(comercio, com[1])
+  empresa <- c(empresa, com[2])
+  direccion <- c(direccion, trimws(linea_direccion))
+  cp_info <- strsplit(trimws(linea_cp), " ")[[1]]
+  cp <- c(cp, cp_info[1])
+  telefono <- c(telefono, trimws(gsub("TELÉFONO:", "", linea_telefono)))
+  fecha_hora_op <- strsplit(trimws(linea_fecha_hora_op), " ")[[1]]
+  fecha_hora_op <- fecha_hora_op[grep(".", fecha_hora_op)]
+  fecha <- c(fecha, fecha_hora_op[1])
+  hora <- c(hora, fecha_hora_op[2])
+  op <- c(op, gsub("OP:", "", fecha_hora_op[4]))
+  fs <- c(fs, gsub("FACTURA SIMPLIFICADA:", "", linea_fs))
+  productos <- c(productos, linea_productos)
+  total <- c(total, trimws(gsub("TOTAL [(]€[)]", "", linea_total)))
+  formapago <- strsplit(linea_forma_pago," ")[[1]]
+  forma_pago <- c(forma_pago, paste0(formapago[1],formapago[2]))
+  base_couta <- strsplit(trimws(linea_iva),split = " ")[[1]]
+  base_couta <- base_couta[grep(".", base_couta)]
+  base_imp <- c(base_imp,base_couta[2])
+  cuota <- c(cuota, base_couta[3])
+  
+}
+```
+
+
+Creamos un data frame con los datos:
+```{r}
+df <- data.frame(comercio, empresa, direccion, cp, telefono, fecha, hora, 
+                 op, fs, productos, total, forma_pago, base_imp, cuota,
+                 stringsAsFactors = FALSE)
+
+#Modificamos las clases de los datos
+df$fecha <- as.Date(df$fecha,format = "%d/%m/%Y")
+df$anio <- as.numeric(format(df$fecha, "%Y"))
+df$mes <- as.numeric(format(df$fecha, "%m"))
+df$dia <- as.numeric(format(df$fecha, "%d"))
+# Elimina la columna fecha
+df$fecha <- NULL
+
+# Separar la columna fs en tres partes
+fs_split <- strsplit(df$fs, "-")
+# Crear las nuevas columnas a partir del resultado
+df$num_tienda <- sapply(fs_split, function(x) x[1])
+df$num_caja <- sapply(fs_split, function(x) x[2])
+df$num_ticket <- sapply(fs_split, function(x) x[3])
+# Eliminar la columna original fs
+df$fs <- NULL
+df$comercio <- NULL
+df$empresa <- NULL
+
+
+df$total <- as.numeric(gsub(pattern = ",",replacement = ".",df$total))
+df$base_imp <- as.numeric(gsub(pattern = ",",replacement = ".",df$base_imp))
+df$cuota <- as.numeric(gsub(pattern = ",",replacement = ".",df$cuota))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
