@@ -165,31 +165,37 @@ df$cuota <- as.numeric(gsub(pattern = ",",replacement = ".",df$cuota))
 
 # Analizamos los productos
 
-
 En el df estan toda la informacion relativa a los productos en la columna producto la separamos en un nuevo dataframe con df_producto
 ```{r}
 df_producto <- df %>% select(c(num_ticket, productos)) %>% 
   separate_rows(productos, sep = ";")
 ```
 
+
+#procesamiento de pescado por kg
+
 Primero nos encargamos de los productos de pesacdao que aparecen con este format:
 - Primera fila del pescado: Solo dice "PESCADO" 
-- Segunda fila: Nombre del producto (
--Tercera fila: Detalles del precio (ej. "0.390 kg 6.95 €/kg 2.71")
+- Segunda fila: Nombre del producto 
+-Tercera fila: Detalles del precio 
 
 ```{r}
 # Identificar filas con "PESCADO"
 filas_pescado <- which(df_producto$productos == "PESCADO")
 
-# Inicializar listas para almacenar datos
-datos_pescado <- list()
+# Inicializar vectores para almacenar datos
+num_ticket_vec <- character()
+nombre_producto_vec <- character()
+peso_kg_vec <- numeric()
+precio_kg_vec <- numeric()
+precio_total_vec <- numeric()
 
 for (i in seq_along(filas_pescado)) {
   idx <- filas_pescado[i]
   
   # Extraer información básica
   num_ticket <- df_producto$num_ticket[idx]
-  nombre_producto <- df_producto$productos[idx + 1]  # Nombre está en la siguiente fila
+  nombre_producto <- df_producto$productos[idx + 1]  # Nombre en la siguiente fila
   
   # Procesar la fila de detalles (ej: "0.390 kg 6.95 €/kg 2.71")
   detalles <- df_producto$productos[idx + 2]
@@ -198,49 +204,103 @@ for (i in seq_along(filas_pescado)) {
   detalles_limpio <- gsub(",", ".", detalles)  # Reemplazar comas por puntos
   detalles_split <- strsplit(trimws(detalles_limpio), "\\s+")[[1]]
   
-  # Extraer valores (asumiendo el orden: peso, unidad, precio_kg, moneda, precio_total)
+  # Extraer valores (asumiendo orden: peso, unidad, precio_kg, moneda, precio_total)
   if (length(detalles_split) >= 5) {
     peso_kg <- as.numeric(detalles_split[1])
     precio_kg <- as.numeric(detalles_split[3])
     precio_total <- as.numeric(detalles_split[5])
     
-    # Almacenar en la lista
-    datos_pescado[[i]] <- data.frame(
-      num_ticket = num_ticket,
-      nombre_producto = nombre_producto,
-      peso_kg = peso_kg,
-      precio_kg = precio_kg,
-      precio_total = precio_total,
-      stringsAsFactors = FALSE
-    )
-  } else {
-    warning(paste("Formato inesperado en el ticket", num_ticket, "Detalles:", detalles))
+    # Almacenar en vectores
+    num_ticket_vec <- c(num_ticket_vec, num_ticket)
+    nombre_producto_vec <- c(nombre_producto_vec, nombre_producto)
+    peso_kg_vec <- c(peso_kg_vec, peso_kg)
+    precio_kg_vec <- c(precio_kg_vec, precio_kg)
+    precio_total_vec <- c(precio_total_vec, precio_total)
   }
 }
 
-# Combinar todos los registros
-df_pescado <- do.call(rbind, datos_pescado)
+# Crear dataframe con cbind (column-wise)
+df_pescado <- data.frame(
+  num_ticket = num_ticket_vec,
+  nombre_producto = nombre_producto_vec,
+  peso_kg = peso_kg_vec,
+  precio_kg = precio_kg_vec,
+  precio_total = precio_total_vec,
+  stringsAsFactors = FALSE
+)
 
 # Verificar resultados
 head(df_pescado)
 ```
 
 
+#Procesamiento fruta y la verdura
+
+borrar primero las filas de pescado para asegurarte de que los productos restantes vendidos por kg sean exclusivamente fruta y verdura. 
+
+```{r}
+# Paso 1: Identificar TODOS los bloques de pescado (3 filas cada uno)
+bloques_pescado <- which(df_producto$productos == "PESCADO")
+
+# Crear vector con TODAS las filas a eliminar (cada bloque son 3 filas)
+filas_a_eliminar <- unlist(lapply(bloques_pescado, function(x) x:(x+2)))
+
+# Verificación previa
+cat("\nFilas a eliminar (primer bloque como ejemplo):\n")
+print(df_producto[bloques_pescado[1]:(bloques_pescado[1]+2), ])
+
+# Paso 2: Eliminar COMPLETAMENTE todos los bloques
+df_sin_pescado <- df_producto[-filas_a_eliminar, ]
+
+# Verificación exhaustiva
+if(any(df_sin_pescado$productos == "PESCADO")) {
+  cat("\n¡ADVERTENCIA! Quedaron filas de pescado:\n")
+  print(df_sin_pescado[df_sin_pescado$productos == "PESCADO", ])
+} else {
+  cat("\n✓ Eliminación CORRECTA: 0 filas de pescado restantes\n")
+}
+
+# Paso 3: Continuar con tu procesamiento normal...
+# [Aquí iría tu código para procesar frutas/verduras y otros productos]
+```
+
+```{r}
+df_fruta_verdura <- data.frame(
+  num_ticket = df_sin_pescado$num_ticket[ind_detalles_kg],
+  nombre = df_sin_pescado$productos[ind_detalles_kg - 1],
+  detalles = df_sin_pescado$productos[ind_detalles_kg],
+  stringsAsFactors = FALSE
+) %>%
+mutate(
+  # Limpiar el nombre (eliminar números iniciales)
+  nombre = gsub("^\\d+\\s*", "", nombre),
+  
+  # Extraer peso (kg) - primer número en la línea
+  peso_kg = as.numeric(gsub(",", ".", str_extract(detalles, "^[0-9,]+"))),
+  
+  # Extraer precio por kg - método mejorado
+  precio_kg = as.numeric(gsub(",", ".", 
+    str_extract(detalles, "[0-9,]+(?=\\s*€/kg)"))),
+  
+  # Extraer importe total - último número en la línea
+  importe = as.numeric(gsub(",", ".", 
+    str_extract(detalles, "[0-9,]+$")))
+) %>%
+select(-detalles)
+
+# Verificación de NAs
+if(any(is.na(df_fruta_verdura$precio_kg))) {
+  cat("\n¡Atención! Se encontraron NAs en precio_kg. Ejemplos problemáticos:\n")
+  print(df_fruta_verdura[is.na(df_fruta_verdura$precio_kg), ])
+} else {
+  cat("\n✓ Todos los precios por kg se extrajeron correctamente\n")
+  print(head(df_fruta_verdura))
+}
+```
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+#resto de productos sin kg
 
 Extraemos cantidad descripcion y precio
 ```{r}
