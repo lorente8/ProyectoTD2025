@@ -168,21 +168,79 @@ df$cuota <- as.numeric(gsub(pattern = ",",replacement = ".",df$cuota))
 
 En el df estan toda la informacion relativa a los productos en la columna producto la separamos en un nuevo dataframe con df_producto
 ```{r}
-df_producto <- df %>% select(c(fs, productos)) %>% 
+df_producto <- df %>% select(c(num_ticket, productos)) %>% 
   separate_rows(productos, sep = ";")
 ```
 
+Primero nos encargamos de los productos de pesacdao que aparecen con este format:
+- Primera fila del pescado: Solo dice "PESCADO" 
+- Segunda fila: Nombre del producto (
+-Tercera fila: Detalles del precio (ej. "0.390 kg 6.95 €/kg 2.71")
 
-No vamos a analizar los datos de listo para comer asi que los eliminamos(En teoria no deberian de haber pero eliminamos por si acaso)
 ```{r}
-#Eliminar línea listo comer
-listo <- which(df_producto$productos == "LISTO COMER")
-df_produc <- df_produc[-(listo),]
+# Identificar filas con "PESCADO"
+filas_pescado <- which(df_producto$productos == "PESCADO")
 
+# Inicializar listas para almacenar datos
+datos_pescado <- list()
+
+for (i in seq_along(filas_pescado)) {
+  idx <- filas_pescado[i]
+  
+  # Extraer información básica
+  num_ticket <- df_producto$num_ticket[idx]
+  nombre_producto <- df_producto$productos[idx + 1]  # Nombre está en la siguiente fila
+  
+  # Procesar la fila de detalles (ej: "0.390 kg 6.95 €/kg 2.71")
+  detalles <- df_producto$productos[idx + 2]
+  
+  # Limpiar y dividir la cadena de detalles
+  detalles_limpio <- gsub(",", ".", detalles)  # Reemplazar comas por puntos
+  detalles_split <- strsplit(trimws(detalles_limpio), "\\s+")[[1]]
+  
+  # Extraer valores (asumiendo el orden: peso, unidad, precio_kg, moneda, precio_total)
+  if (length(detalles_split) >= 5) {
+    peso_kg <- as.numeric(detalles_split[1])
+    precio_kg <- as.numeric(detalles_split[3])
+    precio_total <- as.numeric(detalles_split[5])
+    
+    # Almacenar en la lista
+    datos_pescado[[i]] <- data.frame(
+      num_ticket = num_ticket,
+      nombre_producto = nombre_producto,
+      peso_kg = peso_kg,
+      precio_kg = precio_kg,
+      precio_total = precio_total,
+      stringsAsFactors = FALSE
+    )
+  } else {
+    warning(paste("Formato inesperado en el ticket", num_ticket, "Detalles:", detalles))
+  }
+}
+
+# Combinar todos los registros
+df_pescado <- do.call(rbind, datos_pescado)
+
+# Verificar resultados
+head(df_pescado)
 ```
 
 
-Primero trabajamos con los productos genericos y despues veremos como analizar pescado, verdura y fruta que es vendidia al kg.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Extraemos cantidad descripcion y precio
 ```{r}
@@ -212,6 +270,15 @@ precio_unidad <- importe/cantidad
 df_producto <- cbind(df_producto,cantidad, descripcion, precio,importe)
 ```
 
+hacemos un df con la informacion de pescado
+```{r}
+# Primero identificamos las líneas que contienen "PESCADO" o el patrón de código
+lineas_pescado <- grep("PESCADO|\\d+-\\d+-\\d+", df_producto$productos, value = TRUE, ignore.case = TRUE)
+
+# Creamos un dataframe para el pescado
+df_pescado <- df_producto[grep("PESCADO|\\d+-\\d+-\\d+", df_producto$productos, ignore.case = TRUE), ]
+
+```
 
 
 
