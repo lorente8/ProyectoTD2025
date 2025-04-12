@@ -140,22 +140,28 @@ df <- data.frame(comercio, empresa, direccion, cp, telefono, fecha, hora,
 
 #Modificamos las clases de los datos
 df$fecha <- as.Date(df$fecha,format = "%d/%m/%Y")
+df$anio <- as.numeric(format(df$fecha, "%Y"))
+df$mes <- as.numeric(format(df$fecha, "%m"))
+df$dia <- as.numeric(format(df$fecha, "%d"))
+# Elimina la columna fecha
+df$fecha <- NULL
+
+# Separar la columna fs en tres partes
+fs_split <- strsplit(df$fs, "-")
+# Crear las nuevas columnas a partir del resultado
+df$num_tienda <- sapply(fs_split, function(x) x[1])
+df$num_caja <- sapply(fs_split, function(x) x[2])
+df$num_ticket <- sapply(fs_split, function(x) x[3])
+# Eliminar la columna original fs
+df$fs <- NULL
+df$comercio <- NULL
+df$empresa <- NULL
+
+
 df$total <- as.numeric(gsub(pattern = ",",replacement = ".",df$total))
 df$base_imp <- as.numeric(gsub(pattern = ",",replacement = ".",df$base_imp))
 df$cuota <- as.numeric(gsub(pattern = ",",replacement = ".",df$cuota))
 ```
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
