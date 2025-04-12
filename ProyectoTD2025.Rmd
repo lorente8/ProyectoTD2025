@@ -163,10 +163,54 @@ df$base_imp <- as.numeric(gsub(pattern = ",",replacement = ".",df$base_imp))
 df$cuota <- as.numeric(gsub(pattern = ",",replacement = ".",df$cuota))
 ```
 
+# Analizamos los productos
 
 
+En el df estan toda la informacion relativa a los productos en la columna producto la separamos en un nuevo dataframe con df_producto
+```{r}
+df_producto <- df %>% select(c(fs, productos)) %>% 
+  separate_rows(productos, sep = ";")
+```
 
 
+No vamos a analizar los datos de listo para comer asi que los eliminamos(En teoria no deberian de haber pero eliminamos por si acaso)
+```{r}
+#Eliminar línea listo comer
+listo <- which(df_producto$productos == "LISTO COMER")
+df_produc <- df_produc[-(listo),]
+
+```
+
+
+Primero trabajamos con los productos genericos y despues veremos como analizar pescado, verdura y fruta que es vendidia al kg.
+
+Extraemos cantidad descripcion y precio
+```{r}
+df_producto <- df_producto %>%
+  mutate(productos_lista = strsplit(gsub("\\s+", " ", productos), "\\s+", perl=TRUE))
+
+# Extraer cantidad, descripción y precio
+cantidad <- sapply(df_producto$productos_lista, function(x) as.numeric(x[1]))
+descripcion <- sapply(df_producto$productos_lista, function(x) 
+  {if (x[1]=="1") {
+    paste(x[2:(length(x)-1)], collapse = " ")
+  } else{
+    n <- as.integer(x[1])
+    if (n>1 && is.na(n) == FALSE){
+      paste(x[2:(length(x)-2)], collapse = " ")
+    }else{
+      paste(x[2:(length(x)-1)], collapse = " ")
+    }
+    }
+  }
+    )
+importe <- sapply(df_producto$productos_lista, 
+                   function(x) as.numeric(gsub(",", ".", x[length(x)])))
+precio_unidad <- importe/cantidad
+
+#Añadimos las nuevas columnas al data frame
+df_producto <- cbind(df_producto,cantidad, descripcion, precio,importe)
+```
 
 
 
