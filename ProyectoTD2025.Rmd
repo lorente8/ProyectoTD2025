@@ -303,45 +303,46 @@ if(any(is.na(df_fruta_verdura$precio_kg))) {
 #resto de productos sin kg
 
 Extraemos cantidad descripcion y precio
+
+Primero borramos los datos ya presentes en el df fruta y verdura
 ```{r}
-df_producto <- df_producto %>%
-  mutate(productos_lista = strsplit(gsub("\\s+", " ", productos), "\\s+", perl=TRUE))
+# Identificar las filas de detalles (kg y €/kg)
+ind_detalles_kg <- grep("kg.*€/kg", df_sin_pescado$productos, value = FALSE)
 
-# Extraer cantidad, descripción y precio
-cantidad <- sapply(df_producto$productos_lista, function(x) as.numeric(x[1]))
-descripcion <- sapply(df_producto$productos_lista, function(x) 
-  {if (x[1]=="1") {
-    paste(x[2:(length(x)-1)], collapse = " ")
-  } else{
-    n <- as.integer(x[1])
-    if (n>1 && is.na(n) == FALSE){
-      paste(x[2:(length(x)-2)], collapse = " ")
-    }else{
-      paste(x[2:(length(x)-1)], collapse = " ")
-    }
-    }
-  }
-    )
-importe <- sapply(df_producto$productos_lista, 
-                   function(x) as.numeric(gsub(",", ".", x[length(x)])))
-precio_unidad <- importe/cantidad
+# Las filas de nombres están justo antes de los detalles
+ind_nombres_kg <- ind_detalles_kg - 1
 
-#Añadimos las nuevas columnas al data frame
-df_producto <- cbind(df_producto,cantidad, descripcion, precio,importe)
+# Combinar todos los índices a eliminar
+filas_fruta_verdura <- sort(unique(c(ind_nombres_kg, ind_detalles_kg)))
+
+# Verificación
+cat("Se eliminarán", length(filas_fruta_verdura), "filas de fruta/verdura\n")
+print("Ejemplo de filas a eliminar:")
+print(df_sin_pescado[filas_fruta_verdura[1:2], ]) # Muestra primeros 2 pares
+
+# Eliminar filas ya procesadas
+df_resto <- df_sin_pescado[-filas_fruta_verdura, ]
 ```
 
-hacemos un df con la informacion de pescado
 ```{r}
-# Primero identificamos las líneas que contienen "PESCADO" o el patrón de código
-lineas_pescado <- grep("PESCADO|\\d+-\\d+-\\d+", df_producto$productos, value = TRUE, ignore.case = TRUE)
-
-# Creamos un dataframe para el pescado
-df_pescado <- df_producto[grep("PESCADO|\\d+-\\d+-\\d+", df_producto$productos, ignore.case = TRUE), ]
-
+df_productos_unidades <- df_resto %>%
+  mutate(
+    cantidad = as.numeric(str_extract(productos, "^\\d+")),
+    importe = as.numeric(gsub(",", ".", str_extract(productos, "\\d+,\\d+$"))),
+    
+    # Método alternativo usando expresiones regulares
+    descripcion = gsub(
+      pattern = "^\\d+\\s+|\\s+\\d+,?\\d*$", 
+      replacement = "", 
+      x = productos
+    ) %>%
+    str_trim()
+  ) %>%
+  mutate(
+    precio_unitario = importe / cantidad
+  ) %>%
+  select(num_ticket, descripcion, cantidad, precio_unitario, importe)
+head(df_productos_unidades)
 ```
-
-
-
-
 
 
