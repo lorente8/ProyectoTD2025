@@ -300,23 +300,49 @@ Creamos el dataframe de productos vendidios por unidades
 ```{r}
 df_productos_unidades <- df_resto %>%
   mutate(
+    # 1. Extraer cantidad (siempre es el primer número)
     cantidad = as.numeric(str_extract(productos, "^\\d+")),
-    importe = as.numeric(gsub(",", ".", str_extract(productos, "\\d+,\\d+$"))),
     
-    # Método alternativo usando expresiones regulares
-    nombre = gsub(
-      pattern = "^\\d+\\s+|\\s+\\d+,?\\d*$", 
-      replacement = "", 
-      x = productos
-    ) %>%
-    str_trim()
+    # 2. Extraer posible precio en el nombre (para productos de 1 unidad)
+    precio_en_nombre = ifelse(cantidad == 1,
+                            as.numeric(gsub(",", ".", str_extract(productos, "\\d+,\\d+$"))),
+                            NA_real_),
+    
+    # 3. Procesamiento vectorizado de componentes
+    componentes = strsplit(productos, "\\s+"),
+    
+    # 4. Extraer importe normal (para productos con múltiples unidades)
+    importe_normal = sapply(componentes, function(x) {
+      if(length(x) >= 3) as.numeric(gsub(",", ".", x[length(x)])) else NA_real_
+    }),
+    
+    # 5. Determinar el importe final
+    importe = ifelse(!is.na(precio_en_nombre), precio_en_nombre, importe_normal),
+    
+    # 6. Extraer descripción limpia (MODIFICACIÓN CLAVE)
+    nombre = mapply(function(comp, prod, cant, precio_nombre) {
+      # Primero eliminar la cantidad inicial (si existe)
+      nombre_limpio <- gsub("^\\d+\\s*", "", prod)
+      
+      if(length(comp) <= 2) return(nombre_limpio)  # Caso simple
+      
+      if(!is.na(precio_nombre)) {
+        # Para productos de 1 unidad: eliminar precio final
+        gsub("\\s+\\d+,\\d+$", "", nombre_limpio)
+      } else {
+        # Para múltiples unidades: eliminar elementos numéricos finales
+        paste(comp[2:(length(comp)-2)], collapse=" ")
+      }
+    }, componentes, productos, cantidad, precio_en_nombre, SIMPLIFY = TRUE) %>%
+      str_trim()  # Eliminar espacios sobrantes
   ) %>%
   mutate(
+    # 7. Calcular precio unitario
     precio_unitario = importe / cantidad
   ) %>%
   select(num_ticket, nombre, cantidad, precio_unitario, importe)
-head(df_productos_unidades)
 ```
+
 
 ## dataframe final con todos los productos analizados:
 ```{r}
