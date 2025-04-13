@@ -9,9 +9,10 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 # Introducción
-#Los datos utilizados en este analisis, provienen de tikets de compra de Mercadona, dando una visión detallada de los habitos de consumo, tipos de productos variaciones de precios y patrones de compra a lo largo del tiempo. El objetivo principal de este trabajo es explorar y analizar las decisiones de compra registradas, con el fin de identificar tendencias y comportamientos que ayuden a comprender mejor las dinámicas de comsumo. A través de este análisis, se busca ofrecer una visión más detallada de los hábitos de consumo reflejados en los tickets, con posibles aplicaciones tanto en el estudio del comportamiento del consumidor como como para la toma de decisiones comerciales.
 
-Cargamos las librerias necesarias:E
+Los datos utilizados en este analisis, provienen de tikets de compra de Mercadona, dando una visión detallada de los habitos de consumo, tipos de productos variaciones de precios y patrones de compra a lo largo del tiempo. El objetivo principal de este trabajo es explorar y analizar las decisiones de compra registradas, con el fin de identificar tendencias y comportamientos que ayuden a comprender mejor las dinámicas de comsumo. A través de este análisis, se busca ofrecer una visión más detallada de los hábitos de consumo reflejados en los tickets, con posibles aplicaciones tanto en el estudio del comportamiento del consumidor como como para la toma de decisiones comerciales.
+
+Cargamos las librerias necesarias:
 ```{r include=FALSE}
 #Nos aseguramos de que no haya nada cargado en el Environment
 rm(list=ls())
@@ -28,12 +29,13 @@ package.check <- lapply(packages, FUN = function(x) {
 ```
 
 
-Hemos cambiado los nombres a los archivos para que no den error con el siguiente codigo pero lo dejo como comentario para no sobreescribir los archivos al ejecutar mas de una vez: 
+Hemos cambiado los nombres a los archivos para que no den error con el siguiente codigo pero lo dejo como comentario para no sobreescribir los archivos al ejecutar mas de una vez:
+
 -----------------------------------------------------------------------------------
-# Obtener lista de archivos PDF en la carpeta
+ Obtener lista de archivos PDF en la carpeta
 archivos <- list.files(path =  "./data" , pattern = "\\.pdf$", full.names = FALSE, ignore.case = TRUE)
 
-# Renombrar archivos secuencialmente
+ Renombrar archivos secuencialmente
 for (i in seq_along(archivos)) {
   nombre_actual <- file.path(ruta_carpeta, archivos[i])
   extension <- file_ext(archivos[i])
@@ -160,7 +162,7 @@ df$base_imp <- as.numeric(gsub(pattern = ",",replacement = ".",df$base_imp))
 df$cuota <- as.numeric(gsub(pattern = ",",replacement = ".",df$cuota))
 ```
 
-#si hay aparcamiento o no
+si hay aparcamiento o no
 ```{r}
 aparcamientos <- c()
 for (archivo in archivos) {
@@ -211,7 +213,7 @@ for (i in seq_along(filas_pescado)) {
   num_ticket <- df_producto$num_ticket[idx]
   nombre <- df_producto$productos[idx + 1]  # Nombre en la siguiente fila
   
-  # Procesar la fila de detalles (ej: "0.390 kg 6.95 €/kg 2.71")
+  # Procesar la fila de detalles
   detalles <- df_producto$productos[idx + 2]
   
   # Limpiar y dividir la cadena de detalles
@@ -233,7 +235,6 @@ for (i in seq_along(filas_pescado)) {
   }
 }
 
-# Crear dataframe con cbind (column-wise)
 df_pescado <- data.frame(
   num_ticket = num_ticket_vec,
   nombre = nombre_producto_vec,
@@ -243,8 +244,6 @@ df_pescado <- data.frame(
   stringsAsFactors = FALSE
 )
 
-# Verificar resultados
-head(df_pescado)
 ```
 
 
@@ -407,3 +406,4 @@ print(head(df_final, 10))
 
 
 ```
+

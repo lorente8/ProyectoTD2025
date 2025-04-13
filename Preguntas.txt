@@ -10,7 +10,7 @@
 
 ¿Qué días de la semana hay más ventas? ¿Y a qué horas?
 
-¿En qué meses se venden más frutas, carnes, o pescados?
+¿En qué meses se venden más frutas/verduras, o pescados?
 
 ¿Desde qué ciudades se emiten más tickets?
 
