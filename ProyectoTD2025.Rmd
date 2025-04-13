@@ -9,9 +9,9 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 # Introducción
-#Los datos utilizados en este analisis, provienen de tikets de compra de Mercadona, dando una visión detallada de los habitos de consumo, tipos de productos variaciones de precios y patrones de compra a lo largo del tiempo 
+#Los datos utilizados en este analisis, provienen de tikets de compra de Mercadona, dando una visión detallada de los habitos de consumo, tipos de productos variaciones de precios y patrones de compra a lo largo del tiempo. El objetivo principal de este trabajo es explorar y analizar las decisiones de compra registradas, con el fin de identificar tendencias y comportamientos que ayuden a comprender mejor las dinámicas de comsumo. A través de este análisis, se busca ofrecer una visión más detallada de los hábitos de consumo reflejados en los tickets, con posibles aplicaciones tanto en el estudio del comportamiento del consumidor como como para la toma de decisiones comerciales.
 
-Cargamos las librerias necesarias:
+Cargamos las librerias necesarias:E
 ```{r include=FALSE}
 #Nos aseguramos de que no haya nada cargado en el Environment
 rm(list=ls())
