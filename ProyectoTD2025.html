@@ -9,7 +9,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Mar Alemany" />
+<meta name="author" content="Mar Alemany,Martín González,Mateo Reina, Sina Taheri, Adrian Mena,Sergio Nadal" />
 
 <meta name="date" content="2025-03-28" />
 
@@ -351,7 +351,8 @@ display: none;
 
 
 <h1 class="title toc-ignore">ProyectoTD2025</h1>
-<h4 class="author">Mar Alemany</h4>
+<h4 class="author">Mar Alemany,Martín González,Mateo Reina, Sina Taheri,
+Adrian Mena,Sergio Nadal</h4>
 <h4 class="date">2025-03-28</h4>
 
 </div>
@@ -359,26 +360,42 @@ display: none;
 
 <div id="introducción" class="section level1">
 <h1>Introducción</h1>
-<p>cargamos las librerias necesarias:</p>
-<div id="hemos-cambiado-los-nombres-a-los-archivos-para-que-no-den-error-con-el-siguiente-codigo-pero-lo-dejo-como-comentario-para-no-sobreescribir-los-archivos-al-ejecutar-mas-de-una-vez" class="section level2">
-<h2>Hemos cambiado los nombres a los archivos para que no den error con
+<p>Los datos utilizados en este analisis, provienen de tikets de compra
+de Mercadona, dando una visión detallada de los habitos de consumo,
+tipos de productos variaciones de precios y patrones de compra a lo
+largo del tiempo. El objetivo principal de este trabajo es explorar y
+analizar las decisiones de compra registradas, con el fin de identificar
+tendencias y comportamientos que ayuden a comprender mejor las dinámicas
+de comsumo. A través de este análisis, se busca ofrecer una visión más
+detallada de los hábitos de consumo reflejados en los tickets, con
+posibles aplicaciones tanto en el estudio del comportamiento del
+consumidor como como para la toma de decisiones comerciales.</p>
+<p>Cargamos las librerias necesarias:</p>
+<p>Hemos cambiado los nombres a los archivos para que no den error con
 el siguiente codigo pero lo dejo como comentario para no sobreescribir
-los archivos al ejecutar mas de una vez:</h2>
-</div>
-</div>
-<div id="obtener-lista-de-archivos-pdf-en-la-carpeta" class="section level1">
-<h1>Obtener lista de archivos PDF en la carpeta</h1>
-<p>archivos &lt;- list.files(path = “./data” , pattern = “\.pdf$”,
-full.names = FALSE, ignore.case = TRUE)</p>
-</div>
-<div id="renombrar-archivos-secuencialmente" class="section level1">
-<h1>Renombrar archivos secuencialmente</h1>
-<p>for (i in seq_along(archivos)) { nombre_actual &lt;-
-file.path(ruta_carpeta, archivos[i]) extension &lt;-
-file_ext(archivos[i]) nombre_nuevo &lt;- file.path(ruta_carpeta,
-paste0(“M”, i, “.”, extension))</p>
-<p>file.rename(from = nombre_actual, to = nombre_nuevo) }
-———————————————————————————-</p>
+los archivos al ejecutar mas de una vez:</p>
+<table>
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td align="center">Obtener lista de archivos PDF en la carpeta archivos
+&lt;- list.files(path = “./data” , pattern = “\.pdf$”, full.names =
+FALSE, ignore.case = TRUE)</td>
+</tr>
+<tr class="even">
+<td align="center">Renombrar archivos secuencialmente for (i in
+seq_along(archivos)) { nombre_actual &lt;- file.path(ruta_carpeta,
+archivos[i]) extension &lt;- file_ext(archivos[i]) nombre_nuevo &lt;-
+file.path(ruta_carpeta, paste0(“M”, i, “.”, extension))</td>
+</tr>
+<tr class="odd">
+<td align="center">file.rename(from = nombre_actual, to = nombre_nuevo)
+}</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="importación-de-los-datos" class="section level1">
 <h1>Importación de los datos</h1>
@@ -460,9 +477,284 @@ correspondiente:</p>
 
 #Modificamos las clases de los datos
 df$fecha &lt;- as.Date(df$fecha,format = &quot;%d/%m/%Y&quot;)
+df$anio &lt;- as.numeric(format(df$fecha, &quot;%Y&quot;))
+df$mes &lt;- as.numeric(format(df$fecha, &quot;%m&quot;))
+df$dia &lt;- as.numeric(format(df$fecha, &quot;%d&quot;))
+# Elimina la columna fecha
+df$fecha &lt;- NULL
+
+# Separar la columna fs en tres partes
+fs_split &lt;- strsplit(df$fs, &quot;-&quot;)
+# Crear las nuevas columnas a partir del resultado
+df$num_tienda &lt;- sapply(fs_split, function(x) x[1])
+df$num_caja &lt;- sapply(fs_split, function(x) x[2])
+df$num_ticket &lt;- sapply(fs_split, function(x) x[3])
+# Eliminar la columna original fs
+df$fs &lt;- NULL
+df$comercio &lt;- NULL
+df$empresa &lt;- NULL
+
+
 df$total &lt;- as.numeric(gsub(pattern = &quot;,&quot;,replacement = &quot;.&quot;,df$total))
 df$base_imp &lt;- as.numeric(gsub(pattern = &quot;,&quot;,replacement = &quot;.&quot;,df$base_imp))
 df$cuota &lt;- as.numeric(gsub(pattern = &quot;,&quot;,replacement = &quot;.&quot;,df$cuota))</code></pre>
+<p>si hay aparcamiento o no</p>
+<pre class="r"><code>aparcamientos &lt;- c()
+for (archivo in archivos) {
+  pdf &lt;- pdf_text(archivo)
+  ticket &lt;- trimws(strsplit(pdf, split = &quot;\n&quot;)[[1]])
+  aparcamiento_lineas &lt;- grep(&quot;Aparcamiento&quot;, ticket, value = TRUE)
+  if (length(aparcamiento_lineas) &gt; 0) {
+    aparcamientos &lt;- c(aparcamientos, paste(aparcamiento_lineas, collapse = &quot; &quot;))
+  } else {
+    aparcamientos &lt;- c(aparcamientos, NA)
+  }
+}
+df_aparcamiento &lt;- data.frame(archivo = archivos, aparcamiento = aparcamientos, stringsAsFactors = FALSE)
+head(df_aparcamiento)</code></pre>
+<pre><code>##           archivo aparcamiento
+## 1   ./data/M1.pdf           NA
+## 2  ./data/M10.pdf           NA
+## 3 ./data/M100.pdf           NA
+## 4 ./data/M101.pdf           NA
+## 5 ./data/M102.pdf           NA
+## 6 ./data/M103.pdf           NA</code></pre>
+</div>
+<div id="analizamos-los-productos" class="section level1">
+<h1>Analizamos los productos</h1>
+<p>En el df estan toda la informacion relativa a los productos en la
+columna producto la separamos en un nuevo dataframe con df_producto</p>
+<pre class="r"><code>df_producto &lt;- df %&gt;% select(c(num_ticket, productos)) %&gt;% 
+  separate_rows(productos, sep = &quot;;&quot;)</code></pre>
+<div id="procesamiento-de-pescado-por-kg" class="section level2">
+<h2>Procesamiento de pescado por kg</h2>
+<p>Primero nos encargamos de los productos de pesacdao que aparecen con
+este format: - Primera fila del pescado: Solo dice “PESCADO” - Segunda
+fila: Nombre del producto - Tercera fila: Detalles del precio</p>
+<pre class="r"><code># Identificar filas con &quot;PESCADO&quot;
+filas_pescado &lt;- which(df_producto$productos == &quot;PESCADO&quot;)
+
+# Inicializar vectores para almacenar datos
+num_ticket_vec &lt;- character()
+nombre_producto_vec &lt;- character()
+peso_kg_vec &lt;- numeric()
+precio_kg_vec &lt;- numeric()
+precio_total_vec &lt;- numeric()
+
+for (i in seq_along(filas_pescado)) {
+  idx &lt;- filas_pescado[i]
+  
+  # Extraer información básica
+  num_ticket &lt;- df_producto$num_ticket[idx]
+  nombre &lt;- df_producto$productos[idx + 1]  # Nombre en la siguiente fila
+  
+  # Procesar la fila de detalles
+  detalles &lt;- df_producto$productos[idx + 2]
+  
+  # Limpiar y dividir la cadena de detalles
+  detalles_limpio &lt;- gsub(&quot;,&quot;, &quot;.&quot;, detalles)  # Reemplazar comas por puntos
+  detalles_split &lt;- strsplit(trimws(detalles_limpio), &quot;\\s+&quot;)[[1]]
+  
+  # Extraer valores (asumiendo orden: peso, unidad, precio_kg, moneda, precio_total)
+  if (length(detalles_split) &gt;= 5) {
+    peso_kg &lt;- as.numeric(detalles_split[1])
+    precio_kg &lt;- as.numeric(detalles_split[3])
+    importe &lt;- as.numeric(detalles_split[5])
+    
+    # Almacenar en vectores
+    num_ticket_vec &lt;- c(num_ticket_vec, num_ticket)
+    nombre_producto_vec &lt;- c(nombre_producto_vec, nombre)
+    peso_kg_vec &lt;- c(peso_kg_vec, peso_kg)
+    precio_kg_vec &lt;- c(precio_kg_vec, precio_kg)
+    precio_total_vec &lt;- c(precio_total_vec, importe)
+  }
+}
+
+df_pescado &lt;- data.frame(
+  num_ticket = num_ticket_vec,
+  nombre = nombre_producto_vec,
+  peso_kg = peso_kg_vec,
+  precio_kg = precio_kg_vec,
+  importe = precio_total_vec,
+  stringsAsFactors = FALSE
+)</code></pre>
+</div>
+<div id="procesamiento-fruta-y-la-verdura" class="section level2">
+<h2>Procesamiento fruta y la verdura</h2>
+<p>Borrar primero las filas de pescado para asegurarte de que los
+productos restantes vendidos por kg sean exclusivamente fruta y
+verdura.</p>
+<pre class="r"><code>#Identificar TODOS los bloques de pescado (3 filas cada uno)
+bloques_pescado &lt;- which(df_producto$productos == &quot;PESCADO&quot;)
+
+# Crear vector con TODAS las filas a eliminar (cada bloque son 3 filas)
+filas_a_eliminar &lt;- unlist(lapply(bloques_pescado, function(x) x:(x+2)))
+
+# Eliminar todos los bloques
+df_sin_pescado &lt;- df_producto[-filas_a_eliminar, ]</code></pre>
+<p>Ahora hacemos el df_fruta_verdura</p>
+<pre class="r"><code>ind_detalles_kg &lt;- grep(&quot;kg.*€/kg&quot;, df_sin_pescado$productos, value = FALSE)
+
+df_fruta_verdura &lt;- data.frame(
+  num_ticket = df_sin_pescado$num_ticket[ind_detalles_kg],
+  nombre = df_sin_pescado$productos[ind_detalles_kg - 1],
+  detalles = df_sin_pescado$productos[ind_detalles_kg],
+  stringsAsFactors = FALSE
+) %&gt;%
+mutate(
+  # Limpiar el nombre (eliminar números iniciales)
+  nombre = gsub(&quot;^\\d+\\s*&quot;, &quot;&quot;, nombre),
+  
+  # Extraer peso (kg) - primer número en la línea
+  peso_kg = as.numeric(gsub(&quot;,&quot;, &quot;.&quot;, str_extract(detalles, &quot;^[0-9,]+&quot;))),
+  
+  # Extraer precio por kg - método mejorado
+  precio_kg = as.numeric(gsub(&quot;,&quot;, &quot;.&quot;, 
+    str_extract(detalles, &quot;[0-9,]+(?=\\s*€/kg)&quot;))),
+  
+  # Extraer importe total - último número en la línea
+  importe = as.numeric(gsub(&quot;,&quot;, &quot;.&quot;, 
+    str_extract(detalles, &quot;[0-9,]+$&quot;)))
+) %&gt;%
+select(-detalles)</code></pre>
+</div>
+<div id="procesamiento-resto-de-productos-sin-kg" class="section level2">
+<h2>Procesamiento resto de productos sin kg</h2>
+<p>Extraemos cantidad descripcion y precio</p>
+<p>Primero borramos los datos ya presentes en el df fruta y verdura</p>
+<pre class="r"><code># Identificar las filas de detalles (kg y €/kg)
+ind_detalles_kg &lt;- grep(&quot;kg.*€/kg&quot;, df_sin_pescado$productos, value = FALSE)
+
+# Las filas de nombres están justo antes de los detalles
+ind_nombres_kg &lt;- ind_detalles_kg - 1
+
+# Combinar todos los índices a eliminar
+filas_fruta_verdura &lt;- sort(unique(c(ind_nombres_kg, ind_detalles_kg)))
+
+# Eliminar filas ya procesadas
+df_resto &lt;- df_sin_pescado[-filas_fruta_verdura, ]</code></pre>
+<p>Creamos el dataframe de productos vendidios por unidades</p>
+<pre class="r"><code>df_productos_unidades &lt;- df_resto %&gt;%
+  mutate(
+    # 1. Extraer cantidad (siempre es el primer número)
+    cantidad = as.numeric(str_extract(productos, &quot;^\\d+&quot;)),
+    
+    # 2. Extraer posible precio en el nombre (para productos de 1 unidad)
+    precio_en_nombre = ifelse(cantidad == 1,
+                            as.numeric(gsub(&quot;,&quot;, &quot;.&quot;, str_extract(productos, &quot;\\d+,\\d+$&quot;))),
+                            NA_real_),
+    
+    # 3. Procesamiento vectorizado de componentes
+    componentes = strsplit(productos, &quot;\\s+&quot;),
+    
+    # 4. Extraer importe normal (para productos con múltiples unidades)
+    importe_normal = sapply(componentes, function(x) {
+      if(length(x) &gt;= 3) as.numeric(gsub(&quot;,&quot;, &quot;.&quot;, x[length(x)])) else NA_real_
+    }),
+    
+    # 5. Determinar el importe final
+    importe = ifelse(!is.na(precio_en_nombre), precio_en_nombre, importe_normal),
+    
+    # 6. Extraer descripción limpia (MODIFICACIÓN CLAVE)
+    nombre = mapply(function(comp, prod, cant, precio_nombre) {
+      # Primero eliminar la cantidad inicial (si existe)
+      nombre_limpio &lt;- gsub(&quot;^\\d+\\s*&quot;, &quot;&quot;, prod)
+      
+      if(length(comp) &lt;= 2) return(nombre_limpio)  # Caso simple
+      
+      if(!is.na(precio_nombre)) {
+        # Para productos de 1 unidad: eliminar precio final
+        gsub(&quot;\\s+\\d+,\\d+$&quot;, &quot;&quot;, nombre_limpio)
+      } else {
+        # Para múltiples unidades: eliminar elementos numéricos finales
+        paste(comp[2:(length(comp)-2)], collapse=&quot; &quot;)
+      }
+    }, componentes, productos, cantidad, precio_en_nombre, SIMPLIFY = TRUE) %&gt;%
+      str_trim()  # Eliminar espacios sobrantes
+  ) %&gt;%
+  mutate(
+    # 7. Calcular precio unitario
+    precio_unitario = importe / cantidad
+  ) %&gt;%
+  select(num_ticket, nombre, cantidad, precio_unitario, importe)</code></pre>
+<pre><code>## Warning: There were 33 warnings in `mutate()`.
+## The first warning was:
+## ℹ In argument: `importe_normal = sapply(...)`.
+## Caused by warning in `FUN()`:
+## ! NAs introducidos por coerción
+## ℹ Run `dplyr::last_dplyr_warnings()` to see the 32 remaining warnings.</code></pre>
+</div>
+<div id="dataframe-final-con-todos-los-productos-analizados" class="section level2">
+<h2>dataframe final con todos los productos analizados:</h2>
+<pre class="r"><code># Añadir columna &#39;tipo&#39; a cada dataframe
+df_pescado &lt;- df_pescado %&gt;% mutate(tipo = &quot;pescado&quot;)
+df_fruta_verdura &lt;- df_fruta_verdura %&gt;% mutate(tipo = &quot;fruta_verdura&quot;)
+df_productos_unidades &lt;- df_productos_unidades %&gt;% mutate(tipo = &quot;unidades&quot;)
+
+# Unificar columnas para combinar
+df_final &lt;- bind_rows(
+  df_pescado %&gt;% select(num_ticket, nombre, cantidad = peso_kg, precio = precio_kg, importe, tipo),
+  df_fruta_verdura %&gt;% select(num_ticket, nombre, cantidad = peso_kg, precio = precio_kg, importe, tipo),
+  df_productos_unidades %&gt;% select(num_ticket, nombre = nombre, cantidad, precio = precio_unitario, importe, tipo)
+)
+
+# Crear columna tiene_aparcamiento 
+if (&quot;aparcamiento&quot; %in% colnames(df_aparcamiento)) {
+  df_aparcamiento &lt;- df_aparcamiento %&gt;%
+    mutate(nombre_archivo = basename(archivo)) %&gt;%
+    mutate(num_ticket = str_extract(nombre_archivo, &quot;\\d+&quot;)) %&gt;%
+    mutate(tiene_aparcamiento = !is.na(aparcamiento)) %&gt;%
+    select(num_ticket, tiene_aparcamiento)
+
+  # Convertir num_ticket a carácter en ambos dataframes
+  df_final &lt;- df_final %&gt;% mutate(num_ticket = as.character(num_ticket))
+  df_aparcamiento &lt;- df_aparcamiento %&gt;% mutate(num_ticket = as.character(num_ticket))
+
+  # Combinar los datos
+  df_final &lt;- left_join(df_final, df_aparcamiento, by = &quot;num_ticket&quot;)
+} else {
+  df_final$tiene_aparcamiento &lt;- NA  # columna vacía si no existe &#39;aparcamiento&#39;
+}
+
+# Resultado final ordenado
+df_final &lt;- df_final %&gt;% arrange(num_ticket)
+
+# Verificación final
+cat(&quot;\nResumen del DataFrame final:\n&quot;)</code></pre>
+<pre><code>## 
+## Resumen del DataFrame final:</code></pre>
+<pre class="r"><code>cat(&quot;- Pescado:&quot;, sum(df_final$tipo == &quot;pescado&quot;), &quot;registros\n&quot;)</code></pre>
+<pre><code>## - Pescado: 28 registros</code></pre>
+<pre class="r"><code>cat(&quot;- Fruta/Verdura:&quot;, sum(df_final$tipo == &quot;fruta_verdura&quot;), &quot;registros\n&quot;)</code></pre>
+<pre><code>## - Fruta/Verdura: 395 registros</code></pre>
+<pre class="r"><code>cat(&quot;- Unidades:&quot;, sum(df_final$tipo == &quot;unidades&quot;), &quot;registros\n&quot;)</code></pre>
+<pre><code>## - Unidades: 4702 registros</code></pre>
+<pre class="r"><code>cat(&quot;- Total:&quot;, nrow(df_final), &quot;registros\n&quot;)</code></pre>
+<pre><code>## - Total: 5125 registros</code></pre>
+<pre class="r"><code>print(head(df_final, 10))</code></pre>
+<pre><code>##    num_ticket              nombre cantidad precio importe          tipo
+## 1      007267    PERA CONFERENCIA    0.854   2.55    2.18 fruta_verdura
+## 2      007267    MANZ. ROJA DULCE    1.474   2.90    4.27 fruta_verdura
+## 3      007267      PIZZA BOLOÑESA    1.000   2.60    2.60      unidades
+## 4      007267    MIX FRUTOS ROJOS    1.000   1.66    1.66      unidades
+## 5      007267   PISTO DE VERDURAS    1.000   2.30    2.30      unidades
+## 6      007267    FILETE DE TRUCHA    1.000   3.92    3.92      unidades
+## 7      007267        PAN SEMILLAS    1.000   1.60    1.60      unidades
+## 8      007267         SNACK PIPAS    1.000   1.40    1.40      unidades
+## 9      007267 +PROT NATILLA VAINI    1.000   1.75    1.75      unidades
+## 10     007267     SNACK CHOCOLATE    1.000   1.50    1.50      unidades
+##    tiene_aparcamiento
+## 1                  NA
+## 2                  NA
+## 3                  NA
+## 4                  NA
+## 5                  NA
+## 6                  NA
+## 7                  NA
+## 8                  NA
+## 9                  NA
+## 10                 NA</code></pre>
+</div>
 </div>
 
 
