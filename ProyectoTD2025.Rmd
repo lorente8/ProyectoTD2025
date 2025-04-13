@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 # Introducción
-
+#Los datos utilizados en este analisis, provienen de tikets de compra de Mercadona, dando una visión detallada de los habitos de consumo, tipos de productos variaciones de precios y patrones de compra a lo largo del tiempo 
 
 Cargamos las librerias necesarias:
 ```{r include=FALSE}
