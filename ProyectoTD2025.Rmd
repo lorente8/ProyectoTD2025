@@ -160,6 +160,23 @@ df$base_imp <- as.numeric(gsub(pattern = ",",replacement = ".",df$base_imp))
 df$cuota <- as.numeric(gsub(pattern = ",",replacement = ".",df$cuota))
 ```
 
+#si hay aparcamiento o no
+```{r}
+aparcamientos <- c()
+for (archivo in archivos) {
+  pdf <- pdf_text(archivo)
+  ticket <- trimws(strsplit(pdf, split = "\n")[[1]])
+  aparcamiento_lineas <- grep("Aparcamiento", ticket, value = TRUE)
+  if (length(aparcamiento_lineas) > 0) {
+    aparcamientos <- c(aparcamientos, paste(aparcamiento_lineas, collapse = " "))
+  } else {
+    aparcamientos <- c(aparcamientos, NA)
+  }
+}
+df_aparcamiento <- data.frame(archivo = archivos, aparcamiento = aparcamientos, stringsAsFactors = FALSE)
+head(df_aparcamiento)
+
+```
 # Analizamos los productos
 
 En el df estan toda la informacion relativa a los productos en la columna producto la separamos en un nuevo dataframe con df_producto
@@ -358,6 +375,24 @@ df_final <- bind_rows(
   df_productos_unidades %>% select(num_ticket, nombre = nombre, cantidad, precio = precio_unitario, importe, tipo)
 )
 
+# Crear columna tiene_aparcamiento 
+if ("aparcamiento" %in% colnames(df_aparcamiento)) {
+  df_aparcamiento <- df_aparcamiento %>%
+    mutate(nombre_archivo = basename(archivo)) %>%
+    mutate(num_ticket = str_extract(nombre_archivo, "\\d+")) %>%
+    mutate(tiene_aparcamiento = !is.na(aparcamiento)) %>%
+    select(num_ticket, tiene_aparcamiento)
+
+  # Convertir num_ticket a carácter en ambos dataframes
+  df_final <- df_final %>% mutate(num_ticket = as.character(num_ticket))
+  df_aparcamiento <- df_aparcamiento %>% mutate(num_ticket = as.character(num_ticket))
+
+  # Combinar los datos
+  df_final <- left_join(df_final, df_aparcamiento, by = "num_ticket")
+} else {
+  df_final$tiene_aparcamiento <- NA  # columna vacía si no existe 'aparcamiento'
+}
+
 # Resultado final ordenado
 df_final <- df_final %>% arrange(num_ticket)
 
@@ -369,5 +404,6 @@ cat("- Unidades:", sum(df_final$tipo == "unidades"), "registros\n")
 cat("- Total:", nrow(df_final), "registros\n")
 
 print(head(df_final, 10))
-```
 
+
+```
