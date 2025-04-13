@@ -17,3 +17,5 @@ Desde qué ciudades se emiten más tickets?
 ¿Existen diferencias de consumo por ciudad?
 
 Cuánto se gasta semanal o mensualmente en un supermercado?
+
+¿Influye la disponibilidad de aparcamiento en el importe total de la compra?
