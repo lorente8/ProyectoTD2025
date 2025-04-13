@@ -1,0 +1,16 @@
+ Introducción
+
+
+El conjunto de datos que hemos utilizado para este análisis proviene de tickets de compra recogidos 
+en establecimientos de la cadena Mercadona. Estos tickets nos permiten acceder a información detallada sobre 
+los hábitos de consumo, tipos de productos adquiridos, variaciones de precio y patrones de compra a lo 
+largo del tiempo. 
+
+En este caso, el objetivo principal es explorar y analizar las decisiones de compra reflejadas
+, identificando tendencias y comportamientos que puedan resultar útiles para 
+comprender mejor la dinámica del consumo.
+
+
+Este análisis pretende ofrecer una visión detallada de los hábitos de consumo reflejados en los
+ tickets, con aplicaciones prácticas tanto para el estudio del comportamiento del consumidor 
+como para la toma de decisiones comerciales.
