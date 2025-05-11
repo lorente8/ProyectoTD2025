@@ -496,11 +496,11 @@ transacciones <- as(split(df_final$nombre, df_final$num_ticket), "transactions")
 #Aplicar el algoritmo Apriori para encontrar reglas de asociación
 reglas <- apriori(transacciones, parameter = list(support = 0.01, confidence = 0.5, minlen = 2))
 
-# 3. Filtrar y ordenar las reglas más interesantes
+# Filtrar y ordenar las reglas más interesantes
 reglas_interesantes <- subset(reglas, lift > 1)
 inspect(sort(reglas_interesantes, by = "lift"))
 
-# 4. Visualización
+#  Visualización
 plot(reglas_interesantes, method = "graph", engine = "htmlwidget")
 
 ```
