@@ -219,31 +219,31 @@ head(df_aparcamiento)
 
 La información relativa a los productos comprados se encontraba inicialmente agrupada dentro de una única columna del data frame principal. Para facilitar su análisis, se extrajo esta columna a un nuevo data frame, separando los productos que venían concatenados en una misma celda.
 
+## 4.1 Productos pescateria
 El procesamiento de los productos se realizó en varias etapas, según el tipo de producto y la forma en que aparecían en el ticket. En primer lugar, se identificaron los productos de pescadería, que siguen un formato particular: aparecen siempre precedidos por una línea con la palabra "PESCADO", seguida del nombre del producto en la línea siguiente y de los detalles de compra (peso, precio por kilo y total) en una tercera línea. A partir de esta estructura, se extrajeron los datos relevantes y se almacenaron en un nuevo data frame específico para pescado.
+
+
+## 4.2 Productos vendidos por peso
 
 Después, se eliminaron las filas correspondientes a productos de pescadería para poder trabajar exclusivamente con los productos que también se venden por peso, como frutas y verduras. Estos artículos generalmente constan de dos líneas: la primera contiene el nombre del producto y la segunda incluye el peso, el precio por kilogramo y el importe total. A partir de esta estructura se construyó un segundo data frame con las frutas y verduras, extrayendo y transformando la información necesaria.
 
+## 4.2 Productos vendidos por unidad
+
 Una vez separados los productos por peso, se procedió a procesar el resto de productos, es decir, aquellos que se venden por unidades. En este caso, se extrajeron datos como la cantidad, el nombre del producto, el precio unitario y el importe total. Se aplicaron técnicas de procesamiento de texto para limpiar y estructurar la información, ya que algunos productos con una sola unidad incluían el precio directamente dentro del nombre del producto.
 
+# 4.4 productos analizados
 Finalmente, los tres grupos de productos —pescado, frutas y verduras, y productos por unidades— se combinaron en un único data frame unificado. A este conjunto se le añadió una columna adicional que indicaba si el ticket incluía un servicio de aparcamiento, en caso de que esa información estuviera disponible. El resultado fue un data frame final, estructurado y homogéneo, con todos los productos organizados por tipo, cantidad, precio, importe y número de ticket, listo para su análisis posterior.
 
 
-
-En el df estan toda la informacion relativa a los productos en la columna producto la separamos en un nuevo dataframe con df_producto
 ```{r}
 df_producto <- df %>% select(c(num_ticket, productos)) %>% 
   separate_rows(productos, sep = ";")
 ```
 
 
-## Procesamiento de pescado por kg
-
-Primero nos encargamos de los productos de pesacdao que aparecen con este format:
-- Primera fila del pescado: Solo dice "PESCADO" 
-- Segunda fila: Nombre del producto 
-- Tercera fila: Detalles del precio 
-
 ```{r}
+# Procesamiento de pescado por kg
+
 # Identificar filas con "PESCADO"
 filas_pescado <- which(df_producto$productos == "PESCADO")
 
@@ -294,12 +294,9 @@ df_pescado <- data.frame(
 
 ```
 
-
-## Procesamiento fruta y la verdura
-
-Borrar primero las filas de pescado para asegurarte de que los productos restantes vendidos por kg sean exclusivamente fruta y verdura. 
-
 ```{r}
+# Procesamiento fruta y la verdura
+
 #Identificar TODOS los bloques de pescado (3 filas cada uno)
 bloques_pescado <- which(df_producto$productos == "PESCADO")
 
@@ -309,9 +306,6 @@ filas_a_eliminar <- unlist(lapply(bloques_pescado, function(x) x:(x+2)))
 # Eliminar todos los bloques
 df_sin_pescado <- df_producto[-filas_a_eliminar, ]
 
-```
-Ahora hacemos el df_fruta_verdura
-```{r}
 ind_detalles_kg <- grep("kg.*€/kg", df_sin_pescado$productos, value = FALSE)
 
 df_fruta_verdura <- data.frame(
@@ -340,13 +334,9 @@ select(-detalles)
 ```
 
 
-
-## Procesamiento resto de productos sin kg
-
-Extraemos cantidad descripcion y precio
-
-Primero borramos los datos ya presentes en el df fruta y verdura
 ```{r}
+# Procesamiento resto de productos sin kg
+
 # Identificar las filas de detalles (kg y €/kg)
 ind_detalles_kg <- grep("kg.*€/kg", df_sin_pescado$productos, value = FALSE)
 
@@ -358,10 +348,7 @@ filas_fruta_verdura <- sort(unique(c(ind_nombres_kg, ind_detalles_kg)))
 
 # Eliminar filas ya procesadas
 df_resto <- df_sin_pescado[-filas_fruta_verdura, ]
-```
 
-Creamos el dataframe de productos vendidios por unidades
-```{r}
 df_productos_unidades <- df_resto %>%
   mutate(
     # 1. Extraer cantidad (siempre es el primer número)
@@ -408,8 +395,9 @@ df_productos_unidades <- df_resto %>%
 ```
 
 
-## dataframe final con todos los productos analizados:
 ```{r}
+# dataframe final con todos los productos analizados:
+
 # Añadir columna 'tipo' a cada dataframe
 df_pescado <- df_pescado %>% mutate(tipo = "pescado")
 df_fruta_verdura <- df_fruta_verdura %>% mutate(tipo = "fruta_verdura")
@@ -459,7 +447,7 @@ print(head(df_final, 10))
 
 ¿Cuáles son los productos menos vendidos por unidades? ¿Y por kilos?
 
-¿Qué productos han generado mayor ingreso total (precio × cantidad)?
+¿Qué productos han generado mayor ingreso total (precio x cantidad)?
 
 ¿Cuáles productos han aumentado o disminuido su venta a lo largo del tiempo?
 
