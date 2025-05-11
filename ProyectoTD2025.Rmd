@@ -2,15 +2,21 @@
 title: "ProyectoTD2025"
 author: "Mar Alemany,Martín González,Mateo Reina, Sina Taheri, Adrian Mena,Sergio Nadal"
 date: "2025-03-28"
-output: html_document
+output: 
+  rticles::mdpi_article:
+    extra_dependencies: longtable
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-# Introducción
+# 1. Introducción
 
-Los datos utilizados en este analisis, provienen de tikets de compra de Mercadona, dando una visión detallada de los habitos de consumo, tipos de productos variaciones de precios y patrones de compra a lo largo del tiempo. El objetivo principal de este trabajo es explorar y analizar las decisiones de compra registradas, con el fin de identificar tendencias y comportamientos que ayuden a comprender mejor las dinámicas de comsumo. A través de este análisis, se busca ofrecer una visión más detallada de los hábitos de consumo reflejados en los tickets, con posibles aplicaciones tanto en el estudio del comportamiento del consumidor como como para la toma de decisiones comerciales.
+En la actualidad, la digitalización de los tickets de compra se ha convertido en una práctica común en grandes cadenas de supermercados. Estos tickets electrónicos, enviados en formato PDF al correo del cliente, no solo reducen el uso de papel, sino que también generan datos valiosos que pueden ser analizados para obtener información relevante sobre los hábitos de consumo, la evolución de precios y las preferencias de los compradores.
+
+Este proyecto tiene como objetivo desarrollar un sistema de análisis automatizado que permita extraer, procesar y visualizar la información contenida en los tickets de Mercadona. Mediante técnicas de tratamiento de datos en R, exploraremos patrones de compra, identificaremos los productos más vendidos, analizaremos la evolución temporal de los precios y determinaremos tendencias en función de la ubicación de la tienda y el momento de la compra.
+
+## 1.1. Carga de librerías y datos necesarios para el análisis
 
 Cargamos las librerias necesarias:
 ```{r include=FALSE}

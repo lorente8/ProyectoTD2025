@@ -1,0 +1,839 @@
+%  LaTeX support: latex@mdpi.com
+%  For support, please attach all files needed for compiling as well as the log file, and specify your operating system, LaTeX version, and LaTeX editor.
+
+%=================================================================
+% pandoc conditionals added to preserve backwards compatibility with previous versions of rticles
+
+\documentclass[,,,oneauthor,pdftex]{Definitions/mdpi}
+
+
+%% Some pieces required from the pandoc template
+\setlist[itemize]{leftmargin=*,labelsep=5.8mm}
+\setlist[enumerate]{leftmargin=*,labelsep=4.9mm}
+
+
+%--------------------
+% Class Options:
+%--------------------
+
+%---------
+% article
+%---------
+% The default type of manuscript is "article", but can be replaced by:
+% abstract, addendum, article, book, bookreview, briefreport, casereport, comment, commentary, communication, conferenceproceedings, correction, conferencereport, entry, expressionofconcern, extendedabstract, datadescriptor, editorial, essay, erratum, hypothesis, interestingimage, obituary, opinion, projectreport, reply, retraction, review, perspective, protocol, shortnote, studyprotocol, systematicreview, supfile, technicalnote, viewpoint, guidelines, registeredreport, tutorial
+% supfile = supplementary materials
+
+%----------
+% submit
+%----------
+% The class option "submit" will be changed to "accept" by the Editorial Office when the paper is accepted. This will only make changes to the frontpage (e.g., the logo of the journal will get visible), the headings, and the copyright information. Also, line numbering will be removed. Journal info and pagination for accepted papers will also be assigned by the Editorial Office.
+
+%------------------
+% moreauthors
+%------------------
+% If there is only one author the class option oneauthor should be used. Otherwise use the class option moreauthors.
+
+%---------
+% pdftex
+%---------
+% The option pdftex is for use with pdfLaTeX. Remove "pdftex" for (1) compiling with LaTeX & dvi2pdf (if eps figures are used) or for (2) compiling with XeLaTeX.
+
+%=================================================================
+% MDPI internal commands - do not modify
+\firstpage{1}
+\makeatletter
+\setcounter{page}{\@firstpage}
+\makeatother
+\pubvolume{1}
+\issuenum{1}
+\articlenumber{0}
+\pubyear{2023}
+\copyrightyear{2023}
+%\externaleditor{Academic Editor: Firstname Lastname}
+\datereceived{ }
+\daterevised{ } % Comment out if no revised date
+\dateaccepted{ }
+\datepublished{ }
+%\datecorrected{} % For corrected papers: "Corrected: XXX" date in the original paper.
+%\dateretracted{} % For corrected papers: "Retracted: XXX" date in the original paper.
+\hreflink{https://doi.org/} % If needed use \linebreak
+%\doinum{}
+%\pdfoutput=1 % Uncommented for upload to arXiv.org
+
+%=================================================================
+% Add packages and commands here. The following packages are loaded in our class file: fontenc, inputenc, calc, indentfirst, fancyhdr, graphicx, epstopdf, lastpage, ifthen, float, amsmath, amssymb, lineno, setspace, enumitem, mathpazo, booktabs, titlesec, etoolbox, tabto, xcolor, colortbl, soul, multirow, microtype, tikz, totcount, changepage, attrib, upgreek, array, tabularx, pbox, ragged2e, tocloft, marginnote, marginfix, enotez, amsthm, natbib, hyperref, cleveref, scrextend, url, geometry, newfloat, caption, draftwatermark, seqsplit
+% cleveref: load \crefname definitions after \begin{document}
+
+%=================================================================
+% Please use the following mathematics environments: Theorem, Lemma, Corollary, Proposition, Characterization, Property, Problem, Example, ExamplesandDefinitions, Hypothesis, Remark, Definition, Notation, Assumption
+%% For proofs, please use the proof environment (the amsthm package is loaded by the MDPI class).
+
+%=================================================================
+% Full title of the paper (Capitalized)
+\Title{ProyectoTD2025}
+
+% MDPI internal command: Title for citation in the left column
+\TitleCitation{ProyectoTD2025}
+
+% Author Orchid ID: enter ID or remove command
+%\newcommand{\orcidauthorA}{0000-0000-0000-000X} % Add \orcidA{} behind the author's name
+%\newcommand{\orcidauthorB}{0000-0000-0000-000X} % Add \orcidB{} behind the author's name
+
+
+% Authors, for the paper (add full first names)
+\Author{$^{}$}
+
+
+%\longauthorlist{yes}
+
+
+% MDPI internal command: Authors, for metadata in PDF
+\AuthorNames{}
+
+% MDPI internal command: Authors, for citation in the left column
+
+% Affiliations / Addresses (Add [1] after \address if there is only one affiliation.)
+\address{%
+}
+
+% Contact information of the corresponding author
+\corres{Correspondence: }
+
+% Current address and/or shared authorship
+
+
+
+
+
+
+
+
+% The commands \thirdnote{} till \eighthnote{} are available for further notes
+
+% Simple summary
+
+%\conference{} % An extended version of a conference paper
+
+% Abstract (Do not insert blank lines, i.e. \\)
+
+
+% Keywords
+
+% The fields PACS, MSC, and JEL may be left empty or commented out if not applicable
+%\PACS{J0101}
+%\MSC{}
+%\JEL{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Only for the journal Diversity
+%\LSID{\url{http://}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Only for the journal Applied Sciences
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Only for the journal Data
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Only for the journal Toxins
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Only for the journal Encyclopedia
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Only for the journal Advances in Respiratory Medicine
+%\addhighlights{yes}
+%\renewcommand{\addhighlights}{%
+
+%\noindent This is an obligatory section in “Advances in Respiratory Medicine”, whose goal is to increase the discoverability and readability of the article via search engines and other scholars. Highlights should not be a copy of the abstract, but a simple text allowing the reader to quickly and simplified find out what the article is about and what can be cited from it. Each of these parts should be devoted up to 2~bullet points.\vspace{3pt}\\
+%\textbf{What are the main findings?}
+% \begin{itemize}[labelsep=2.5mm,topsep=-3pt]
+% \item First bullet.
+% \item Second bullet.
+% \end{itemize}\vspace{3pt}
+%\textbf{What is the implication of the main finding?}
+% \begin{itemize}[labelsep=2.5mm,topsep=-3pt]
+% \item First bullet.
+% \item Second bullet.
+% \end{itemize}
+%}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Pandoc syntax highlighting
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+
+% tightlist command for lists without linebreak
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+% From pandoc table feature
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+
+
+\usepackage{longtable}
+
+\begin{document}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\hypertarget{introducciuxf3n}{%
+\section{Introducción}\label{introducciuxf3n}}
+
+Los datos utilizados en este analisis, provienen de tikets de compra de
+Mercadona, dando una visión detallada de los habitos de consumo, tipos
+de productos variaciones de precios y patrones de compra a lo largo del
+tiempo. El objetivo principal de este trabajo es explorar y analizar las
+decisiones de compra registradas, con el fin de identificar tendencias y
+comportamientos que ayuden a comprender mejor las dinámicas de comsumo.
+A través de este análisis, se busca ofrecer una visión más detallada de
+los hábitos de consumo reflejados en los tickets, con posibles
+aplicaciones tanto en el estudio del comportamiento del consumidor como
+como para la toma de decisiones comerciales.
+
+Cargamos las librerias necesarias:
+
+Hemos cambiado los nombres a los archivos para que no den error con el
+siguiente codigo pero lo dejo como comentario para no sobreescribir los
+archivos al ejecutar mas de una vez:
+
+\begin{longtable}[]{@{}
+  >{\centering\arraybackslash}p{(\columnwidth - 0\tabcolsep) * \real{1.0000}}@{}}
+\toprule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Obtener lista de archivos PDF en la carpeta archivos \textless-
+list.files(path = ``./data'' , pattern = ``\textbackslash.pdf\$'',
+full.names = FALSE, ignore.case = TRUE) \\
+Renombrar archivos secuencialmente for (i in seq\_along(archivos)) \{
+nombre\_actual \textless- file.path(ruta\_carpeta, archivos{[}i{]})
+extension \textless- file\_ext(archivos{[}i{]}) nombre\_nuevo \textless-
+file.path(ruta\_carpeta, paste0(``M'', i, ``.'', extension)) \\
+file.rename(from = nombre\_actual, to = nombre\_nuevo) \} \\
+\end{longtable}
+
+\hypertarget{importaciuxf3n-de-los-datos}{%
+\section{Importación de los datos}\label{importaciuxf3n-de-los-datos}}
+
+cargamos los archivos de la carpeta
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Obtener lista de archivos PDF en la carpeta}
+\NormalTok{archivos }\OtherTok{\textless{}{-}} \FunctionTok{list.files}\NormalTok{(}\AttributeTok{path =}  \StringTok{"./data"}\NormalTok{ , }\AttributeTok{pattern =} \StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{.pdf$"}\NormalTok{, }\AttributeTok{full.names =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{ignore.case =} \ConstantTok{TRUE}\NormalTok{)}
+\CommentTok{\#print(archivos)}
+\end{Highlighting}
+\end{Shaded}
+
+Definimos vectores para almacenar los datos de los tickets
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{comercio }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{() }\CommentTok{\#nombre del comercio}
+\NormalTok{empresa }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{() }\CommentTok{\#tipo y código de empresa}
+\NormalTok{direccion }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{() }
+\NormalTok{cp }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{() }\CommentTok{\#código postal}
+\NormalTok{telefono }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{() }\CommentTok{\#Misma línea, tendremos que separar estos valores}
+\NormalTok{fecha }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{()}
+\NormalTok{hora }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{()}
+\NormalTok{op }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{()}
+\NormalTok{fs }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{()}\CommentTok{\#factura}
+\NormalTok{productos }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{() }\CommentTok{\#lista con los productos comprados}
+\NormalTok{total }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{() }\CommentTok{\#total de la compra}
+\NormalTok{forma\_pago }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{()}
+
+\CommentTok{\#IVA}
+\NormalTok{base\_imp }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{() }\CommentTok{\#Base imponible}
+\NormalTok{cuota }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{() }\CommentTok{\#Cuota }
+\end{Highlighting}
+\end{Shaded}
+
+Extraemos la informacion de cada ticket y lo añadimos al vector
+correspondiente:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{for}\NormalTok{ (archivo }\ControlFlowTok{in}\NormalTok{ archivos) \{}
+  
+\NormalTok{  pdf }\OtherTok{\textless{}{-}} \FunctionTok{pdf\_text}\NormalTok{(archivo) }\CommentTok{\#leemos le archivo pdf}
+\NormalTok{  ticket }\OtherTok{\textless{}{-}} \FunctionTok{trimws}\NormalTok{(}\FunctionTok{strsplit}\NormalTok{(pdf,}\AttributeTok{split =} \StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)[[}\DecValTok{1}\NormalTok{]]) }\CommentTok{\#separamos por líneas}
+\NormalTok{  ticket }\OtherTok{\textless{}{-}}\NormalTok{ ticket[}\FunctionTok{grep}\NormalTok{(}\StringTok{"."}\NormalTok{, ticket)] }\CommentTok{\#quitamos las líneas vacías}
+
+  \CommentTok{\#procesamos los datos del ticket}
+\NormalTok{  linea\_comercio }\OtherTok{\textless{}{-}}\NormalTok{ ticket[}\DecValTok{1}\NormalTok{]}
+\NormalTok{  linea\_direccion }\OtherTok{\textless{}{-}}\NormalTok{ ticket[}\DecValTok{2}\NormalTok{]}
+\NormalTok{  linea\_cp }\OtherTok{\textless{}{-}}\NormalTok{ ticket[}\DecValTok{3}\NormalTok{]}
+\NormalTok{  linea\_telefono }\OtherTok{\textless{}{-}}\NormalTok{ ticket[}\DecValTok{4}\NormalTok{]}
+\NormalTok{  linea\_fecha\_hora\_op }\OtherTok{\textless{}{-}}\NormalTok{ ticket[}\DecValTok{5}\NormalTok{]}
+\NormalTok{  linea\_fs }\OtherTok{\textless{}{-}}\NormalTok{ ticket[}\DecValTok{6}\NormalTok{]}
+\NormalTok{  p }\OtherTok{=} \DecValTok{8} 
+\NormalTok{  linea\_productos }\OtherTok{\textless{}{-}}\NormalTok{ ticket[p]}
+    \CommentTok{\#unimos todos los productos en un solo caracter}
+  \ControlFlowTok{while}\NormalTok{ (ticket[p}\SpecialCharTok{+}\DecValTok{1}\NormalTok{] }\SpecialCharTok{!=}\NormalTok{ ticket[}\FunctionTok{grep}\NormalTok{(}\StringTok{"TOTAL"}\NormalTok{, ticket)[}\DecValTok{1}\NormalTok{]])\{}
+\NormalTok{    p }\OtherTok{=}\NormalTok{ p }\SpecialCharTok{+} \DecValTok{1}
+\NormalTok{    linea\_productos }\OtherTok{\textless{}{-}} \FunctionTok{paste}\NormalTok{(linea\_productos, ticket[p],}\AttributeTok{sep =} \StringTok{";"}\NormalTok{)}
+\NormalTok{  \}}
+\NormalTok{  linea\_total }\OtherTok{\textless{}{-}}\NormalTok{ ticket[}\FunctionTok{grep}\NormalTok{(}\StringTok{"TOTAL"}\NormalTok{, ticket)[}\DecValTok{1}\NormalTok{]]}
+\NormalTok{  linea\_forma\_pago }\OtherTok{\textless{}{-}}\NormalTok{ ticket[p}\SpecialCharTok{+}\DecValTok{2}\NormalTok{]}
+\NormalTok{  linea\_iva }\OtherTok{\textless{}{-}}\NormalTok{ ticket[}\FunctionTok{grep}\NormalTok{(}\StringTok{"TOTAL"}\NormalTok{, ticket)[}\DecValTok{2}\NormalTok{]]}
+  
+  \CommentTok{\#extaremos los datos}
+\NormalTok{  com }\OtherTok{\textless{}{-}} \FunctionTok{strsplit}\NormalTok{(linea\_comercio,}\StringTok{", "}\NormalTok{)[[}\DecValTok{1}\NormalTok{]]}
+\NormalTok{  comercio }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(comercio, com[}\DecValTok{1}\NormalTok{])}
+\NormalTok{  empresa }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(empresa, com[}\DecValTok{2}\NormalTok{])}
+\NormalTok{  direccion }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(direccion, }\FunctionTok{trimws}\NormalTok{(linea\_direccion))}
+\NormalTok{  cp\_info }\OtherTok{\textless{}{-}} \FunctionTok{strsplit}\NormalTok{(}\FunctionTok{trimws}\NormalTok{(linea\_cp), }\StringTok{" "}\NormalTok{)[[}\DecValTok{1}\NormalTok{]]}
+\NormalTok{  cp }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(cp, cp\_info[}\DecValTok{1}\NormalTok{])}
+\NormalTok{  telefono }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(telefono, }\FunctionTok{trimws}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\StringTok{"TELÉFONO:"}\NormalTok{, }\StringTok{""}\NormalTok{, linea\_telefono)))}
+\NormalTok{  fecha\_hora\_op }\OtherTok{\textless{}{-}} \FunctionTok{strsplit}\NormalTok{(}\FunctionTok{trimws}\NormalTok{(linea\_fecha\_hora\_op), }\StringTok{" "}\NormalTok{)[[}\DecValTok{1}\NormalTok{]]}
+\NormalTok{  fecha\_hora\_op }\OtherTok{\textless{}{-}}\NormalTok{ fecha\_hora\_op[}\FunctionTok{grep}\NormalTok{(}\StringTok{"."}\NormalTok{, fecha\_hora\_op)]}
+\NormalTok{  fecha }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(fecha, fecha\_hora\_op[}\DecValTok{1}\NormalTok{])}
+\NormalTok{  hora }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(hora, fecha\_hora\_op[}\DecValTok{2}\NormalTok{])}
+\NormalTok{  op }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(op, }\FunctionTok{gsub}\NormalTok{(}\StringTok{"OP:"}\NormalTok{, }\StringTok{""}\NormalTok{, fecha\_hora\_op[}\DecValTok{4}\NormalTok{]))}
+\NormalTok{  fs }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(fs, }\FunctionTok{gsub}\NormalTok{(}\StringTok{"FACTURA SIMPLIFICADA:"}\NormalTok{, }\StringTok{""}\NormalTok{, linea\_fs))}
+\NormalTok{  productos }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(productos, linea\_productos)}
+\NormalTok{  total }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(total, }\FunctionTok{trimws}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\StringTok{"TOTAL [(]€[)]"}\NormalTok{, }\StringTok{""}\NormalTok{, linea\_total)))}
+\NormalTok{  formapago }\OtherTok{\textless{}{-}} \FunctionTok{strsplit}\NormalTok{(linea\_forma\_pago,}\StringTok{" "}\NormalTok{)[[}\DecValTok{1}\NormalTok{]]}
+\NormalTok{  forma\_pago }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(forma\_pago, }\FunctionTok{paste0}\NormalTok{(formapago[}\DecValTok{1}\NormalTok{],formapago[}\DecValTok{2}\NormalTok{]))}
+\NormalTok{  base\_couta }\OtherTok{\textless{}{-}} \FunctionTok{strsplit}\NormalTok{(}\FunctionTok{trimws}\NormalTok{(linea\_iva),}\AttributeTok{split =} \StringTok{" "}\NormalTok{)[[}\DecValTok{1}\NormalTok{]]}
+\NormalTok{  base\_couta }\OtherTok{\textless{}{-}}\NormalTok{ base\_couta[}\FunctionTok{grep}\NormalTok{(}\StringTok{"."}\NormalTok{, base\_couta)]}
+\NormalTok{  base\_imp }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(base\_imp,base\_couta[}\DecValTok{2}\NormalTok{])}
+\NormalTok{  cuota }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(cuota, base\_couta[}\DecValTok{3}\NormalTok{])}
+  
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+Creamos un data frame con los datos:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(comercio, empresa, direccion, cp, telefono, fecha, hora, }
+\NormalTok{                 op, fs, productos, total, forma\_pago, base\_imp, cuota,}
+                 \AttributeTok{stringsAsFactors =} \ConstantTok{FALSE}\NormalTok{)}
+
+\CommentTok{\#Modificamos las clases de los datos}
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{fecha }\OtherTok{\textless{}{-}} \FunctionTok{as.Date}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{fecha,}\AttributeTok{format =} \StringTok{"\%d/\%m/\%Y"}\NormalTok{)}
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{anio }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{format}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{fecha, }\StringTok{"\%Y"}\NormalTok{))}
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{mes }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{format}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{fecha, }\StringTok{"\%m"}\NormalTok{))}
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{dia }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{format}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{fecha, }\StringTok{"\%d"}\NormalTok{))}
+\CommentTok{\# Elimina la columna fecha}
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{fecha }\OtherTok{\textless{}{-}} \ConstantTok{NULL}
+
+\CommentTok{\# Separar la columna fs en tres partes}
+\NormalTok{fs\_split }\OtherTok{\textless{}{-}} \FunctionTok{strsplit}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{fs, }\StringTok{"{-}"}\NormalTok{)}
+\CommentTok{\# Crear las nuevas columnas a partir del resultado}
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{num\_tienda }\OtherTok{\textless{}{-}} \FunctionTok{sapply}\NormalTok{(fs\_split, }\ControlFlowTok{function}\NormalTok{(x) x[}\DecValTok{1}\NormalTok{])}
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{num\_caja }\OtherTok{\textless{}{-}} \FunctionTok{sapply}\NormalTok{(fs\_split, }\ControlFlowTok{function}\NormalTok{(x) x[}\DecValTok{2}\NormalTok{])}
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{num\_ticket }\OtherTok{\textless{}{-}} \FunctionTok{sapply}\NormalTok{(fs\_split, }\ControlFlowTok{function}\NormalTok{(x) x[}\DecValTok{3}\NormalTok{])}
+\CommentTok{\# Eliminar la columna original fs}
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{fs }\OtherTok{\textless{}{-}} \ConstantTok{NULL}
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{comercio }\OtherTok{\textless{}{-}} \ConstantTok{NULL}
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{empresa }\OtherTok{\textless{}{-}} \ConstantTok{NULL}
+
+
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{total }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\AttributeTok{pattern =} \StringTok{","}\NormalTok{,}\AttributeTok{replacement =} \StringTok{"."}\NormalTok{,df}\SpecialCharTok{$}\NormalTok{total))}
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{base\_imp }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\AttributeTok{pattern =} \StringTok{","}\NormalTok{,}\AttributeTok{replacement =} \StringTok{"."}\NormalTok{,df}\SpecialCharTok{$}\NormalTok{base\_imp))}
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{cuota }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\AttributeTok{pattern =} \StringTok{","}\NormalTok{,}\AttributeTok{replacement =} \StringTok{"."}\NormalTok{,df}\SpecialCharTok{$}\NormalTok{cuota))}
+\end{Highlighting}
+\end{Shaded}
+
+si hay aparcamiento o no
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{aparcamientos }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{()}
+\ControlFlowTok{for}\NormalTok{ (archivo }\ControlFlowTok{in}\NormalTok{ archivos) \{}
+\NormalTok{  pdf }\OtherTok{\textless{}{-}} \FunctionTok{pdf\_text}\NormalTok{(archivo)}
+\NormalTok{  ticket }\OtherTok{\textless{}{-}} \FunctionTok{trimws}\NormalTok{(}\FunctionTok{strsplit}\NormalTok{(pdf, }\AttributeTok{split =} \StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)[[}\DecValTok{1}\NormalTok{]])}
+\NormalTok{  aparcamiento\_lineas }\OtherTok{\textless{}{-}} \FunctionTok{grep}\NormalTok{(}\StringTok{"Aparcamiento"}\NormalTok{, ticket, }\AttributeTok{value =} \ConstantTok{TRUE}\NormalTok{)}
+  \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{length}\NormalTok{(aparcamiento\_lineas) }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{) \{}
+\NormalTok{    aparcamientos }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(aparcamientos, }\FunctionTok{paste}\NormalTok{(aparcamiento\_lineas, }\AttributeTok{collapse =} \StringTok{" "}\NormalTok{))}
+\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
+\NormalTok{    aparcamientos }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(aparcamientos, }\ConstantTok{NA}\NormalTok{)}
+\NormalTok{  \}}
+\NormalTok{\}}
+\NormalTok{df\_aparcamiento }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{archivo =}\NormalTok{ archivos, }\AttributeTok{aparcamiento =}\NormalTok{ aparcamientos, }\AttributeTok{stringsAsFactors =} \ConstantTok{FALSE}\NormalTok{)}
+\FunctionTok{head}\NormalTok{(df\_aparcamiento)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##           archivo aparcamiento
+## 1   ./data/M1.pdf           NA
+## 2  ./data/M10.pdf           NA
+## 3 ./data/M100.pdf           NA
+## 4 ./data/M101.pdf           NA
+## 5 ./data/M102.pdf           NA
+## 6 ./data/M103.pdf           NA
+\end{verbatim}
+
+\hypertarget{analizamos-los-productos}{%
+\section{Analizamos los productos}\label{analizamos-los-productos}}
+
+En el df estan toda la informacion relativa a los productos en la
+columna producto la separamos en un nuevo dataframe con df\_producto
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_producto }\OtherTok{\textless{}{-}}\NormalTok{ df }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{select}\NormalTok{(}\FunctionTok{c}\NormalTok{(num\_ticket, productos)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{separate\_rows}\NormalTok{(productos, }\AttributeTok{sep =} \StringTok{";"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{procesamiento-de-pescado-por-kg}{%
+\subsection{Procesamiento de pescado por
+kg}\label{procesamiento-de-pescado-por-kg}}
+
+Primero nos encargamos de los productos de pesacdao que aparecen con
+este format: - Primera fila del pescado: Solo dice ``PESCADO'' - Segunda
+fila: Nombre del producto - Tercera fila: Detalles del precio
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Identificar filas con "PESCADO"}
+\NormalTok{filas\_pescado }\OtherTok{\textless{}{-}} \FunctionTok{which}\NormalTok{(df\_producto}\SpecialCharTok{$}\NormalTok{productos }\SpecialCharTok{==} \StringTok{"PESCADO"}\NormalTok{)}
+
+\CommentTok{\# Inicializar vectores para almacenar datos}
+\NormalTok{num\_ticket\_vec }\OtherTok{\textless{}{-}} \FunctionTok{character}\NormalTok{()}
+\NormalTok{nombre\_producto\_vec }\OtherTok{\textless{}{-}} \FunctionTok{character}\NormalTok{()}
+\NormalTok{peso\_kg\_vec }\OtherTok{\textless{}{-}} \FunctionTok{numeric}\NormalTok{()}
+\NormalTok{precio\_kg\_vec }\OtherTok{\textless{}{-}} \FunctionTok{numeric}\NormalTok{()}
+\NormalTok{precio\_total\_vec }\OtherTok{\textless{}{-}} \FunctionTok{numeric}\NormalTok{()}
+
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \FunctionTok{seq\_along}\NormalTok{(filas\_pescado)) \{}
+\NormalTok{  idx }\OtherTok{\textless{}{-}}\NormalTok{ filas\_pescado[i]}
+  
+  \CommentTok{\# Extraer información básica}
+\NormalTok{  num\_ticket }\OtherTok{\textless{}{-}}\NormalTok{ df\_producto}\SpecialCharTok{$}\NormalTok{num\_ticket[idx]}
+\NormalTok{  nombre }\OtherTok{\textless{}{-}}\NormalTok{ df\_producto}\SpecialCharTok{$}\NormalTok{productos[idx }\SpecialCharTok{+} \DecValTok{1}\NormalTok{]  }\CommentTok{\# Nombre en la siguiente fila}
+  
+  \CommentTok{\# Procesar la fila de detalles}
+\NormalTok{  detalles }\OtherTok{\textless{}{-}}\NormalTok{ df\_producto}\SpecialCharTok{$}\NormalTok{productos[idx }\SpecialCharTok{+} \DecValTok{2}\NormalTok{]}
+  
+  \CommentTok{\# Limpiar y dividir la cadena de detalles}
+\NormalTok{  detalles\_limpio }\OtherTok{\textless{}{-}} \FunctionTok{gsub}\NormalTok{(}\StringTok{","}\NormalTok{, }\StringTok{"."}\NormalTok{, detalles)  }\CommentTok{\# Reemplazar comas por puntos}
+\NormalTok{  detalles\_split }\OtherTok{\textless{}{-}} \FunctionTok{strsplit}\NormalTok{(}\FunctionTok{trimws}\NormalTok{(detalles\_limpio), }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s+"}\NormalTok{)[[}\DecValTok{1}\NormalTok{]]}
+  
+  \CommentTok{\# Extraer valores (asumiendo orden: peso, unidad, precio\_kg, moneda, precio\_total)}
+  \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{length}\NormalTok{(detalles\_split) }\SpecialCharTok{\textgreater{}=} \DecValTok{5}\NormalTok{) \{}
+\NormalTok{    peso\_kg }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(detalles\_split[}\DecValTok{1}\NormalTok{])}
+\NormalTok{    precio\_kg }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(detalles\_split[}\DecValTok{3}\NormalTok{])}
+\NormalTok{    importe }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(detalles\_split[}\DecValTok{5}\NormalTok{])}
+    
+    \CommentTok{\# Almacenar en vectores}
+\NormalTok{    num\_ticket\_vec }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(num\_ticket\_vec, num\_ticket)}
+\NormalTok{    nombre\_producto\_vec }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(nombre\_producto\_vec, nombre)}
+\NormalTok{    peso\_kg\_vec }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(peso\_kg\_vec, peso\_kg)}
+\NormalTok{    precio\_kg\_vec }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(precio\_kg\_vec, precio\_kg)}
+\NormalTok{    precio\_total\_vec }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(precio\_total\_vec, importe)}
+\NormalTok{  \}}
+\NormalTok{\}}
+
+\NormalTok{df\_pescado }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{num\_ticket =}\NormalTok{ num\_ticket\_vec,}
+  \AttributeTok{nombre =}\NormalTok{ nombre\_producto\_vec,}
+  \AttributeTok{peso\_kg =}\NormalTok{ peso\_kg\_vec,}
+  \AttributeTok{precio\_kg =}\NormalTok{ precio\_kg\_vec,}
+  \AttributeTok{importe =}\NormalTok{ precio\_total\_vec,}
+  \AttributeTok{stringsAsFactors =} \ConstantTok{FALSE}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{procesamiento-fruta-y-la-verdura}{%
+\subsection{Procesamiento fruta y la
+verdura}\label{procesamiento-fruta-y-la-verdura}}
+
+Borrar primero las filas de pescado para asegurarte de que los productos
+restantes vendidos por kg sean exclusivamente fruta y verdura.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Identificar TODOS los bloques de pescado (3 filas cada uno)}
+\NormalTok{bloques\_pescado }\OtherTok{\textless{}{-}} \FunctionTok{which}\NormalTok{(df\_producto}\SpecialCharTok{$}\NormalTok{productos }\SpecialCharTok{==} \StringTok{"PESCADO"}\NormalTok{)}
+
+\CommentTok{\# Crear vector con TODAS las filas a eliminar (cada bloque son 3 filas)}
+\NormalTok{filas\_a\_eliminar }\OtherTok{\textless{}{-}} \FunctionTok{unlist}\NormalTok{(}\FunctionTok{lapply}\NormalTok{(bloques\_pescado, }\ControlFlowTok{function}\NormalTok{(x) x}\SpecialCharTok{:}\NormalTok{(x}\SpecialCharTok{+}\DecValTok{2}\NormalTok{)))}
+
+\CommentTok{\# Eliminar todos los bloques}
+\NormalTok{df\_sin\_pescado }\OtherTok{\textless{}{-}}\NormalTok{ df\_producto[}\SpecialCharTok{{-}}\NormalTok{filas\_a\_eliminar, ]}
+\end{Highlighting}
+\end{Shaded}
+
+Ahora hacemos el df\_fruta\_verdura
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ind\_detalles\_kg }\OtherTok{\textless{}{-}} \FunctionTok{grep}\NormalTok{(}\StringTok{"kg.*€/kg"}\NormalTok{, df\_sin\_pescado}\SpecialCharTok{$}\NormalTok{productos, }\AttributeTok{value =} \ConstantTok{FALSE}\NormalTok{)}
+
+\NormalTok{df\_fruta\_verdura }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{num\_ticket =}\NormalTok{ df\_sin\_pescado}\SpecialCharTok{$}\NormalTok{num\_ticket[ind\_detalles\_kg],}
+  \AttributeTok{nombre =}\NormalTok{ df\_sin\_pescado}\SpecialCharTok{$}\NormalTok{productos[ind\_detalles\_kg }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{],}
+  \AttributeTok{detalles =}\NormalTok{ df\_sin\_pescado}\SpecialCharTok{$}\NormalTok{productos[ind\_detalles\_kg],}
+  \AttributeTok{stringsAsFactors =} \ConstantTok{FALSE}
+\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+\FunctionTok{mutate}\NormalTok{(}
+  \CommentTok{\# Limpiar el nombre (eliminar números iniciales)}
+  \AttributeTok{nombre =} \FunctionTok{gsub}\NormalTok{(}\StringTok{"\^{}}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d+}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s*"}\NormalTok{, }\StringTok{""}\NormalTok{, nombre),}
+  
+  \CommentTok{\# Extraer peso (kg) {-} primer número en la línea}
+  \AttributeTok{peso\_kg =} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\StringTok{","}\NormalTok{, }\StringTok{"."}\NormalTok{, }\FunctionTok{str\_extract}\NormalTok{(detalles, }\StringTok{"\^{}[0{-}9,]+"}\NormalTok{))),}
+  
+  \CommentTok{\# Extraer precio por kg {-} método mejorado}
+  \AttributeTok{precio\_kg =} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\StringTok{","}\NormalTok{, }\StringTok{"."}\NormalTok{, }
+    \FunctionTok{str\_extract}\NormalTok{(detalles, }\StringTok{"[0{-}9,]+(?=}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s*€/kg)"}\NormalTok{))),}
+  
+  \CommentTok{\# Extraer importe total {-} último número en la línea}
+  \AttributeTok{importe =} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\StringTok{","}\NormalTok{, }\StringTok{"."}\NormalTok{, }
+    \FunctionTok{str\_extract}\NormalTok{(detalles, }\StringTok{"[0{-}9,]+$"}\NormalTok{)))}
+\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+\FunctionTok{select}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{detalles)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{procesamiento-resto-de-productos-sin-kg}{%
+\subsection{Procesamiento resto de productos sin
+kg}\label{procesamiento-resto-de-productos-sin-kg}}
+
+Extraemos cantidad descripcion y precio
+
+Primero borramos los datos ya presentes en el df fruta y verdura
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Identificar las filas de detalles (kg y €/kg)}
+\NormalTok{ind\_detalles\_kg }\OtherTok{\textless{}{-}} \FunctionTok{grep}\NormalTok{(}\StringTok{"kg.*€/kg"}\NormalTok{, df\_sin\_pescado}\SpecialCharTok{$}\NormalTok{productos, }\AttributeTok{value =} \ConstantTok{FALSE}\NormalTok{)}
+
+\CommentTok{\# Las filas de nombres están justo antes de los detalles}
+\NormalTok{ind\_nombres\_kg }\OtherTok{\textless{}{-}}\NormalTok{ ind\_detalles\_kg }\SpecialCharTok{{-}} \DecValTok{1}
+
+\CommentTok{\# Combinar todos los índices a eliminar}
+\NormalTok{filas\_fruta\_verdura }\OtherTok{\textless{}{-}} \FunctionTok{sort}\NormalTok{(}\FunctionTok{unique}\NormalTok{(}\FunctionTok{c}\NormalTok{(ind\_nombres\_kg, ind\_detalles\_kg)))}
+
+\CommentTok{\# Eliminar filas ya procesadas}
+\NormalTok{df\_resto }\OtherTok{\textless{}{-}}\NormalTok{ df\_sin\_pescado[}\SpecialCharTok{{-}}\NormalTok{filas\_fruta\_verdura, ]}
+\end{Highlighting}
+\end{Shaded}
+
+Creamos el dataframe de productos vendidios por unidades
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_productos\_unidades }\OtherTok{\textless{}{-}}\NormalTok{ df\_resto }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \CommentTok{\# 1. Extraer cantidad (siempre es el primer número)}
+    \AttributeTok{cantidad =} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{str\_extract}\NormalTok{(productos, }\StringTok{"\^{}}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d+"}\NormalTok{)),}
+    
+    \CommentTok{\# 2. Extraer posible precio en el nombre (para productos de 1 unidad)}
+    \AttributeTok{precio\_en\_nombre =} \FunctionTok{ifelse}\NormalTok{(cantidad }\SpecialCharTok{==} \DecValTok{1}\NormalTok{,}
+                            \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\StringTok{","}\NormalTok{, }\StringTok{"."}\NormalTok{, }\FunctionTok{str\_extract}\NormalTok{(productos, }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d+,}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d+$"}\NormalTok{))),}
+                            \ConstantTok{NA\_real\_}\NormalTok{),}
+    
+    \CommentTok{\# 3. Procesamiento vectorizado de componentes}
+    \AttributeTok{componentes =} \FunctionTok{strsplit}\NormalTok{(productos, }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s+"}\NormalTok{),}
+    
+    \CommentTok{\# 4. Extraer importe normal (para productos con múltiples unidades)}
+    \AttributeTok{importe\_normal =} \FunctionTok{sapply}\NormalTok{(componentes, }\ControlFlowTok{function}\NormalTok{(x) \{}
+      \ControlFlowTok{if}\NormalTok{(}\FunctionTok{length}\NormalTok{(x) }\SpecialCharTok{\textgreater{}=} \DecValTok{3}\NormalTok{) }\FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\StringTok{","}\NormalTok{, }\StringTok{"."}\NormalTok{, x[}\FunctionTok{length}\NormalTok{(x)])) }\ControlFlowTok{else} \ConstantTok{NA\_real\_}
+\NormalTok{    \}),}
+    
+    \CommentTok{\# 5. Determinar el importe final}
+    \AttributeTok{importe =} \FunctionTok{ifelse}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(precio\_en\_nombre), precio\_en\_nombre, importe\_normal),}
+    
+    \CommentTok{\# 6. Extraer descripción limpia (MODIFICACIÓN CLAVE)}
+    \AttributeTok{nombre =} \FunctionTok{mapply}\NormalTok{(}\ControlFlowTok{function}\NormalTok{(comp, prod, cant, precio\_nombre) \{}
+      \CommentTok{\# Primero eliminar la cantidad inicial (si existe)}
+\NormalTok{      nombre\_limpio }\OtherTok{\textless{}{-}} \FunctionTok{gsub}\NormalTok{(}\StringTok{"\^{}}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d+}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s*"}\NormalTok{, }\StringTok{""}\NormalTok{, prod)}
+      
+      \ControlFlowTok{if}\NormalTok{(}\FunctionTok{length}\NormalTok{(comp) }\SpecialCharTok{\textless{}=} \DecValTok{2}\NormalTok{) }\FunctionTok{return}\NormalTok{(nombre\_limpio)  }\CommentTok{\# Caso simple}
+      
+      \ControlFlowTok{if}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(precio\_nombre)) \{}
+        \CommentTok{\# Para productos de 1 unidad: eliminar precio final}
+        \FunctionTok{gsub}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s+}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d+,}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d+$"}\NormalTok{, }\StringTok{""}\NormalTok{, nombre\_limpio)}
+\NormalTok{      \} }\ControlFlowTok{else}\NormalTok{ \{}
+        \CommentTok{\# Para múltiples unidades: eliminar elementos numéricos finales}
+        \FunctionTok{paste}\NormalTok{(comp[}\DecValTok{2}\SpecialCharTok{:}\NormalTok{(}\FunctionTok{length}\NormalTok{(comp)}\SpecialCharTok{{-}}\DecValTok{2}\NormalTok{)], }\AttributeTok{collapse=}\StringTok{" "}\NormalTok{)}
+\NormalTok{      \}}
+\NormalTok{    \}, componentes, productos, cantidad, precio\_en\_nombre, }\AttributeTok{SIMPLIFY =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+      \FunctionTok{str\_trim}\NormalTok{()  }\CommentTok{\# Eliminar espacios sobrantes}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \CommentTok{\# 7. Calcular precio unitario}
+    \AttributeTok{precio\_unitario =}\NormalTok{ importe }\SpecialCharTok{/}\NormalTok{ cantidad}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(num\_ticket, nombre, cantidad, precio\_unitario, importe)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: There were 33 warnings in `mutate()`.
+## The first warning was:
+## i In argument: `importe_normal = sapply(...)`.
+## Caused by warning in `FUN()`:
+## ! NAs introducidos por coerción
+## i Run `dplyr::last_dplyr_warnings()` to see the 32 remaining warnings.
+\end{verbatim}
+
+\hypertarget{dataframe-final-con-todos-los-productos-analizados}{%
+\subsection{dataframe final con todos los productos
+analizados:}\label{dataframe-final-con-todos-los-productos-analizados}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Añadir columna \textquotesingle{}tipo\textquotesingle{} a cada dataframe}
+\NormalTok{df\_pescado }\OtherTok{\textless{}{-}}\NormalTok{ df\_pescado }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{tipo =} \StringTok{"pescado"}\NormalTok{)}
+\NormalTok{df\_fruta\_verdura }\OtherTok{\textless{}{-}}\NormalTok{ df\_fruta\_verdura }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{tipo =} \StringTok{"fruta\_verdura"}\NormalTok{)}
+\NormalTok{df\_productos\_unidades }\OtherTok{\textless{}{-}}\NormalTok{ df\_productos\_unidades }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{tipo =} \StringTok{"unidades"}\NormalTok{)}
+
+\CommentTok{\# Unificar columnas para combinar}
+\NormalTok{df\_final }\OtherTok{\textless{}{-}} \FunctionTok{bind\_rows}\NormalTok{(}
+\NormalTok{  df\_pescado }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{select}\NormalTok{(num\_ticket, nombre, }\AttributeTok{cantidad =}\NormalTok{ peso\_kg, }\AttributeTok{precio =}\NormalTok{ precio\_kg, importe, tipo),}
+\NormalTok{  df\_fruta\_verdura }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{select}\NormalTok{(num\_ticket, nombre, }\AttributeTok{cantidad =}\NormalTok{ peso\_kg, }\AttributeTok{precio =}\NormalTok{ precio\_kg, importe, tipo),}
+\NormalTok{  df\_productos\_unidades }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{select}\NormalTok{(num\_ticket, }\AttributeTok{nombre =}\NormalTok{ nombre, cantidad, }\AttributeTok{precio =}\NormalTok{ precio\_unitario, importe, tipo)}
+\NormalTok{)}
+
+\CommentTok{\# Crear columna tiene\_aparcamiento }
+\ControlFlowTok{if}\NormalTok{ (}\StringTok{"aparcamiento"} \SpecialCharTok{\%in\%} \FunctionTok{colnames}\NormalTok{(df\_aparcamiento)) \{}
+\NormalTok{  df\_aparcamiento }\OtherTok{\textless{}{-}}\NormalTok{ df\_aparcamiento }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{mutate}\NormalTok{(}\AttributeTok{nombre\_archivo =} \FunctionTok{basename}\NormalTok{(archivo)) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{mutate}\NormalTok{(}\AttributeTok{num\_ticket =} \FunctionTok{str\_extract}\NormalTok{(nombre\_archivo, }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d+"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{mutate}\NormalTok{(}\AttributeTok{tiene\_aparcamiento =} \SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(aparcamiento)) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{select}\NormalTok{(num\_ticket, tiene\_aparcamiento)}
+
+  \CommentTok{\# Convertir num\_ticket a carácter en ambos dataframes}
+\NormalTok{  df\_final }\OtherTok{\textless{}{-}}\NormalTok{ df\_final }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{num\_ticket =} \FunctionTok{as.character}\NormalTok{(num\_ticket))}
+\NormalTok{  df\_aparcamiento }\OtherTok{\textless{}{-}}\NormalTok{ df\_aparcamiento }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{num\_ticket =} \FunctionTok{as.character}\NormalTok{(num\_ticket))}
+
+  \CommentTok{\# Combinar los datos}
+\NormalTok{  df\_final }\OtherTok{\textless{}{-}} \FunctionTok{left\_join}\NormalTok{(df\_final, df\_aparcamiento, }\AttributeTok{by =} \StringTok{"num\_ticket"}\NormalTok{)}
+\NormalTok{\} }\ControlFlowTok{else}\NormalTok{ \{}
+\NormalTok{  df\_final}\SpecialCharTok{$}\NormalTok{tiene\_aparcamiento }\OtherTok{\textless{}{-}} \ConstantTok{NA}  \CommentTok{\# columna vacía si no existe \textquotesingle{}aparcamiento\textquotesingle{}}
+\NormalTok{\}}
+
+\CommentTok{\# Resultado final ordenado}
+\NormalTok{df\_final }\OtherTok{\textless{}{-}}\NormalTok{ df\_final }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{arrange}\NormalTok{(num\_ticket)}
+
+\CommentTok{\# Verificación final}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{Resumen del DataFrame final:}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Resumen del DataFrame final:
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"{-} Pescado:"}\NormalTok{, }\FunctionTok{sum}\NormalTok{(df\_final}\SpecialCharTok{$}\NormalTok{tipo }\SpecialCharTok{==} \StringTok{"pescado"}\NormalTok{), }\StringTok{"registros}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## - Pescado: 28 registros
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"{-} Fruta/Verdura:"}\NormalTok{, }\FunctionTok{sum}\NormalTok{(df\_final}\SpecialCharTok{$}\NormalTok{tipo }\SpecialCharTok{==} \StringTok{"fruta\_verdura"}\NormalTok{), }\StringTok{"registros}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## - Fruta/Verdura: 395 registros
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"{-} Unidades:"}\NormalTok{, }\FunctionTok{sum}\NormalTok{(df\_final}\SpecialCharTok{$}\NormalTok{tipo }\SpecialCharTok{==} \StringTok{"unidades"}\NormalTok{), }\StringTok{"registros}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## - Unidades: 4702 registros
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"{-} Total:"}\NormalTok{, }\FunctionTok{nrow}\NormalTok{(df\_final), }\StringTok{"registros}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## - Total: 5125 registros
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(}\FunctionTok{head}\NormalTok{(df\_final, }\DecValTok{10}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    num_ticket              nombre cantidad precio importe          tipo
+## 1      007267    PERA CONFERENCIA    0.854   2.55    2.18 fruta_verdura
+## 2      007267    MANZ. ROJA DULCE    1.474   2.90    4.27 fruta_verdura
+## 3      007267      PIZZA BOLOÑESA    1.000   2.60    2.60      unidades
+## 4      007267    MIX FRUTOS ROJOS    1.000   1.66    1.66      unidades
+## 5      007267   PISTO DE VERDURAS    1.000   2.30    2.30      unidades
+## 6      007267    FILETE DE TRUCHA    1.000   3.92    3.92      unidades
+## 7      007267        PAN SEMILLAS    1.000   1.60    1.60      unidades
+## 8      007267         SNACK PIPAS    1.000   1.40    1.40      unidades
+## 9      007267 +PROT NATILLA VAINI    1.000   1.75    1.75      unidades
+## 10     007267     SNACK CHOCOLATE    1.000   1.50    1.50      unidades
+##    tiene_aparcamiento
+## 1                  NA
+## 2                  NA
+## 3                  NA
+## 4                  NA
+## 5                  NA
+## 6                  NA
+## 7                  NA
+## 8                  NA
+## 9                  NA
+## 10                 NA
+\end{verbatim}
+
+\#Preguntas
+
+¿Cuáles son los productos menos vendidos por unidades? ¿Y por kilos?
+
+¿Qué productos han generado mayor ingreso total (precio × cantidad)?
+
+¿Cuáles productos han aumentado o disminuido su venta a lo largo del
+tiempo?
+
+¿Qué productos se compran habitualmente juntos?
+
+¿Existen diferencias de precios para el mismo producto en diferentes
+tiendas o ubicaciones?
+
+¿Qué días de la semana hay más ventas? ¿Y a qué horas?
+
+¿En qué meses se venden más frutas/verduras, o pescados?
+
+¿Desde qué ciudades se emiten más tickets?
+
+¿Existen diferencias de consumo por ciudad?
+
+¿Cuánto se gasta semanal o mensualmente en un supermercado?
+
+¿Influye la disponibilidad de aparcamiento en el importe total de la
+compra?
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\vspace{6pt}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% optional
+
+% Only for the journal Methods and Protocols:
+% If you wish to submit a video article, please do so with any other supplementary material.
+% \supplementary{The following supporting information can be downloaded at: \linksupplementary{s1}, Figure S1: title; Table S1: title; Video S1: title. A supporting video article is available at doi: link.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Optional
+
+%% Only for journal Encyclopedia
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Optional
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{adjustwidth}{-\extralength}{0cm}
+
+%\printendnotes[custom] % Un-comment to print a list of endnotes
+
+
+
+% If authors have biography, please use the format below
+%\section*{Short Biography of Authors}
+%\bio
+%{\raisebox{-0.35cm}{\includegraphics[width=3.5cm,height=5.3cm,clip,keepaspectratio]{Definitions/author1.pdf}}}
+%{\textbf{Firstname Lastname} Biography of first author}
+%
+%\bio
+%{\raisebox{-0.35cm}{\includegraphics[width=3.5cm,height=5.3cm,clip,keepaspectratio]{Definitions/author2.jpg}}}
+%{\textbf{Firstname Lastname} Biography of second author}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% for journal Sci
+%\reviewreports{\\
+%Reviewer 1 comments and authors’ response\\
+%Reviewer 2 comments and authors’ response\\
+%Reviewer 3 comments and authors’ response
+%}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\PublishersNote{}
+\end{adjustwidth}
+
+
+\end{document}
