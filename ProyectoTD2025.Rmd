@@ -16,9 +16,19 @@ En la actualidad, la digitalización de los tickets de compra se ha convertido e
 
 Este proyecto tiene como objetivo desarrollar un sistema de análisis automatizado que permita extraer, procesar y visualizar la información contenida en los tickets de Mercadona. Mediante técnicas de tratamiento de datos en R, exploraremos patrones de compra, identificaremos los productos más vendidos, analizaremos la evolución temporal de los precios y determinaremos tendencias en función de la ubicación de la tienda y el momento de la compra.
 
-## 1.1. Carga de librerías y datos necesarios para el análisis
+# 2. Material y Métodos
 
-Cargamos las librerias necesarias:
+Para llevar a cabo este proyecto se han seleccionando un conjunto de librerías específicas que respondieran a los distintos requerimientos del análisis. 
+
+Para la manipulación de datos se emplearon los paquetes tidyverse (incluyendo dplyr y stringr), que permitieron realizar operaciones de filtrado, transformación y procesamiento de texto de manera eficiente. La extracción del contenido textual desde los archivos PDF se realizó mediante el paquete pdftools, capaz de preservar la estructura original de los documentos.
+
+Las visualizaciones se generaron utilizando ggplot2, seleccionado por su versatilidad para crear gráficos de alta calidad. Para la presentación de resultados en formatos reproducibles se implementó knitr, facilitando la integración de código, resultados y texto explicativo.
+
+Utilizaremos dos data frames para manejar los datos de manera más eficiente. El primer data frame contendrá la información general del ticket, como la dirección del supermercado, la fecha y hora de la compra, el monto total, entre otros. En este caso, todos los productos registrados en el ticket se almacenarán como una sola cadena de texto en una única variable. El segundo data frame desglosará los productos en variables separadas
+
+Ambos data frames estarán vinculados a través de la variable fs (factura simplificada).
+
+
 ```{r include=FALSE}
 #Nos aseguramos de que no haya nada cargado en el Environment
 rm(list=ls())
@@ -34,33 +44,38 @@ package.check <- lapply(packages, FUN = function(x) {
 })
 ```
 
+# 3. Importación de los datos
+## 3.1 Carga de ficheros
 
-Hemos cambiado los nombres a los archivos para que no den error con el siguiente codigo pero lo dejo como comentario para no sobreescribir los archivos al ejecutar mas de una vez:
+Para evitar errores durante el procesamiento posterior, se realizó un cambio en los nombres de los archivos PDF originales. Los archivos fueron renombrados de forma secuencial con un formato estándar. Esta acción se llevó a cabo una única vez, y por ello el código correspondiente fue comentado en el script, con el fin de prevenir que los archivos se sobrescriban accidentalmente al ejecutar el programa más de una vez.
 
------------------------------------------------------------------------------------
- Obtener lista de archivos PDF en la carpeta
-archivos <- list.files(path =  "./data" , pattern = "\\.pdf$", full.names = FALSE, ignore.case = TRUE)
+```{r include=FALSE}
+#Obtener lista de archivos PDF en la carpeta
+#archivos <- list.files(path =  "./data" , pattern = "\\.pdf$", full.names = #FALSE, ignore.case = TRUE)
 
- Renombrar archivos secuencialmente
-for (i in seq_along(archivos)) {
-  nombre_actual <- file.path(ruta_carpeta, archivos[i])
-  extension <- file_ext(archivos[i])
-  nombre_nuevo <- file.path(ruta_carpeta, paste0("M", i, ".", extension))
+# Renombrar archivos secuencialmente
+#for (i in seq_along(archivos)) {
+#  nombre_actual <- file.path(ruta_carpeta, archivos[i])
+#  extension <- file_ext(archivos[i])
+#  nombre_nuevo <- file.path(ruta_carpeta, paste0("M", i, ".", extension))
   
-  file.rename(from = nombre_actual, to = nombre_nuevo)
-}
-----------------------------------------------------------------------------------
+#  file.rename(from = nombre_actual, to = nombre_nuevo)
+#}
+```
 
-# Importación de los datos
-
-cargamos los archivos de la carpeta
-```{r}
+Se procedió a cargar automáticamente todos los archivos PDF contenidos en la carpeta de trabajo designada. Para ello, se empleó una función que permite listar únicamente los archivos con extensión .pdf, garantizando así que solo se consideren los documentos relevantes para el análisis. Esta carga automatizada facilita el procesamiento por lotes y evita la necesidad de seleccionar manualmente cada archivo.
+```{r include=FALSE}
 # Obtener lista de archivos PDF en la carpeta
 archivos <- list.files(path =  "./data" , pattern = "\\.pdf$", full.names = TRUE, ignore.case = TRUE)
 #print(archivos)
+
+n_archivos <- length(archivos)
+
 ```
 
+Para el proyecto se han importado un total de `r n_archivos` archivos.
 
+## 3.2 Carga de datos
 
 Definimos vectores para almacenar los datos de los tickets
 ```{r}
