@@ -464,22 +464,79 @@ head(kilos_ordenados, n = 3)
 Respuesta: El producto menos vendido por unidades son PROTEÍNAS CAFÉ, 1/2 POLLO PARTIDO	y 12 HUEVOS MEDIANOS-M.
 Y el producto menos vendido por kilo es Pera Rocha con 0.364kg
 
-¿Qué productos han generado mayor ingreso total (precio x cantidad)?
+2-¿Qué productos han generado mayor ingreso total (precio x cantidad)?
+```{r}
+# Calcular ingreso total por producto (importe = precio × cantidad)
+df_final$ingreso_total <- df_final$precio * df_final$cantidad
 
-¿Cuáles productos han aumentado o disminuido su venta a lo largo del tiempo?
+# Ordenar por ingreso total descendente
+productos_ordenados <- df_final[order(-df_final$ingreso_total), ]
 
-¿Qué productos se compran habitualmente juntos? 
+# Mostrar los productos con mayor ingreso total
 
-¿Existen diferencias de precios para el mismo producto en diferentes tiendas o ubicaciones?
+print(productos_ordenados[, c("nombre", "ingreso_total")])
 
-¿Qué días de la semana hay más ventas? ¿Y a qué horas?
+# Top 3 productos con mayor ingreso total
 
-¿En qué meses se venden más frutas/verduras, o pescados?
+print(head(productos_ordenados[, c("nombre", "ingreso_total")], 3))
 
-¿Desde qué ciudades se emiten más tickets?
+```
+Respuesta: Como vemos Alistado Mediano con 31.33 es mayor
 
-¿Existen diferencias de consumo por ciudad?
+3-¿Cuáles productos han aumentado o disminuido su venta a lo largo del tiempo?
 
-¿Cuánto se gasta semanal o mensualmente en un supermercado?
+4-¿Qué productos se compran habitualmente juntos? 
+```{r}
+library(arules)
+library(arulesViz)
 
-¿Influye la disponibilidad de aparcamiento en el importe total de la compra?
+#Preparar los datos en formato transaccional
+transacciones <- as(split(df_final$nombre, df_final$num_ticket), "transactions")
+
+#Aplicar el algoritmo Apriori para encontrar reglas de asociación
+reglas <- apriori(transacciones, parameter = list(support = 0.01, confidence = 0.5, minlen = 2))
+
+# 3. Filtrar y ordenar las reglas más interesantes
+reglas_interesantes <- subset(reglas, lift > 1)
+inspect(sort(reglas_interesantes, by = "lift"))
+
+# 4. Visualización
+plot(reglas_interesantes, method = "graph", engine = "htmlwidget")
+
+```
+Respuesta: Esta pregunta es muy general y esta funcionalidad puede mostrar qué productos se compran juntos con más frecuencia.
+
+
+5-¿Existen diferencias de precios para el mismo producto en diferentes tiendas o ubicaciones?
+
+6-¿Qué días de la semana hay más ventas? ¿Y a qué horas?
+
+
+7-En qué meses se venden más frutas/verduras, o pescados?
+
+
+8-¿Desde qué ciudades se emiten más tickets?
+
+9-¿Existen diferencias de consumo por ciudad?
+
+10-¿Cuánto se gasta semanal o mensualmente en un supermercado?
+
+11-¿Influye la disponibilidad de aparcamiento en el importe total de la compra?
+```{r}
+resultados <- df_final %>% filter(!is.na(tiene_aparcamiento)) %>% group_by(tiene_aparcamiento) %>%
+summarise(
+    n_compras = n(),
+    media_total = mean(total, na.rm = TRUE),
+    mediana_total = median(total, na.rm = TRUE),
+    sd_total = sd(total, na.rm = TRUE),
+    min_total = min(total, na.rm = TRUE),
+    max_total = max(total, na.rm = TRUE)
+  ) %>% arrange(desc(media_total))
+
+
+print(resultados) 
+
+
+
+```
+Respuesta: No hay datos de aparcamiento, pués no influye.
