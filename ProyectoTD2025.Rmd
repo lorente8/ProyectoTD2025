@@ -444,7 +444,25 @@ print(head(df_final, 10))
 
 #Preguntas
 
-¿Cuáles son los productos menos vendidos por unidades? ¿Y por kilos?
+1- ¿Cuáles son los productos menos vendidos por unidades? ¿Y por kilos?
+```{r}
+
+unidades <- df_final[df_final$tipo == "unidades", ]
+unidades_agrupadas <- aggregate(cantidad ~ nombre, data = unidades, sum)
+unidades_ordenadas <- unidades_agrupadas[order(unidades_agrupadas$cantidad), ]
+
+head(unidades_ordenadas, n = 3)
+```
+
+```{r}
+kilos <- df_final[df_final$tipo == "fruta_verdura", ]
+kilos_agrupados <- aggregate(cantidad ~ nombre, data = kilos, sum)
+kilos_ordenados <- kilos_agrupados[order(kilos_agrupados$cantidad), ]
+head(kilos_ordenados, n = 3)
+
+```
+Respuesta: El producto menos vendido por unidades son PROTEÍNAS CAFÉ, 1/2 POLLO PARTIDO	y 12 HUEVOS MEDIANOS-M.
+Y el producto menos vendido por kilo es Pera Rocha con 0.364kg
 
 ¿Qué productos han generado mayor ingreso total (precio x cantidad)?
 
