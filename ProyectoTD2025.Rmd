@@ -2,9 +2,9 @@
 title: "ProyectoTD2025"
 author: "Mar Alemany,Martín González,Mateo Reina, Sina Taheri, Adrian Mena,Sergio Nadal"
 date: "2025-03-28"
-output:
-  pdf_document: default
-  html_document: default
+output: 
+  rticles::mdpi_article:
+    extra_dependencies: ["booktabs", "longtable"]
 ---
 
 ```{r setup, include=FALSE}
@@ -49,7 +49,7 @@ package.check <- lapply(packages, FUN = function(x) {
 
 Para evitar errores durante el procesamiento posterior, se realizó un cambio en los nombres de los archivos PDF originales. Los archivos fueron renombrados de forma secuencial con un formato estándar. Esta acción se llevó a cabo una única vez, y por ello el código correspondiente fue comentado en el script, con el fin de prevenir que los archivos se sobrescriban accidentalmente al ejecutar el programa más de una vez.
 
-```{r include=FALSE}
+```{r, include=FALSE}
 #Obtener lista de archivos PDF en la carpeta
 #archivos <- list.files(path =  "./data" , pattern = "\\.pdf$", full.names = #FALSE, ignore.case = TRUE)
 
@@ -64,7 +64,7 @@ Para evitar errores durante el procesamiento posterior, se realizó un cambio en
 ```
 
 Se procedió a cargar automáticamente todos los archivos PDF contenidos en la carpeta de trabajo designada. Para ello, se empleó una función que permite listar únicamente los archivos con extensión .pdf, garantizando así que solo se consideren los documentos relevantes para el análisis. Esta carga automatizada facilita el procesamiento por lotes y evita la necesidad de seleccionar manualmente cada archivo.
-```{r include=FALSE}
+```{r, include=FALSE}
 # Obtener lista de archivos PDF en la carpeta
 archivos <- list.files(path =  "./data" , pattern = "\\.pdf$", full.names = TRUE, ignore.case = TRUE)
 #print(archivos)
@@ -85,15 +85,14 @@ Durante el procesamiento, se asignó el tipo de dato Date a la variable de fecha
 
 Por motivos de espacio y legibilidad, no se incluye la visualización del data frame generado a partir de los tickets.
 
-Las variables finales obtenidas se presentan en la Tabla \ref{tab:tabla1}.
-
-```{r tabla1, echo = FALSE}
+```{r tabla-variables}
 type <- c("comercio","empresa", "direccion", "cp", "telefono", "fecha", "hora", "op", "fs", "productos", "total", "forma_pago", "base_imp", "cuota", "nombre del comercio", "tipo y código de empresa", "dirección del comercio", "código postal", "teléfono del comercio", "fecha de la compra (día-mes-año)", "hora de la compra (horas y minutos)", "número del código de la operación", "código de la factura simplificada", "lista con los productos comprados", "dinero total de la compra", "forma de pago (tarjeta o en efectivo)", "base imponible (IVA)", "cuota del IVA")
 knitr::kable(rticles::string_to_table(type, 2),align = 'c', 
              col.names = c("Variable", "Descripción"),
              format = "latex", booktab = TRUE, 
-             caption = "Descripción de variables",)
+             caption = "Descripción de variables") 
 ```
+Las variables finales obtenidas se presentan en la Tabla \@ref(tab:tabla-variables).
 
 
 ```{r, echo = FALSE}

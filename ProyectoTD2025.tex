@@ -213,19 +213,9 @@
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 
-% From pandoc table feature
-\usepackage{longtable,booktabs,array}
-\usepackage{calc} % for calculating minipage widths
-% Correct order of tables after \paragraph or \subparagraph
-\usepackage{etoolbox}
-\makeatletter
-\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
-\makeatother
-% Allow footnotes in longtable head/foot
-\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
-\makesavenoteenv{longtable}
 
 
+\usepackage{booktabs}
 \usepackage{longtable}
 
 \begin{document}
@@ -235,186 +225,140 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \hypertarget{introducciuxf3n}{%
-\section{Introducción}\label{introducciuxf3n}}
+\section{1. Introducción}\label{introducciuxf3n}}
 
-Los datos utilizados en este analisis, provienen de tikets de compra de
-Mercadona, dando una visión detallada de los habitos de consumo, tipos
-de productos variaciones de precios y patrones de compra a lo largo del
-tiempo. El objetivo principal de este trabajo es explorar y analizar las
-decisiones de compra registradas, con el fin de identificar tendencias y
-comportamientos que ayuden a comprender mejor las dinámicas de comsumo.
-A través de este análisis, se busca ofrecer una visión más detallada de
-los hábitos de consumo reflejados en los tickets, con posibles
-aplicaciones tanto en el estudio del comportamiento del consumidor como
-como para la toma de decisiones comerciales.
+En la actualidad, la digitalización de los tickets de compra se ha
+convertido en una práctica común en grandes cadenas de supermercados.
+Estos tickets electrónicos, enviados en formato PDF al correo del
+cliente, no solo reducen el uso de papel, sino que también generan datos
+valiosos que pueden ser analizados para obtener información relevante
+sobre los hábitos de consumo, la evolución de precios y las preferencias
+de los compradores.
 
-Cargamos las librerias necesarias:
+Este proyecto tiene como objetivo desarrollar un sistema de análisis
+automatizado que permita extraer, procesar y visualizar la información
+contenida en los tickets de Mercadona. Mediante técnicas de tratamiento
+de datos en R, exploraremos patrones de compra, identificaremos los
+productos más vendidos, analizaremos la evolución temporal de los
+precios y determinaremos tendencias en función de la ubicación de la
+tienda y el momento de la compra.
 
-Hemos cambiado los nombres a los archivos para que no den error con el
-siguiente codigo pero lo dejo como comentario para no sobreescribir los
-archivos al ejecutar mas de una vez:
+\hypertarget{material-y-muxe9todos}{%
+\section{2. Material y Métodos}\label{material-y-muxe9todos}}
 
-\begin{longtable}[]{@{}
-  >{\centering\arraybackslash}p{(\columnwidth - 0\tabcolsep) * \real{1.0000}}@{}}
-\toprule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-Obtener lista de archivos PDF en la carpeta archivos \textless-
-list.files(path = ``./data'' , pattern = ``\textbackslash.pdf\$'',
-full.names = FALSE, ignore.case = TRUE) \\
-Renombrar archivos secuencialmente for (i in seq\_along(archivos)) \{
-nombre\_actual \textless- file.path(ruta\_carpeta, archivos{[}i{]})
-extension \textless- file\_ext(archivos{[}i{]}) nombre\_nuevo \textless-
-file.path(ruta\_carpeta, paste0(``M'', i, ``.'', extension)) \\
-file.rename(from = nombre\_actual, to = nombre\_nuevo) \} \\
-\end{longtable}
+Para llevar a cabo este proyecto se han seleccionando un conjunto de
+librerías específicas que respondieran a los distintos requerimientos
+del análisis.
+
+Para la manipulación de datos se emplearon los paquetes tidyverse
+(incluyendo dplyr y stringr), que permitieron realizar operaciones de
+filtrado, transformación y procesamiento de texto de manera eficiente.
+La extracción del contenido textual desde los archivos PDF se realizó
+mediante el paquete pdftools, capaz de preservar la estructura original
+de los documentos.
+
+Las visualizaciones se generaron utilizando ggplot2, seleccionado por su
+versatilidad para crear gráficos de alta calidad. Para la presentación
+de resultados en formatos reproducibles se implementó knitr, facilitando
+la integración de código, resultados y texto explicativo.
+
+Utilizaremos dos data frames para manejar los datos de manera más
+eficiente. El primer data frame contendrá la información general del
+ticket, como la dirección del supermercado, la fecha y hora de la
+compra, el monto total, entre otros. En este caso, todos los productos
+registrados en el ticket se almacenarán como una sola cadena de texto en
+una única variable. El segundo data frame desglosará los productos en
+variables separadas
+
+Ambos data frames estarán vinculados a través de la variable fs (factura
+simplificada).
 
 \hypertarget{importaciuxf3n-de-los-datos}{%
-\section{Importación de los datos}\label{importaciuxf3n-de-los-datos}}
+\section{3. Importación de los
+datos}\label{importaciuxf3n-de-los-datos}}
 
-cargamos los archivos de la carpeta
+\hypertarget{carga-de-ficheros}{%
+\subsection{3.1 Carga de ficheros}\label{carga-de-ficheros}}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Obtener lista de archivos PDF en la carpeta}
-\NormalTok{archivos }\OtherTok{\textless{}{-}} \FunctionTok{list.files}\NormalTok{(}\AttributeTok{path =}  \StringTok{"./data"}\NormalTok{ , }\AttributeTok{pattern =} \StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{.pdf$"}\NormalTok{, }\AttributeTok{full.names =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{ignore.case =} \ConstantTok{TRUE}\NormalTok{)}
-\CommentTok{\#print(archivos)}
-\end{Highlighting}
-\end{Shaded}
+Para evitar errores durante el procesamiento posterior, se realizó un
+cambio en los nombres de los archivos PDF originales. Los archivos
+fueron renombrados de forma secuencial con un formato estándar. Esta
+acción se llevó a cabo una única vez, y por ello el código
+correspondiente fue comentado en el script, con el fin de prevenir que
+los archivos se sobrescriban accidentalmente al ejecutar el programa más
+de una vez.
 
-Definimos vectores para almacenar los datos de los tickets
+Se procedió a cargar automáticamente todos los archivos PDF contenidos
+en la carpeta de trabajo designada. Para ello, se empleó una función que
+permite listar únicamente los archivos con extensión .pdf, garantizando
+así que solo se consideren los documentos relevantes para el análisis.
+Esta carga automatizada facilita el procesamiento por lotes y evita la
+necesidad de seleccionar manualmente cada archivo.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{comercio }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{() }\CommentTok{\#nombre del comercio}
-\NormalTok{empresa }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{() }\CommentTok{\#tipo y código de empresa}
-\NormalTok{direccion }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{() }
-\NormalTok{cp }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{() }\CommentTok{\#código postal}
-\NormalTok{telefono }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{() }\CommentTok{\#Misma línea, tendremos que separar estos valores}
-\NormalTok{fecha }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{()}
-\NormalTok{hora }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{()}
-\NormalTok{op }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{()}
-\NormalTok{fs }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{()}\CommentTok{\#factura}
-\NormalTok{productos }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{() }\CommentTok{\#lista con los productos comprados}
-\NormalTok{total }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{() }\CommentTok{\#total de la compra}
-\NormalTok{forma\_pago }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{()}
+Para el proyecto se han importado un total de 303 archivos.
 
-\CommentTok{\#IVA}
-\NormalTok{base\_imp }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{() }\CommentTok{\#Base imponible}
-\NormalTok{cuota }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{() }\CommentTok{\#Cuota }
-\end{Highlighting}
-\end{Shaded}
+\hypertarget{carga-de-datos}{%
+\subsection{3.2 Carga de datos}\label{carga-de-datos}}
 
-Extraemos la informacion de cada ticket y lo añadimos al vector
-correspondiente:
+Se construyó un data frame a partir de los datos extraídos, realizando
+las transformaciones necesarias para asegurar que cada variable tuviera
+el formato y tipo de dato adecuados.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\ControlFlowTok{for}\NormalTok{ (archivo }\ControlFlowTok{in}\NormalTok{ archivos) \{}
-  
-\NormalTok{  pdf }\OtherTok{\textless{}{-}} \FunctionTok{pdf\_text}\NormalTok{(archivo) }\CommentTok{\#leemos le archivo pdf}
-\NormalTok{  ticket }\OtherTok{\textless{}{-}} \FunctionTok{trimws}\NormalTok{(}\FunctionTok{strsplit}\NormalTok{(pdf,}\AttributeTok{split =} \StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)[[}\DecValTok{1}\NormalTok{]]) }\CommentTok{\#separamos por líneas}
-\NormalTok{  ticket }\OtherTok{\textless{}{-}}\NormalTok{ ticket[}\FunctionTok{grep}\NormalTok{(}\StringTok{"."}\NormalTok{, ticket)] }\CommentTok{\#quitamos las líneas vacías}
+Para la lectura de los archivos PDF se utilizaron funciones de la
+librería pdftools, mientras que la limpieza y manipulación de las
+cadenas de texto se llevó a cabo con funciones de la librería stringr.
 
-  \CommentTok{\#procesamos los datos del ticket}
-\NormalTok{  linea\_comercio }\OtherTok{\textless{}{-}}\NormalTok{ ticket[}\DecValTok{1}\NormalTok{]}
-\NormalTok{  linea\_direccion }\OtherTok{\textless{}{-}}\NormalTok{ ticket[}\DecValTok{2}\NormalTok{]}
-\NormalTok{  linea\_cp }\OtherTok{\textless{}{-}}\NormalTok{ ticket[}\DecValTok{3}\NormalTok{]}
-\NormalTok{  linea\_telefono }\OtherTok{\textless{}{-}}\NormalTok{ ticket[}\DecValTok{4}\NormalTok{]}
-\NormalTok{  linea\_fecha\_hora\_op }\OtherTok{\textless{}{-}}\NormalTok{ ticket[}\DecValTok{5}\NormalTok{]}
-\NormalTok{  linea\_fs }\OtherTok{\textless{}{-}}\NormalTok{ ticket[}\DecValTok{6}\NormalTok{]}
-\NormalTok{  p }\OtherTok{=} \DecValTok{8} 
-\NormalTok{  linea\_productos }\OtherTok{\textless{}{-}}\NormalTok{ ticket[p]}
-    \CommentTok{\#unimos todos los productos en un solo caracter}
-  \ControlFlowTok{while}\NormalTok{ (ticket[p}\SpecialCharTok{+}\DecValTok{1}\NormalTok{] }\SpecialCharTok{!=}\NormalTok{ ticket[}\FunctionTok{grep}\NormalTok{(}\StringTok{"TOTAL"}\NormalTok{, ticket)[}\DecValTok{1}\NormalTok{]])\{}
-\NormalTok{    p }\OtherTok{=}\NormalTok{ p }\SpecialCharTok{+} \DecValTok{1}
-\NormalTok{    linea\_productos }\OtherTok{\textless{}{-}} \FunctionTok{paste}\NormalTok{(linea\_productos, ticket[p],}\AttributeTok{sep =} \StringTok{";"}\NormalTok{)}
-\NormalTok{  \}}
-\NormalTok{  linea\_total }\OtherTok{\textless{}{-}}\NormalTok{ ticket[}\FunctionTok{grep}\NormalTok{(}\StringTok{"TOTAL"}\NormalTok{, ticket)[}\DecValTok{1}\NormalTok{]]}
-\NormalTok{  linea\_forma\_pago }\OtherTok{\textless{}{-}}\NormalTok{ ticket[p}\SpecialCharTok{+}\DecValTok{2}\NormalTok{]}
-\NormalTok{  linea\_iva }\OtherTok{\textless{}{-}}\NormalTok{ ticket[}\FunctionTok{grep}\NormalTok{(}\StringTok{"TOTAL"}\NormalTok{, ticket)[}\DecValTok{2}\NormalTok{]]}
-  
-  \CommentTok{\#extaremos los datos}
-\NormalTok{  com }\OtherTok{\textless{}{-}} \FunctionTok{strsplit}\NormalTok{(linea\_comercio,}\StringTok{", "}\NormalTok{)[[}\DecValTok{1}\NormalTok{]]}
-\NormalTok{  comercio }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(comercio, com[}\DecValTok{1}\NormalTok{])}
-\NormalTok{  empresa }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(empresa, com[}\DecValTok{2}\NormalTok{])}
-\NormalTok{  direccion }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(direccion, }\FunctionTok{trimws}\NormalTok{(linea\_direccion))}
-\NormalTok{  cp\_info }\OtherTok{\textless{}{-}} \FunctionTok{strsplit}\NormalTok{(}\FunctionTok{trimws}\NormalTok{(linea\_cp), }\StringTok{" "}\NormalTok{)[[}\DecValTok{1}\NormalTok{]]}
-\NormalTok{  cp }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(cp, cp\_info[}\DecValTok{1}\NormalTok{])}
-\NormalTok{  telefono }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(telefono, }\FunctionTok{trimws}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\StringTok{"TELÉFONO:"}\NormalTok{, }\StringTok{""}\NormalTok{, linea\_telefono)))}
-\NormalTok{  fecha\_hora\_op }\OtherTok{\textless{}{-}} \FunctionTok{strsplit}\NormalTok{(}\FunctionTok{trimws}\NormalTok{(linea\_fecha\_hora\_op), }\StringTok{" "}\NormalTok{)[[}\DecValTok{1}\NormalTok{]]}
-\NormalTok{  fecha\_hora\_op }\OtherTok{\textless{}{-}}\NormalTok{ fecha\_hora\_op[}\FunctionTok{grep}\NormalTok{(}\StringTok{"."}\NormalTok{, fecha\_hora\_op)]}
-\NormalTok{  fecha }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(fecha, fecha\_hora\_op[}\DecValTok{1}\NormalTok{])}
-\NormalTok{  hora }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(hora, fecha\_hora\_op[}\DecValTok{2}\NormalTok{])}
-\NormalTok{  op }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(op, }\FunctionTok{gsub}\NormalTok{(}\StringTok{"OP:"}\NormalTok{, }\StringTok{""}\NormalTok{, fecha\_hora\_op[}\DecValTok{4}\NormalTok{]))}
-\NormalTok{  fs }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(fs, }\FunctionTok{gsub}\NormalTok{(}\StringTok{"FACTURA SIMPLIFICADA:"}\NormalTok{, }\StringTok{""}\NormalTok{, linea\_fs))}
-\NormalTok{  productos }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(productos, linea\_productos)}
-\NormalTok{  total }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(total, }\FunctionTok{trimws}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\StringTok{"TOTAL [(]€[)]"}\NormalTok{, }\StringTok{""}\NormalTok{, linea\_total)))}
-\NormalTok{  formapago }\OtherTok{\textless{}{-}} \FunctionTok{strsplit}\NormalTok{(linea\_forma\_pago,}\StringTok{" "}\NormalTok{)[[}\DecValTok{1}\NormalTok{]]}
-\NormalTok{  forma\_pago }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(forma\_pago, }\FunctionTok{paste0}\NormalTok{(formapago[}\DecValTok{1}\NormalTok{],formapago[}\DecValTok{2}\NormalTok{]))}
-\NormalTok{  base\_couta }\OtherTok{\textless{}{-}} \FunctionTok{strsplit}\NormalTok{(}\FunctionTok{trimws}\NormalTok{(linea\_iva),}\AttributeTok{split =} \StringTok{" "}\NormalTok{)[[}\DecValTok{1}\NormalTok{]]}
-\NormalTok{  base\_couta }\OtherTok{\textless{}{-}}\NormalTok{ base\_couta[}\FunctionTok{grep}\NormalTok{(}\StringTok{"."}\NormalTok{, base\_couta)]}
-\NormalTok{  base\_imp }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(base\_imp,base\_couta[}\DecValTok{2}\NormalTok{])}
-\NormalTok{  cuota }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(cuota, base\_couta[}\DecValTok{3}\NormalTok{])}
-  
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
+Durante el procesamiento, se asignó el tipo de dato Date a la variable
+de fecha y se convirtieron en valores numéricos las variables decimales
+como el total de la compra, la base imponible y la cuota de IVA. Cabe
+señalar que muchos de los datos no pueden incorporarse directamente al
+data frame, ya que en el formato original aparecen combinados en una
+misma línea. Es el caso de la fecha, la hora y el número de operación,
+que debieron separarse y asignarse a variables distintas.
 
-Creamos un data frame con los datos:
+Por motivos de espacio y legibilidad, no se incluye la visualización del
+data frame generado a partir de los tickets.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{df }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(comercio, empresa, direccion, cp, telefono, fecha, hora, }
-\NormalTok{                 op, fs, productos, total, forma\_pago, base\_imp, cuota,}
-                 \AttributeTok{stringsAsFactors =} \ConstantTok{FALSE}\NormalTok{)}
-
-\CommentTok{\#Modificamos las clases de los datos}
-\NormalTok{df}\SpecialCharTok{$}\NormalTok{fecha }\OtherTok{\textless{}{-}} \FunctionTok{as.Date}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{fecha,}\AttributeTok{format =} \StringTok{"\%d/\%m/\%Y"}\NormalTok{)}
-\NormalTok{df}\SpecialCharTok{$}\NormalTok{anio }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{format}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{fecha, }\StringTok{"\%Y"}\NormalTok{))}
-\NormalTok{df}\SpecialCharTok{$}\NormalTok{mes }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{format}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{fecha, }\StringTok{"\%m"}\NormalTok{))}
-\NormalTok{df}\SpecialCharTok{$}\NormalTok{dia }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{format}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{fecha, }\StringTok{"\%d"}\NormalTok{))}
-\CommentTok{\# Elimina la columna fecha}
-\NormalTok{df}\SpecialCharTok{$}\NormalTok{fecha }\OtherTok{\textless{}{-}} \ConstantTok{NULL}
-
-\CommentTok{\# Separar la columna fs en tres partes}
-\NormalTok{fs\_split }\OtherTok{\textless{}{-}} \FunctionTok{strsplit}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{fs, }\StringTok{"{-}"}\NormalTok{)}
-\CommentTok{\# Crear las nuevas columnas a partir del resultado}
-\NormalTok{df}\SpecialCharTok{$}\NormalTok{num\_tienda }\OtherTok{\textless{}{-}} \FunctionTok{sapply}\NormalTok{(fs\_split, }\ControlFlowTok{function}\NormalTok{(x) x[}\DecValTok{1}\NormalTok{])}
-\NormalTok{df}\SpecialCharTok{$}\NormalTok{num\_caja }\OtherTok{\textless{}{-}} \FunctionTok{sapply}\NormalTok{(fs\_split, }\ControlFlowTok{function}\NormalTok{(x) x[}\DecValTok{2}\NormalTok{])}
-\NormalTok{df}\SpecialCharTok{$}\NormalTok{num\_ticket }\OtherTok{\textless{}{-}} \FunctionTok{sapply}\NormalTok{(fs\_split, }\ControlFlowTok{function}\NormalTok{(x) x[}\DecValTok{3}\NormalTok{])}
-\CommentTok{\# Eliminar la columna original fs}
-\NormalTok{df}\SpecialCharTok{$}\NormalTok{fs }\OtherTok{\textless{}{-}} \ConstantTok{NULL}
-\NormalTok{df}\SpecialCharTok{$}\NormalTok{comercio }\OtherTok{\textless{}{-}} \ConstantTok{NULL}
-\NormalTok{df}\SpecialCharTok{$}\NormalTok{empresa }\OtherTok{\textless{}{-}} \ConstantTok{NULL}
-
-
-\NormalTok{df}\SpecialCharTok{$}\NormalTok{total }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\AttributeTok{pattern =} \StringTok{","}\NormalTok{,}\AttributeTok{replacement =} \StringTok{"."}\NormalTok{,df}\SpecialCharTok{$}\NormalTok{total))}
-\NormalTok{df}\SpecialCharTok{$}\NormalTok{base\_imp }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\AttributeTok{pattern =} \StringTok{","}\NormalTok{,}\AttributeTok{replacement =} \StringTok{"."}\NormalTok{,df}\SpecialCharTok{$}\NormalTok{base\_imp))}
-\NormalTok{df}\SpecialCharTok{$}\NormalTok{cuota }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\AttributeTok{pattern =} \StringTok{","}\NormalTok{,}\AttributeTok{replacement =} \StringTok{"."}\NormalTok{,df}\SpecialCharTok{$}\NormalTok{cuota))}
+\NormalTok{type }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"comercio"}\NormalTok{,}\StringTok{"empresa"}\NormalTok{, }\StringTok{"direccion"}\NormalTok{, }\StringTok{"cp"}\NormalTok{, }\StringTok{"telefono"}\NormalTok{, }\StringTok{"fecha"}\NormalTok{, }\StringTok{"hora"}\NormalTok{, }\StringTok{"op"}\NormalTok{, }\StringTok{"fs"}\NormalTok{, }\StringTok{"productos"}\NormalTok{, }\StringTok{"total"}\NormalTok{, }\StringTok{"forma\_pago"}\NormalTok{, }\StringTok{"base\_imp"}\NormalTok{, }\StringTok{"cuota"}\NormalTok{, }\StringTok{"nombre del comercio"}\NormalTok{, }\StringTok{"tipo y código de empresa"}\NormalTok{, }\StringTok{"dirección del comercio"}\NormalTok{, }\StringTok{"código postal"}\NormalTok{, }\StringTok{"teléfono del comercio"}\NormalTok{, }\StringTok{"fecha de la compra (día{-}mes{-}año)"}\NormalTok{, }\StringTok{"hora de la compra (horas y minutos)"}\NormalTok{, }\StringTok{"número del código de la operación"}\NormalTok{, }\StringTok{"código de la factura simplificada"}\NormalTok{, }\StringTok{"lista con los productos comprados"}\NormalTok{, }\StringTok{"dinero total de la compra"}\NormalTok{, }\StringTok{"forma de pago (tarjeta o en efectivo)"}\NormalTok{, }\StringTok{"base imponible (IVA)"}\NormalTok{, }\StringTok{"cuota del IVA"}\NormalTok{)}
+\NormalTok{knitr}\SpecialCharTok{::}\FunctionTok{kable}\NormalTok{(rticles}\SpecialCharTok{::}\FunctionTok{string\_to\_table}\NormalTok{(type, }\DecValTok{2}\NormalTok{),}\AttributeTok{align =} \StringTok{\textquotesingle{}c\textquotesingle{}}\NormalTok{, }
+             \AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"Variable"}\NormalTok{, }\StringTok{"Descripción"}\NormalTok{),}
+             \AttributeTok{format =} \StringTok{"latex"}\NormalTok{, }\AttributeTok{booktab =} \ConstantTok{TRUE}\NormalTok{, }
+             \AttributeTok{caption =} \StringTok{"Descripción de variables"}\NormalTok{) }
 \end{Highlighting}
 \end{Shaded}
 
-si hay aparcamiento o no
+\begin{table}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{aparcamientos }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{()}
-\ControlFlowTok{for}\NormalTok{ (archivo }\ControlFlowTok{in}\NormalTok{ archivos) \{}
-\NormalTok{  pdf }\OtherTok{\textless{}{-}} \FunctionTok{pdf\_text}\NormalTok{(archivo)}
-\NormalTok{  ticket }\OtherTok{\textless{}{-}} \FunctionTok{trimws}\NormalTok{(}\FunctionTok{strsplit}\NormalTok{(pdf, }\AttributeTok{split =} \StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)[[}\DecValTok{1}\NormalTok{]])}
-\NormalTok{  aparcamiento\_lineas }\OtherTok{\textless{}{-}} \FunctionTok{grep}\NormalTok{(}\StringTok{"Aparcamiento"}\NormalTok{, ticket, }\AttributeTok{value =} \ConstantTok{TRUE}\NormalTok{)}
-  \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{length}\NormalTok{(aparcamiento\_lineas) }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{) \{}
-\NormalTok{    aparcamientos }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(aparcamientos, }\FunctionTok{paste}\NormalTok{(aparcamiento\_lineas, }\AttributeTok{collapse =} \StringTok{" "}\NormalTok{))}
-\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
-\NormalTok{    aparcamientos }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(aparcamientos, }\ConstantTok{NA}\NormalTok{)}
-\NormalTok{  \}}
-\NormalTok{\}}
-\NormalTok{df\_aparcamiento }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{archivo =}\NormalTok{ archivos, }\AttributeTok{aparcamiento =}\NormalTok{ aparcamientos, }\AttributeTok{stringsAsFactors =} \ConstantTok{FALSE}\NormalTok{)}
-\FunctionTok{head}\NormalTok{(df\_aparcamiento)}
-\end{Highlighting}
-\end{Shaded}
+\caption{\label{tab:tabla-variables}Descripción de variables}
+\centering
+\begin{tabular}[t]{cc}
+\toprule
+Variable & Descripción\\
+\midrule
+comercio & nombre del comercio\\
+empresa & tipo y código de empresa\\
+direccion & dirección del comercio\\
+cp & código postal\\
+telefono & teléfono del comercio\\
+\addlinespace
+fecha & fecha de la compra (día-mes-año)\\
+hora & hora de la compra (horas y minutos)\\
+op & número del código de la operación\\
+fs & código de la factura simplificada\\
+productos & lista con los productos comprados\\
+\addlinespace
+total & dinero total de la compra\\
+forma\_pago & forma de pago (tarjeta o en efectivo)\\
+base\_imp & base imponible (IVA)\\
+cuota & cuota del IVA\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Las variables finales obtenidas se presentan en la Tabla
+@ref(tab:tabla-variables).
 
 \begin{verbatim}
 ##           archivo aparcamiento
@@ -427,10 +371,63 @@ si hay aparcamiento o no
 \end{verbatim}
 
 \hypertarget{analizamos-los-productos}{%
-\section{Analizamos los productos}\label{analizamos-los-productos}}
+\section{4. Analizamos los productos}\label{analizamos-los-productos}}
 
-En el df estan toda la informacion relativa a los productos en la
-columna producto la separamos en un nuevo dataframe con df\_producto
+La información relativa a los productos comprados se encontraba
+inicialmente agrupada dentro de una única columna del data frame
+principal. Para facilitar su análisis, se extrajo esta columna a un
+nuevo data frame, separando los productos que venían concatenados en una
+misma celda.
+
+\hypertarget{productos-pescateria}{%
+\subsection{4.1 Productos pescateria}\label{productos-pescateria}}
+
+El procesamiento de los productos se realizó en varias etapas, según el
+tipo de producto y la forma en que aparecían en el ticket. En primer
+lugar, se identificaron los productos de pescadería, que siguen un
+formato particular: aparecen siempre precedidos por una línea con la
+palabra ``PESCADO'', seguida del nombre del producto en la línea
+siguiente y de los detalles de compra (peso, precio por kilo y total) en
+una tercera línea. A partir de esta estructura, se extrajeron los datos
+relevantes y se almacenaron en un nuevo data frame específico para
+pescado.
+
+\hypertarget{productos-vendidos-por-peso}{%
+\subsection{4.2 Productos vendidos por
+peso}\label{productos-vendidos-por-peso}}
+
+Después, se eliminaron las filas correspondientes a productos de
+pescadería para poder trabajar exclusivamente con los productos que
+también se venden por peso, como frutas y verduras. Estos artículos
+generalmente constan de dos líneas: la primera contiene el nombre del
+producto y la segunda incluye el peso, el precio por kilogramo y el
+importe total. A partir de esta estructura se construyó un segundo data
+frame con las frutas y verduras, extrayendo y transformando la
+información necesaria.
+
+\hypertarget{productos-vendidos-por-unidad}{%
+\subsection{4.2 Productos vendidos por
+unidad}\label{productos-vendidos-por-unidad}}
+
+Una vez separados los productos por peso, se procedió a procesar el
+resto de productos, es decir, aquellos que se venden por unidades. En
+este caso, se extrajeron datos como la cantidad, el nombre del producto,
+el precio unitario y el importe total. Se aplicaron técnicas de
+procesamiento de texto para limpiar y estructurar la información, ya que
+algunos productos con una sola unidad incluían el precio directamente
+dentro del nombre del producto.
+
+\hypertarget{productos-analizados}{%
+\section{4.4 productos analizados}\label{productos-analizados}}
+
+Finalmente, los tres grupos de productos ---pescado, frutas y verduras,
+y productos por unidades--- se combinaron en un único data frame
+unificado. A este conjunto se le añadió una columna adicional que
+indicaba si el ticket incluía un servicio de aparcamiento, en caso de
+que esa información estuviera disponible. El resultado fue un data frame
+final, estructurado y homogéneo, con todos los productos organizados por
+tipo, cantidad, precio, importe y número de ticket, listo para su
+análisis posterior.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -439,16 +436,10 @@ columna producto la separamos en un nuevo dataframe con df\_producto
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{procesamiento-de-pescado-por-kg}{%
-\subsection{Procesamiento de pescado por
-kg}\label{procesamiento-de-pescado-por-kg}}
-
-Primero nos encargamos de los productos de pesacdao que aparecen con
-este format: - Primera fila del pescado: Solo dice ``PESCADO'' - Segunda
-fila: Nombre del producto - Tercera fila: Detalles del precio
-
 \begin{Shaded}
 \begin{Highlighting}[]
+\CommentTok{\# Procesamiento de pescado por kg}
+
 \CommentTok{\# Identificar filas con "PESCADO"}
 \NormalTok{filas\_pescado }\OtherTok{\textless{}{-}} \FunctionTok{which}\NormalTok{(df\_producto}\SpecialCharTok{$}\NormalTok{productos }\SpecialCharTok{==} \StringTok{"PESCADO"}\NormalTok{)}
 
@@ -499,15 +490,10 @@ fila: Nombre del producto - Tercera fila: Detalles del precio
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{procesamiento-fruta-y-la-verdura}{%
-\subsection{Procesamiento fruta y la
-verdura}\label{procesamiento-fruta-y-la-verdura}}
-
-Borrar primero las filas de pescado para asegurarte de que los productos
-restantes vendidos por kg sean exclusivamente fruta y verdura.
-
 \begin{Shaded}
 \begin{Highlighting}[]
+\CommentTok{\# Procesamiento fruta y la verdura}
+
 \CommentTok{\#Identificar TODOS los bloques de pescado (3 filas cada uno)}
 \NormalTok{bloques\_pescado }\OtherTok{\textless{}{-}} \FunctionTok{which}\NormalTok{(df\_producto}\SpecialCharTok{$}\NormalTok{productos }\SpecialCharTok{==} \StringTok{"PESCADO"}\NormalTok{)}
 
@@ -516,13 +502,7 @@ restantes vendidos por kg sean exclusivamente fruta y verdura.
 
 \CommentTok{\# Eliminar todos los bloques}
 \NormalTok{df\_sin\_pescado }\OtherTok{\textless{}{-}}\NormalTok{ df\_producto[}\SpecialCharTok{{-}}\NormalTok{filas\_a\_eliminar, ]}
-\end{Highlighting}
-\end{Shaded}
 
-Ahora hacemos el df\_fruta\_verdura
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \NormalTok{ind\_detalles\_kg }\OtherTok{\textless{}{-}} \FunctionTok{grep}\NormalTok{(}\StringTok{"kg.*€/kg"}\NormalTok{, df\_sin\_pescado}\SpecialCharTok{$}\NormalTok{productos, }\AttributeTok{value =} \ConstantTok{FALSE}\NormalTok{)}
 
 \NormalTok{df\_fruta\_verdura }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
@@ -550,16 +530,10 @@ Ahora hacemos el df\_fruta\_verdura
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{procesamiento-resto-de-productos-sin-kg}{%
-\subsection{Procesamiento resto de productos sin
-kg}\label{procesamiento-resto-de-productos-sin-kg}}
-
-Extraemos cantidad descripcion y precio
-
-Primero borramos los datos ya presentes en el df fruta y verdura
-
 \begin{Shaded}
 \begin{Highlighting}[]
+\CommentTok{\# Procesamiento resto de productos sin kg}
+
 \CommentTok{\# Identificar las filas de detalles (kg y €/kg)}
 \NormalTok{ind\_detalles\_kg }\OtherTok{\textless{}{-}} \FunctionTok{grep}\NormalTok{(}\StringTok{"kg.*€/kg"}\NormalTok{, df\_sin\_pescado}\SpecialCharTok{$}\NormalTok{productos, }\AttributeTok{value =} \ConstantTok{FALSE}\NormalTok{)}
 
@@ -571,13 +545,7 @@ Primero borramos los datos ya presentes en el df fruta y verdura
 
 \CommentTok{\# Eliminar filas ya procesadas}
 \NormalTok{df\_resto }\OtherTok{\textless{}{-}}\NormalTok{ df\_sin\_pescado[}\SpecialCharTok{{-}}\NormalTok{filas\_fruta\_verdura, ]}
-\end{Highlighting}
-\end{Shaded}
 
-Creamos el dataframe de productos vendidios por unidades
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \NormalTok{df\_productos\_unidades }\OtherTok{\textless{}{-}}\NormalTok{ df\_resto }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{mutate}\NormalTok{(}
     \CommentTok{\# 1. Extraer cantidad (siempre es el primer número)}
@@ -633,12 +601,10 @@ Creamos el dataframe de productos vendidios por unidades
 ## i Run `dplyr::last_dplyr_warnings()` to see the 32 remaining warnings.
 \end{verbatim}
 
-\hypertarget{dataframe-final-con-todos-los-productos-analizados}{%
-\subsection{dataframe final con todos los productos
-analizados:}\label{dataframe-final-con-todos-los-productos-analizados}}
-
 \begin{Shaded}
 \begin{Highlighting}[]
+\CommentTok{\# dataframe final con todos los productos analizados:}
+
 \CommentTok{\# Añadir columna \textquotesingle{}tipo\textquotesingle{} a cada dataframe}
 \NormalTok{df\_pescado }\OtherTok{\textless{}{-}}\NormalTok{ df\_pescado }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{tipo =} \StringTok{"pescado"}\NormalTok{)}
 \NormalTok{df\_fruta\_verdura }\OtherTok{\textless{}{-}}\NormalTok{ df\_fruta\_verdura }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{tipo =} \StringTok{"fruta\_verdura"}\NormalTok{)}
@@ -757,7 +723,7 @@ analizados:}\label{dataframe-final-con-todos-los-productos-analizados}}
 
 ¿Cuáles son los productos menos vendidos por unidades? ¿Y por kilos?
 
-¿Qué productos han generado mayor ingreso total (precio × cantidad)?
+¿Qué productos han generado mayor ingreso total (precio x cantidad)?
 
 ¿Cuáles productos han aumentado o disminuido su venta a lo largo del
 tiempo?

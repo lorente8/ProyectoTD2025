@@ -359,159 +359,87 @@ Adrian Mena,Sergio Nadal</h4>
 
 
 <div id="introducción" class="section level1">
-<h1>Introducción</h1>
-<p>Los datos utilizados en este analisis, provienen de tikets de compra
-de Mercadona, dando una visión detallada de los habitos de consumo,
-tipos de productos variaciones de precios y patrones de compra a lo
-largo del tiempo. El objetivo principal de este trabajo es explorar y
-analizar las decisiones de compra registradas, con el fin de identificar
-tendencias y comportamientos que ayuden a comprender mejor las dinámicas
-de comsumo. A través de este análisis, se busca ofrecer una visión más
-detallada de los hábitos de consumo reflejados en los tickets, con
-posibles aplicaciones tanto en el estudio del comportamiento del
-consumidor como como para la toma de decisiones comerciales.</p>
-<p>Cargamos las librerias necesarias:</p>
-<p>Hemos cambiado los nombres a los archivos para que no den error con
-el siguiente codigo pero lo dejo como comentario para no sobreescribir
-los archivos al ejecutar mas de una vez:</p>
-<table>
-<colgroup>
-<col width="100%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td align="center">Obtener lista de archivos PDF en la carpeta archivos
-&lt;- list.files(path = “./data” , pattern = “\.pdf$”, full.names =
-FALSE, ignore.case = TRUE)</td>
-</tr>
-<tr class="even">
-<td align="center">Renombrar archivos secuencialmente for (i in
-seq_along(archivos)) { nombre_actual &lt;- file.path(ruta_carpeta,
-archivos[i]) extension &lt;- file_ext(archivos[i]) nombre_nuevo &lt;-
-file.path(ruta_carpeta, paste0(“M”, i, “.”, extension))</td>
-</tr>
-<tr class="odd">
-<td align="center">file.rename(from = nombre_actual, to = nombre_nuevo)
-}</td>
-</tr>
-</tbody>
-</table>
+<h1>1. Introducción</h1>
+<p>En la actualidad, la digitalización de los tickets de compra se ha
+convertido en una práctica común en grandes cadenas de supermercados.
+Estos tickets electrónicos, enviados en formato PDF al correo del
+cliente, no solo reducen el uso de papel, sino que también generan datos
+valiosos que pueden ser analizados para obtener información relevante
+sobre los hábitos de consumo, la evolución de precios y las preferencias
+de los compradores.</p>
+<p>Este proyecto tiene como objetivo desarrollar un sistema de análisis
+automatizado que permita extraer, procesar y visualizar la información
+contenida en los tickets de Mercadona. Mediante técnicas de tratamiento
+de datos en R, exploraremos patrones de compra, identificaremos los
+productos más vendidos, analizaremos la evolución temporal de los
+precios y determinaremos tendencias en función de la ubicación de la
+tienda y el momento de la compra.</p>
+</div>
+<div id="material-y-métodos" class="section level1">
+<h1>2. Material y Métodos</h1>
+<p>Para llevar a cabo este proyecto se han seleccionando un conjunto de
+librerías específicas que respondieran a los distintos requerimientos
+del análisis.</p>
+<p>Para la manipulación de datos se emplearon los paquetes tidyverse
+(incluyendo dplyr y stringr), que permitieron realizar operaciones de
+filtrado, transformación y procesamiento de texto de manera eficiente.
+La extracción del contenido textual desde los archivos PDF se realizó
+mediante el paquete pdftools, capaz de preservar la estructura original
+de los documentos.</p>
+<p>Las visualizaciones se generaron utilizando ggplot2, seleccionado por
+su versatilidad para crear gráficos de alta calidad. Para la
+presentación de resultados en formatos reproducibles se implementó
+knitr, facilitando la integración de código, resultados y texto
+explicativo.</p>
+<p>Utilizaremos dos data frames para manejar los datos de manera más
+eficiente. El primer data frame contendrá la información general del
+ticket, como la dirección del supermercado, la fecha y hora de la
+compra, el monto total, entre otros. En este caso, todos los productos
+registrados en el ticket se almacenarán como una sola cadena de texto en
+una única variable. El segundo data frame desglosará los productos en
+variables separadas</p>
+<p>Ambos data frames estarán vinculados a través de la variable fs
+(factura simplificada).</p>
 </div>
 <div id="importación-de-los-datos" class="section level1">
-<h1>Importación de los datos</h1>
-<p>cargamos los archivos de la carpeta</p>
-<pre class="r"><code># Obtener lista de archivos PDF en la carpeta
-archivos &lt;- list.files(path =  &quot;./data&quot; , pattern = &quot;\\.pdf$&quot;, full.names = TRUE, ignore.case = TRUE)
-#print(archivos)</code></pre>
-<p>Definimos vectores para almacenar los datos de los tickets</p>
-<pre class="r"><code>comercio &lt;- c() #nombre del comercio
-empresa &lt;- c() #tipo y código de empresa
-direccion &lt;- c() 
-cp &lt;- c() #código postal
-telefono &lt;- c() #Misma línea, tendremos que separar estos valores
-fecha &lt;- c()
-hora &lt;- c()
-op &lt;- c()
-fs &lt;- c()#factura
-productos &lt;- c() #lista con los productos comprados
-total &lt;- c() #total de la compra
-forma_pago &lt;- c()
-
-#IVA
-base_imp &lt;- c() #Base imponible
-cuota &lt;- c() #Cuota </code></pre>
-<p>Extraemos la informacion de cada ticket y lo añadimos al vector
-correspondiente:</p>
-<pre class="r"><code>for (archivo in archivos) {
-  
-  pdf &lt;- pdf_text(archivo) #leemos le archivo pdf
-  ticket &lt;- trimws(strsplit(pdf,split = &quot;\n&quot;)[[1]]) #separamos por líneas
-  ticket &lt;- ticket[grep(&quot;.&quot;, ticket)] #quitamos las líneas vacías
-
-  #procesamos los datos del ticket
-  linea_comercio &lt;- ticket[1]
-  linea_direccion &lt;- ticket[2]
-  linea_cp &lt;- ticket[3]
-  linea_telefono &lt;- ticket[4]
-  linea_fecha_hora_op &lt;- ticket[5]
-  linea_fs &lt;- ticket[6]
-  p = 8 
-  linea_productos &lt;- ticket[p]
-    #unimos todos los productos en un solo caracter
-  while (ticket[p+1] != ticket[grep(&quot;TOTAL&quot;, ticket)[1]]){
-    p = p + 1
-    linea_productos &lt;- paste(linea_productos, ticket[p],sep = &quot;;&quot;)
-  }
-  linea_total &lt;- ticket[grep(&quot;TOTAL&quot;, ticket)[1]]
-  linea_forma_pago &lt;- ticket[p+2]
-  linea_iva &lt;- ticket[grep(&quot;TOTAL&quot;, ticket)[2]]
-  
-  #extaremos los datos
-  com &lt;- strsplit(linea_comercio,&quot;, &quot;)[[1]]
-  comercio &lt;- c(comercio, com[1])
-  empresa &lt;- c(empresa, com[2])
-  direccion &lt;- c(direccion, trimws(linea_direccion))
-  cp_info &lt;- strsplit(trimws(linea_cp), &quot; &quot;)[[1]]
-  cp &lt;- c(cp, cp_info[1])
-  telefono &lt;- c(telefono, trimws(gsub(&quot;TELÉFONO:&quot;, &quot;&quot;, linea_telefono)))
-  fecha_hora_op &lt;- strsplit(trimws(linea_fecha_hora_op), &quot; &quot;)[[1]]
-  fecha_hora_op &lt;- fecha_hora_op[grep(&quot;.&quot;, fecha_hora_op)]
-  fecha &lt;- c(fecha, fecha_hora_op[1])
-  hora &lt;- c(hora, fecha_hora_op[2])
-  op &lt;- c(op, gsub(&quot;OP:&quot;, &quot;&quot;, fecha_hora_op[4]))
-  fs &lt;- c(fs, gsub(&quot;FACTURA SIMPLIFICADA:&quot;, &quot;&quot;, linea_fs))
-  productos &lt;- c(productos, linea_productos)
-  total &lt;- c(total, trimws(gsub(&quot;TOTAL [(]€[)]&quot;, &quot;&quot;, linea_total)))
-  formapago &lt;- strsplit(linea_forma_pago,&quot; &quot;)[[1]]
-  forma_pago &lt;- c(forma_pago, paste0(formapago[1],formapago[2]))
-  base_couta &lt;- strsplit(trimws(linea_iva),split = &quot; &quot;)[[1]]
-  base_couta &lt;- base_couta[grep(&quot;.&quot;, base_couta)]
-  base_imp &lt;- c(base_imp,base_couta[2])
-  cuota &lt;- c(cuota, base_couta[3])
-  
-}</code></pre>
-<p>Creamos un data frame con los datos:</p>
-<pre class="r"><code>df &lt;- data.frame(comercio, empresa, direccion, cp, telefono, fecha, hora, 
-                 op, fs, productos, total, forma_pago, base_imp, cuota,
-                 stringsAsFactors = FALSE)
-
-#Modificamos las clases de los datos
-df$fecha &lt;- as.Date(df$fecha,format = &quot;%d/%m/%Y&quot;)
-df$anio &lt;- as.numeric(format(df$fecha, &quot;%Y&quot;))
-df$mes &lt;- as.numeric(format(df$fecha, &quot;%m&quot;))
-df$dia &lt;- as.numeric(format(df$fecha, &quot;%d&quot;))
-# Elimina la columna fecha
-df$fecha &lt;- NULL
-
-# Separar la columna fs en tres partes
-fs_split &lt;- strsplit(df$fs, &quot;-&quot;)
-# Crear las nuevas columnas a partir del resultado
-df$num_tienda &lt;- sapply(fs_split, function(x) x[1])
-df$num_caja &lt;- sapply(fs_split, function(x) x[2])
-df$num_ticket &lt;- sapply(fs_split, function(x) x[3])
-# Eliminar la columna original fs
-df$fs &lt;- NULL
-df$comercio &lt;- NULL
-df$empresa &lt;- NULL
-
-
-df$total &lt;- as.numeric(gsub(pattern = &quot;,&quot;,replacement = &quot;.&quot;,df$total))
-df$base_imp &lt;- as.numeric(gsub(pattern = &quot;,&quot;,replacement = &quot;.&quot;,df$base_imp))
-df$cuota &lt;- as.numeric(gsub(pattern = &quot;,&quot;,replacement = &quot;.&quot;,df$cuota))</code></pre>
-<p>si hay aparcamiento o no</p>
-<pre class="r"><code>aparcamientos &lt;- c()
-for (archivo in archivos) {
-  pdf &lt;- pdf_text(archivo)
-  ticket &lt;- trimws(strsplit(pdf, split = &quot;\n&quot;)[[1]])
-  aparcamiento_lineas &lt;- grep(&quot;Aparcamiento&quot;, ticket, value = TRUE)
-  if (length(aparcamiento_lineas) &gt; 0) {
-    aparcamientos &lt;- c(aparcamientos, paste(aparcamiento_lineas, collapse = &quot; &quot;))
-  } else {
-    aparcamientos &lt;- c(aparcamientos, NA)
-  }
-}
-df_aparcamiento &lt;- data.frame(archivo = archivos, aparcamiento = aparcamientos, stringsAsFactors = FALSE)
-head(df_aparcamiento)</code></pre>
+<h1>3. Importación de los datos</h1>
+<div id="carga-de-ficheros" class="section level2">
+<h2>3.1 Carga de ficheros</h2>
+<p>Para evitar errores durante el procesamiento posterior, se realizó un
+cambio en los nombres de los archivos PDF originales. Los archivos
+fueron renombrados de forma secuencial con un formato estándar. Esta
+acción se llevó a cabo una única vez, y por ello el código
+correspondiente fue comentado en el script, con el fin de prevenir que
+los archivos se sobrescriban accidentalmente al ejecutar el programa más
+de una vez.</p>
+<p>Se procedió a cargar automáticamente todos los archivos PDF
+contenidos en la carpeta de trabajo designada. Para ello, se empleó una
+función que permite listar únicamente los archivos con extensión .pdf,
+garantizando así que solo se consideren los documentos relevantes para
+el análisis. Esta carga automatizada facilita el procesamiento por lotes
+y evita la necesidad de seleccionar manualmente cada archivo.</p>
+<p>Para el proyecto se han importado un total de 303 archivos.</p>
+</div>
+<div id="carga-de-datos" class="section level2">
+<h2>3.2 Carga de datos</h2>
+<p>Se construyó un data frame a partir de los datos extraídos,
+realizando las transformaciones necesarias para asegurar que cada
+variable tuviera el formato y tipo de dato adecuados.</p>
+<p>Para la lectura de los archivos PDF se utilizaron funciones de la
+librería pdftools, mientras que la limpieza y manipulación de las
+cadenas de texto se llevó a cabo con funciones de la librería
+stringr.</p>
+<p>Durante el procesamiento, se asignó el tipo de dato Date a la
+variable de fecha y se convirtieron en valores numéricos las variables
+decimales como el total de la compra, la base imponible y la cuota de
+IVA. Cabe señalar que muchos de los datos no pueden incorporarse
+directamente al data frame, ya que en el formato original aparecen
+combinados en una misma línea. Es el caso de la fecha, la hora y el
+número de operación, que debieron separarse y asignarse a variables
+distintas.</p>
+<p>Por motivos de espacio y legibilidad, no se incluye la visualización
+del data frame generado a partir de los tickets.</p>
+<p>Las variables finales obtenidas se presentan en la Tabla <span class="math inline">\(\ref{tab:tabla1}\)</span>.</p>
 <pre><code>##           archivo aparcamiento
 ## 1   ./data/M1.pdf           NA
 ## 2  ./data/M10.pdf           NA
@@ -520,18 +448,63 @@ head(df_aparcamiento)</code></pre>
 ## 5 ./data/M102.pdf           NA
 ## 6 ./data/M103.pdf           NA</code></pre>
 </div>
+</div>
 <div id="analizamos-los-productos" class="section level1">
-<h1>Analizamos los productos</h1>
-<p>En el df estan toda la informacion relativa a los productos en la
-columna producto la separamos en un nuevo dataframe con df_producto</p>
+<h1>4. Analizamos los productos</h1>
+<p>La información relativa a los productos comprados se encontraba
+inicialmente agrupada dentro de una única columna del data frame
+principal. Para facilitar su análisis, se extrajo esta columna a un
+nuevo data frame, separando los productos que venían concatenados en una
+misma celda.</p>
+<div id="productos-pescateria" class="section level2">
+<h2>4.1 Productos pescateria</h2>
+<p>El procesamiento de los productos se realizó en varias etapas, según
+el tipo de producto y la forma en que aparecían en el ticket. En primer
+lugar, se identificaron los productos de pescadería, que siguen un
+formato particular: aparecen siempre precedidos por una línea con la
+palabra “PESCADO”, seguida del nombre del producto en la línea siguiente
+y de los detalles de compra (peso, precio por kilo y total) en una
+tercera línea. A partir de esta estructura, se extrajeron los datos
+relevantes y se almacenaron en un nuevo data frame específico para
+pescado.</p>
+</div>
+<div id="productos-vendidos-por-peso" class="section level2">
+<h2>4.2 Productos vendidos por peso</h2>
+<p>Después, se eliminaron las filas correspondientes a productos de
+pescadería para poder trabajar exclusivamente con los productos que
+también se venden por peso, como frutas y verduras. Estos artículos
+generalmente constan de dos líneas: la primera contiene el nombre del
+producto y la segunda incluye el peso, el precio por kilogramo y el
+importe total. A partir de esta estructura se construyó un segundo data
+frame con las frutas y verduras, extrayendo y transformando la
+información necesaria.</p>
+</div>
+<div id="productos-vendidos-por-unidad" class="section level2">
+<h2>4.2 Productos vendidos por unidad</h2>
+<p>Una vez separados los productos por peso, se procedió a procesar el
+resto de productos, es decir, aquellos que se venden por unidades. En
+este caso, se extrajeron datos como la cantidad, el nombre del producto,
+el precio unitario y el importe total. Se aplicaron técnicas de
+procesamiento de texto para limpiar y estructurar la información, ya que
+algunos productos con una sola unidad incluían el precio directamente
+dentro del nombre del producto.</p>
+</div>
+</div>
+<div id="productos-analizados" class="section level1">
+<h1>4.4 productos analizados</h1>
+<p>Finalmente, los tres grupos de productos —pescado, frutas y verduras,
+y productos por unidades— se combinaron en un único data frame
+unificado. A este conjunto se le añadió una columna adicional que
+indicaba si el ticket incluía un servicio de aparcamiento, en caso de
+que esa información estuviera disponible. El resultado fue un data frame
+final, estructurado y homogéneo, con todos los productos organizados por
+tipo, cantidad, precio, importe y número de ticket, listo para su
+análisis posterior.</p>
 <pre class="r"><code>df_producto &lt;- df %&gt;% select(c(num_ticket, productos)) %&gt;% 
   separate_rows(productos, sep = &quot;;&quot;)</code></pre>
-<div id="procesamiento-de-pescado-por-kg" class="section level2">
-<h2>Procesamiento de pescado por kg</h2>
-<p>Primero nos encargamos de los productos de pesacdao que aparecen con
-este format: - Primera fila del pescado: Solo dice “PESCADO” - Segunda
-fila: Nombre del producto - Tercera fila: Detalles del precio</p>
-<pre class="r"><code># Identificar filas con &quot;PESCADO&quot;
+<pre class="r"><code># Procesamiento de pescado por kg
+
+# Identificar filas con &quot;PESCADO&quot;
 filas_pescado &lt;- which(df_producto$productos == &quot;PESCADO&quot;)
 
 # Inicializar vectores para almacenar datos
@@ -578,22 +551,18 @@ df_pescado &lt;- data.frame(
   importe = precio_total_vec,
   stringsAsFactors = FALSE
 )</code></pre>
-</div>
-<div id="procesamiento-fruta-y-la-verdura" class="section level2">
-<h2>Procesamiento fruta y la verdura</h2>
-<p>Borrar primero las filas de pescado para asegurarte de que los
-productos restantes vendidos por kg sean exclusivamente fruta y
-verdura.</p>
-<pre class="r"><code>#Identificar TODOS los bloques de pescado (3 filas cada uno)
+<pre class="r"><code># Procesamiento fruta y la verdura
+
+#Identificar TODOS los bloques de pescado (3 filas cada uno)
 bloques_pescado &lt;- which(df_producto$productos == &quot;PESCADO&quot;)
 
 # Crear vector con TODAS las filas a eliminar (cada bloque son 3 filas)
 filas_a_eliminar &lt;- unlist(lapply(bloques_pescado, function(x) x:(x+2)))
 
 # Eliminar todos los bloques
-df_sin_pescado &lt;- df_producto[-filas_a_eliminar, ]</code></pre>
-<p>Ahora hacemos el df_fruta_verdura</p>
-<pre class="r"><code>ind_detalles_kg &lt;- grep(&quot;kg.*€/kg&quot;, df_sin_pescado$productos, value = FALSE)
+df_sin_pescado &lt;- df_producto[-filas_a_eliminar, ]
+
+ind_detalles_kg &lt;- grep(&quot;kg.*€/kg&quot;, df_sin_pescado$productos, value = FALSE)
 
 df_fruta_verdura &lt;- data.frame(
   num_ticket = df_sin_pescado$num_ticket[ind_detalles_kg],
@@ -617,12 +586,9 @@ mutate(
     str_extract(detalles, &quot;[0-9,]+$&quot;)))
 ) %&gt;%
 select(-detalles)</code></pre>
-</div>
-<div id="procesamiento-resto-de-productos-sin-kg" class="section level2">
-<h2>Procesamiento resto de productos sin kg</h2>
-<p>Extraemos cantidad descripcion y precio</p>
-<p>Primero borramos los datos ya presentes en el df fruta y verdura</p>
-<pre class="r"><code># Identificar las filas de detalles (kg y €/kg)
+<pre class="r"><code># Procesamiento resto de productos sin kg
+
+# Identificar las filas de detalles (kg y €/kg)
 ind_detalles_kg &lt;- grep(&quot;kg.*€/kg&quot;, df_sin_pescado$productos, value = FALSE)
 
 # Las filas de nombres están justo antes de los detalles
@@ -632,9 +598,9 @@ ind_nombres_kg &lt;- ind_detalles_kg - 1
 filas_fruta_verdura &lt;- sort(unique(c(ind_nombres_kg, ind_detalles_kg)))
 
 # Eliminar filas ya procesadas
-df_resto &lt;- df_sin_pescado[-filas_fruta_verdura, ]</code></pre>
-<p>Creamos el dataframe de productos vendidios por unidades</p>
-<pre class="r"><code>df_productos_unidades &lt;- df_resto %&gt;%
+df_resto &lt;- df_sin_pescado[-filas_fruta_verdura, ]
+
+df_productos_unidades &lt;- df_resto %&gt;%
   mutate(
     # 1. Extraer cantidad (siempre es el primer número)
     cantidad = as.numeric(str_extract(productos, &quot;^\\d+&quot;)),
@@ -683,10 +649,9 @@ df_resto &lt;- df_sin_pescado[-filas_fruta_verdura, ]</code></pre>
 ## Caused by warning in `FUN()`:
 ## ! NAs introducidos por coerción
 ## ℹ Run `dplyr::last_dplyr_warnings()` to see the 32 remaining warnings.</code></pre>
-</div>
-<div id="dataframe-final-con-todos-los-productos-analizados" class="section level2">
-<h2>dataframe final con todos los productos analizados:</h2>
-<pre class="r"><code># Añadir columna &#39;tipo&#39; a cada dataframe
+<pre class="r"><code># dataframe final con todos los productos analizados:
+
+# Añadir columna &#39;tipo&#39; a cada dataframe
 df_pescado &lt;- df_pescado %&gt;% mutate(tipo = &quot;pescado&quot;)
 df_fruta_verdura &lt;- df_fruta_verdura %&gt;% mutate(tipo = &quot;fruta_verdura&quot;)
 df_productos_unidades &lt;- df_productos_unidades %&gt;% mutate(tipo = &quot;unidades&quot;)
@@ -754,7 +719,23 @@ cat(&quot;\nResumen del DataFrame final:\n&quot;)</code></pre>
 ## 8                  NA
 ## 9                  NA
 ## 10                 NA</code></pre>
-</div>
+<p>#Preguntas</p>
+<p>¿Cuáles son los productos menos vendidos por unidades? ¿Y por
+kilos?</p>
+<p>¿Qué productos han generado mayor ingreso total (precio x
+cantidad)?</p>
+<p>¿Cuáles productos han aumentado o disminuido su venta a lo largo del
+tiempo?</p>
+<p>¿Qué productos se compran habitualmente juntos?</p>
+<p>¿Existen diferencias de precios para el mismo producto en diferentes
+tiendas o ubicaciones?</p>
+<p>¿Qué días de la semana hay más ventas? ¿Y a qué horas?</p>
+<p>¿En qué meses se venden más frutas/verduras, o pescados?</p>
+<p>¿Desde qué ciudades se emiten más tickets?</p>
+<p>¿Existen diferencias de consumo por ciudad?</p>
+<p>¿Cuánto se gasta semanal o mensualmente en un supermercado?</p>
+<p>¿Influye la disponibilidad de aparcamiento en el importe total de la
+compra?</p>
 </div>
 
 
