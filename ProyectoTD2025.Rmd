@@ -2,9 +2,9 @@
 title: "ProyectoTD2025"
 author: "Mar Alemany,Martín González,Mateo Reina, Sina Taheri, Adrian Mena,Sergio Nadal"
 date: "2025-03-28"
-output: 
-  rticles::mdpi_article:
-    extra_dependencies: longtable
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -77,8 +77,26 @@ Para el proyecto se han importado un total de `r n_archivos` archivos.
 
 ## 3.2 Carga de datos
 
-Definimos vectores para almacenar los datos de los tickets
-```{r}
+Se construyó un data frame a partir de los datos extraídos, realizando las transformaciones necesarias para asegurar que cada variable tuviera el formato y tipo de dato adecuados.
+
+Para la lectura de los archivos PDF se utilizaron funciones de la librería pdftools, mientras que la limpieza y manipulación de las cadenas de texto se llevó a cabo con funciones de la librería stringr.
+
+Durante el procesamiento, se asignó el tipo de dato Date a la variable de fecha y se convirtieron en valores numéricos las variables decimales como el total de la compra, la base imponible y la cuota de IVA. Cabe señalar que muchos de los datos no pueden incorporarse directamente al data frame, ya que en el formato original aparecen combinados en una misma línea. Es el caso de la fecha, la hora y el número de operación, que debieron separarse y asignarse a variables distintas.
+
+Por motivos de espacio y legibilidad, no se incluye la visualización del data frame generado a partir de los tickets.
+
+Las variables finales obtenidas se presentan en la Tabla \ref{tab:tabla1}.
+
+```{r tabla1, echo = FALSE}
+type <- c("comercio","empresa", "direccion", "cp", "telefono", "fecha", "hora", "op", "fs", "productos", "total", "forma_pago", "base_imp", "cuota", "nombre del comercio", "tipo y código de empresa", "dirección del comercio", "código postal", "teléfono del comercio", "fecha de la compra (día-mes-año)", "hora de la compra (horas y minutos)", "número del código de la operación", "código de la factura simplificada", "lista con los productos comprados", "dinero total de la compra", "forma de pago (tarjeta o en efectivo)", "base imponible (IVA)", "cuota del IVA")
+knitr::kable(rticles::string_to_table(type, 2),align = 'c', 
+             col.names = c("Variable", "Descripción"),
+             format = "latex", booktab = TRUE, 
+             caption = "Descripción de variables",)
+```
+
+
+```{r, echo = FALSE}
 comercio <- c() #nombre del comercio
 empresa <- c() #tipo y código de empresa
 direccion <- c() 
@@ -99,8 +117,7 @@ cuota <- c() #Cuota
 ```
 
 
-Extraemos la informacion de cada ticket y lo añadimos al vector correspondiente:
-```{r}
+```{r, echo = FALSE}
 for (archivo in archivos) {
   
   pdf <- pdf_text(archivo) #leemos le archivo pdf
@@ -152,8 +169,7 @@ for (archivo in archivos) {
 ```
 
 
-Creamos un data frame con los datos:
-```{r}
+```{r, echo = FALSE}
 df <- data.frame(comercio, empresa, direccion, cp, telefono, fecha, hora, 
                  op, fs, productos, total, forma_pago, base_imp, cuota,
                  stringsAsFactors = FALSE)
@@ -183,8 +199,7 @@ df$base_imp <- as.numeric(gsub(pattern = ",",replacement = ".",df$base_imp))
 df$cuota <- as.numeric(gsub(pattern = ",",replacement = ".",df$cuota))
 ```
 
-si hay aparcamiento o no
-```{r}
+```{r, echo = FALSE}
 aparcamientos <- c()
 for (archivo in archivos) {
   pdf <- pdf_text(archivo)
@@ -200,7 +215,19 @@ df_aparcamiento <- data.frame(archivo = archivos, aparcamiento = aparcamientos, 
 head(df_aparcamiento)
 
 ```
-# Analizamos los productos
+# 4. Analizamos los productos
+
+La información relativa a los productos comprados se encontraba inicialmente agrupada dentro de una única columna del data frame principal. Para facilitar su análisis, se extrajo esta columna a un nuevo data frame, separando los productos que venían concatenados en una misma celda.
+
+El procesamiento de los productos se realizó en varias etapas, según el tipo de producto y la forma en que aparecían en el ticket. En primer lugar, se identificaron los productos de pescadería, que siguen un formato particular: aparecen siempre precedidos por una línea con la palabra "PESCADO", seguida del nombre del producto en la línea siguiente y de los detalles de compra (peso, precio por kilo y total) en una tercera línea. A partir de esta estructura, se extrajeron los datos relevantes y se almacenaron en un nuevo data frame específico para pescado.
+
+Después, se eliminaron las filas correspondientes a productos de pescadería para poder trabajar exclusivamente con los productos que también se venden por peso, como frutas y verduras. Estos artículos generalmente constan de dos líneas: la primera contiene el nombre del producto y la segunda incluye el peso, el precio por kilogramo y el importe total. A partir de esta estructura se construyó un segundo data frame con las frutas y verduras, extrayendo y transformando la información necesaria.
+
+Una vez separados los productos por peso, se procedió a procesar el resto de productos, es decir, aquellos que se venden por unidades. En este caso, se extrajeron datos como la cantidad, el nombre del producto, el precio unitario y el importe total. Se aplicaron técnicas de procesamiento de texto para limpiar y estructurar la información, ya que algunos productos con una sola unidad incluían el precio directamente dentro del nombre del producto.
+
+Finalmente, los tres grupos de productos —pescado, frutas y verduras, y productos por unidades— se combinaron en un único data frame unificado. A este conjunto se le añadió una columna adicional que indicaba si el ticket incluía un servicio de aparcamiento, en caso de que esa información estuviera disponible. El resultado fue un data frame final, estructurado y homogéneo, con todos los productos organizados por tipo, cantidad, precio, importe y número de ticket, listo para su análisis posterior.
+
+
 
 En el df estan toda la informacion relativa a los productos en la columna producto la separamos en un nuevo dataframe con df_producto
 ```{r}
