@@ -516,8 +516,34 @@ df_final %>%
 print(diferencias precio)
 ```
 6-¿Qué días de la semana hay más ventas? ¿Y a qué horas?
+```{r}
+gasto_diario <- df %>% 
+  group_by(hora) %>% 
+  summarise(gasto_total_diario= sum(total, na.rm=TRUE)) %>%
+  arrange(desc(gasto_total_diario))
+print(gasto_diario) 
 
+gasto_total_diario <- gasto_diario %>%
+  mutate(hora_limpia= hour(hms(hora))       #Para extraer las horas de 0 a 23
 
+#Agrupar por hora redondeada
+gasto_por_hora <- gasto_diario %>%
+  mutate(hora_completa=paste0(hora, ":00"), hora_limpia=hour(hms(hora_completa))) %>%
+  group_by(hora_limpia) %>%
+  summarise(gasto_total = sum(gasto_total_diario, na.rm = TRUE)) %>%
+  arrange(desc(gasto_total))
+print(gasto_por_hora)
+
+#La hora en la que más se gasta son las 13:00h
+
+ggplot(gasto_por_hora, aes(x = factor(hora_limpia), y = gasto_total, fill = factor(hora_limpia))) +
+  geom_col(show.legend = FALSE) +
+  labs(title = "Gasto total por horas",
+       x = "Hora (número)",
+       y = "Gasto total") +
+  theme_minimal()
+
+```
 7-En qué meses se venden más frutas/verduras, o pescados?
 
 
