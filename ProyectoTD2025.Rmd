@@ -516,28 +516,28 @@ transacciones <- as(split(df_final$nombre, df_final$num_ticket), "transactions")
 reglas <- apriori(transacciones, parameter = list(support = 0.01, confidence = 0.5, minlen = 2))
 
 # Filtrar y ordenar las reglas más interesantes
-reglas_interesantes <- subset(reglas, lift > 1)
-inspect(sort(reglas_interesantes, by = "lift"))
+#reglas_interesantes <- subset(reglas, lift > 1)
+#inspect(sort(reglas_interesantes, by = "lift"))
 
 #  Visualización
-plot(reglas_interesantes, method = "graph", engine = "htmlwidget")
+#plot(reglas_interesantes, method = "graph", engine = "htmlwidget")
 
 ```
 Respuesta: Esta pregunta es muy general y esta funcionalidad puede mostrar qué productos se compran juntos con más frecuencia.
 
 
 5-¿Existen diferencias de precios para el mismo producto en diferentes tiendas o ubicaciones?
-```{r}
+
 library(dplyr)
 df_final %>%
   group_by(nombre,precio) %>%
   summarise(df$direccion) -> diferencias_precio
 print(diferencias precio)
-```
+
 
 
 6-¿A que horas del dia hay más ventas?
-```{r}
+
 gasto_diario <- df %>% 
   group_by(hora) %>% 
   summarise(gasto_total_diario= sum(total, na.rm=TRUE)) %>%
@@ -563,7 +563,7 @@ ggplot(gasto_por_hora, aes(x = factor(hora_limpia), y = gasto_total, fill = fact
        x = "Hora (número)",
        y = "Gasto total") +
   theme_minimal()
-```
+
 
 7-En cuantos tickets se venden frutas/verduras y pescados?
 ```{r}
