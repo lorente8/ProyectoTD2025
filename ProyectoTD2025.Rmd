@@ -656,7 +656,7 @@ print(resultados)
 ```
 Respuesta: No hay datos de aparcamiento, pués no influye.
 
-12-¿Cuál es las categoría de productos con mayor venta en términos de cantidad, y cuál es su contribución porcentual al total de unidades vendidas?
+12-¿Cuál es las categoría de productos con mayor venta en términos de cantidad, y cuál es su contribución porcentual al total de unidades vendidas? Hay relación entre otras categorías?
 ```{r}
 
 # Calcular total de unidades vendidas por categoría
@@ -675,7 +675,9 @@ ventas_por_tipo <- ventas_por_tipo %>%
 ventas_por_tipo
 ```
 Cuanto es el importe total de pescado? Hay relacion entre el consumo de pescado y comprar de pescado?
+# En estos códigos, podemos aplicar summarise para obtener el ingreso de pescado y fruta_verdura, y el porcentaje obtenido. Además, podemos ver que dividir importe de categoría entre importe total resulta en obtener un porcentaje que podemos aprovechar en análisis.
 ```{r}
+
 df_final %>% summarise(total_importe = sum(ingreso_total, na.rm = TRUE),
                        importe_pescado = sum(ingreso_total[tipo == "pescado"], na.rm = TRUE),
                        porcentaje_importe_pescado = importe_pescado / total_importe * 100)
@@ -684,7 +686,8 @@ df_final %>% summarise(total_importe = sum(ingreso_total, na.rm = TRUE),
 
 ```{r}
 df_final %>% summarise(total_importe = sum(ingreso_total, na.rm = TRUE),
-                       importe_pescado = sum(ingreso_total[tipo == "fruta_verdura"], na.rm = TRUE),
-                       porcentaje_importe_pescado = importe_pescado / total_importe * 100)
+                       importe_fruta_verdura = sum(ingreso_total[tipo == "fruta_verdura"], na.rm = TRUE),
+                       porcentaje_importe_fruta_verdura = importe_fruta_verdura / total_importe * 100)
 
 ```
+Respuesta: Unidades son mayor en términos de cantidad con 92.71%. Podemos ver que la importe total de pescado es la más baja entre estas tres categorías y también representa aproximadamente el 0.5% de las compras. El porcentaje de los valores vendidos y el costo de esos valores son números bastante cercanos. Se puede decir que el pescado tiene un costo más alto, ya que en relación con la cantidad comprada, tiene una mayor proporción de los costos en comparación con su porcentaje de compra.
