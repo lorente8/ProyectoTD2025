@@ -515,7 +515,7 @@ df_final %>%
   summarise(df$direccion) -> diferencias_precio
 print(diferencias precio)
 ```
-6-¿Qué días de la semana hay más ventas? ¿Y a qué horas?
+6-¿A que horas del dia hay más ventas?
 ```{r}
 gasto_diario <- df %>% 
   group_by(hora) %>% 
