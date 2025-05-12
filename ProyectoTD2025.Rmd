@@ -519,7 +519,39 @@ Respuesta: Esta pregunta es muy general y esta funcionalidad puede mostrar qué 
 
 9-¿Existen diferencias de consumo por ciudad?
 
-10-¿Cuánto se gasta semanal o mensualmente en un supermercado?
+10-¿Que mes y que dia del año es cuando mas dinero se gasta?
+# Gasto mensual
+gasto_mensual <- df %>%
+  group_by(mes) %>%
+  summarise(gasto_total_mensual = sum(total, na.rm = TRUE)) %>%
+  arrange(desc(gasto_total_mensual))
+
+print(gasto_mensual)
+# El mes del año con mas gasto es enero, seguido de marzo y febrero
+
+ggplot(gasto_mensual, aes(x = factor(mes), y = gasto_total_mensual, fill = factor(mes))) +
+  geom_col(show.legend = FALSE) +
+  labs(title = "Gasto total por mes",
+       x = "Mes (número)",
+       y = "Gasto total") +
+  theme_minimal()
+
+
+# Gasto diario
+gasto_diario <- df %>%
+  group_by(dia) %>%
+  summarise(gasto_total_diario = sum(total, na.rm = TRUE)) %>%
+  arrange(desc(gasto_total_diario))
+
+print(gasto_diario)
+# El dia del mes con más gasto es el dia 27 de cada mes 
+
+ggplot(gasto_diario, aes(x = factor(dia), y = gasto_total_diario, fill = factor(dia))) +
+  geom_col(show.legend = FALSE) +
+  labs(title = "Gasto total por dia",
+       x = "Dia (número)",
+       y = "Gasto total") +
+  theme_minimal()
 
 11-¿Influye la disponibilidad de aparcamiento en el importe total de la compra?
 ```{r}
