@@ -548,7 +548,17 @@ ggplot(gasto_por_hora, aes(x = factor(hora_limpia), y = gasto_total, fill = fact
 
 7-En cuantos tickets se venden frutas/verduras y pescados?
 ```{r}
+df_fruta_verdura %>%
+  summarise(n_tickets = n_distinct(num_ticket)) %>%
+  arrange(desc(n_tickets)) -> tickets_por_mercadona
+print(tickets_por_mercadona)
 
+df_pescado %>%
+  summarise(n_tickets= n_distinct(num_ticket)) %>%
+  arrange(desc(n_tickets)) -> tickets_por_mercadona2
+print(tickets_por_mercadona2)
+
+#Podemos ver que en 168 tickets se vende fruta o verdura, y en 24 tickets se vende pescado
 ```
 
 8-¿Desde qué ciudades se emiten más tickets?
