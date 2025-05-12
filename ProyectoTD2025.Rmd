@@ -1,6 +1,6 @@
 ---
 title: "ProyectoTD2025"
-author: "Mar Alemany,Martín González,Mateo Reina, Sina Taheri, Adrian Mena,Sergio Nadal"
+author: "Mar Alemany, Martín González, Mateo Reina, Sina Taheri, Adrian Mena, Sergio Nadal"
 date: "2025-03-28"
 output: 
   rticles::mdpi_article:
