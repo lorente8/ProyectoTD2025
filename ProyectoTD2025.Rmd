@@ -516,8 +516,25 @@ Respuesta: Esta pregunta es muy general y esta funcionalidad puede mostrar qué 
 
 
 8-¿Desde qué ciudades se emiten más tickets?
+df %>%
+  group_by(direccion) %>%
+  summarise(n_tickets = n_distinct(num_ticket)) %>%
+  arrange(desc(n_ticket)) <- tickets_por_mercadona
+print(tickets_por_mercadona)
+# Se emiten mas tickets desde el mercadona de "C/Quart 120"
 
-9-¿Existen diferencias de consumo por ciudad?
+9-¿Existen diferencias de consumo por cada mercadona?
+df%>%
+  group_by(direccion)
+  summarise(
+    media_gasto=mean(total, na.rm = TRUE)
+    mediana_gasto=median(total,  na.rm = TRUE)
+    desv_gasto=sd(total, na.rm = TRUE)
+  ) %>%
+  arrange(desc(media_gasto)) <- gasto_por_mercadona
+print(gasto_por_mercadona)
+# Si que hay diferencia de consumo, en cada mercadona la media de consumo es difernete, el mercadona con la media de consumo mas alto es "Avda. del textil 21"
+
 
 10-¿Que mes y que dia del año es cuando mas dinero se gasta?
 # Gasto mensual
