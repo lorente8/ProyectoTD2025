@@ -141,7 +141,7 @@ for (archivo in archivos) {
   linea_forma_pago <- ticket[p+2]
   linea_iva <- ticket[grep("TOTAL", ticket)[2]]
   
-  #extaremos los datos
+  #extraemos los datos
   com <- strsplit(linea_comercio,", ")[[1]]
   comercio <- c(comercio, com[1])
   empresa <- c(empresa, com[2])
