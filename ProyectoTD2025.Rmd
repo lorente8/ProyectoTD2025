@@ -483,7 +483,26 @@ print(head(productos_ordenados[, c("nombre", "ingreso_total")], 3))
 ```
 Respuesta: Como vemos Alistado Mediano con 31.33 es mayor
 
-3-¿Cuáles productos han aumentado o disminuido su venta a lo largo del tiempo?
+3-¿Cuál es el ticket con el mayor importe total y qué porcentaje representa este ticket respecto al importe total de todos los tickets?
+  
+```{r}
+
+# Calcular importe total por ticket y ordenar
+ticket_mayor <- df_final %>% group_by(num_ticket) %>% summarise(importe_total = sum(importe, na.rm = TRUE)) %>% arrange(desc(importe_total)) %>%
+  head(1)  # Tomamos el primero (mayor importe)
+
+# Importe total general
+total_ventas <- sum(df_final$importe, na.rm = TRUE)
+
+# Calcular porcentaje
+porcentaje <- round((ticket_mayor$importe_total / total_ventas) * 100, 2)
+
+
+list( ticket_mayor = ticket_mayor, porcentaje_del_total = paste0(porcentaje, "%"))
+
+```
+Respuesta: El ticket con el mayor importe total es el número 397921, con un importe de 234,82 euros.
+Este ticket constituye el 1,67% del importe total de todos los tickets.
 
 4-¿Qué productos se compran habitualmente juntos? 
 ```{r}
@@ -562,6 +581,7 @@ print(tickets_por_mercadona2)
 ```
 
 8-¿Desde qué ciudades se emiten más tickets?
+
 df %>%
   group_by(direccion) %>%
   summarise(n_tickets = n_distinct(num_ticket)) %>%
@@ -635,3 +655,36 @@ print(resultados)
 
 ```
 Respuesta: No hay datos de aparcamiento, pués no influye.
+
+12-¿Cuál es las categoría de productos con mayor venta en términos de cantidad, y cuál es su contribución porcentual al total de unidades vendidas?
+```{r}
+
+# Calcular total de unidades vendidas por categoría
+ventas_por_tipo <- df_final %>% 
+  filter(!is.na(tipo)) %>%  
+  group_by(tipo) %>%
+  summarise(total_unidades = sum(cantidad, na.rm = TRUE)) %>%
+  arrange(desc(total_unidades))
+
+# Calcular total general de unidades 
+total_unidades_filtrado <- sum(ventas_por_tipo$total_unidades)
+
+# Añadir columna de porcentaje correctamente calculado
+ventas_por_tipo <- ventas_por_tipo %>% 
+  mutate(porcentaje = round((total_unidades / total_unidades_filtrado) * 100, 2))
+ventas_por_tipo
+```
+Cuanto es el importe total de pescado? Hay relacion entre el consumo de pescado y comprar de pescado?
+```{r}
+df_final %>% summarise(total_importe = sum(ingreso_total, na.rm = TRUE),
+                       importe_pescado = sum(ingreso_total[tipo == "pescado"], na.rm = TRUE),
+                       porcentaje_importe_pescado = importe_pescado / total_importe * 100)
+
+```
+
+```{r}
+df_final %>% summarise(total_importe = sum(ingreso_total, na.rm = TRUE),
+                       importe_pescado = sum(ingreso_total[tipo == "fruta_verdura"], na.rm = TRUE),
+                       porcentaje_importe_pescado = importe_pescado / total_importe * 100)
+
+```
