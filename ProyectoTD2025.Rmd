@@ -504,27 +504,26 @@ list( ticket_mayor = ticket_mayor, porcentaje_del_total = paste0(porcentaje, "%"
 Respuesta: El ticket con el mayor importe total es el número 397921, con un importe de 234,82 euros.
 Este ticket constituye el 1,67% del importe total de todos los tickets.
 
-4-¿Qué productos se compran habitualmente juntos? 
+4-¿Qué productos se compran habitualmente juntos? ¿Que podemos entender sobre la dieta de los clientes?
 ```{r}
-library(arules)
-library(arulesViz)
+product_pairs <- df_final %>% rename(item1 = nombre) %>% inner_join(df_final, by = "num_ticket") %>%
+rename(item2 = nombre) %>% filter(item1 < item2)  
+                           # Esto evita pares duplicados y pares del mismo producto
 
-#Preparar los datos en formato transaccional
-transacciones <- as(split(df_final$nombre, df_final$num_ticket), "transactions")
 
-#Aplicar el algoritmo Apriori para encontrar reglas de asociación
-reglas <- apriori(transacciones, parameter = list(support = 0.01, confidence = 0.5, minlen = 2))
+# calcula productos pares
+pair_counts <- product_pairs %>% group_by(item1, item2) %>% summarise(frequency = n(), .groups = "drop") %>%
+arrange(desc(frequency))
 
-# Filtrar y ordenar las reglas más interesantes
-#reglas_interesantes <- subset(reglas, lift > 1)
-#inspect(sort(reglas_interesantes, by = "lift"))
+# top 20
+head(pair_counts, 20)
 
-#  Visualización
-#plot(reglas_interesantes, method = "graph", engine = "htmlwidget")
 
 ```
-Respuesta: Esta pregunta es muy general y esta funcionalidad puede mostrar qué productos se compran juntos con más frecuencia.
-
+Respuesta: Has identificado pares de productos más frecuentemente comprados juntos, donde uno de ellos es casi siempre QUESO LONCHAS CABRA. Eso sugiere que este producto es muy popular y acompaña a muchos otros productos a la misma compra.
+Observamos que:
+1-La presencia de productos sin lactosa y Desnatada indica preocupación para comer más saludable.
+2-En conjunto, los hábitos reflejan una dieta equilibrada, con atención a la salud y lo natural.
 
 5-¿Existen diferencias de precios para el mismo producto en diferentes tiendas o ubicaciones?
 
