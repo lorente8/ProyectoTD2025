@@ -508,7 +508,13 @@ Respuesta: Esta pregunta es muy general y esta funcionalidad puede mostrar qué 
 
 
 5-¿Existen diferencias de precios para el mismo producto en diferentes tiendas o ubicaciones?
-
+```{r}
+library(dplyr)
+df_final %>%
+  group_by(nombre,precio) %>%
+  summarise(df$direccion) -> diferencias_precio
+print(diferencias precio)
+```
 6-¿Qué días de la semana hay más ventas? ¿Y a qué horas?
 
 
