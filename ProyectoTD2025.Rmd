@@ -576,8 +576,8 @@ df_pescado %>%
   arrange(desc(n_tickets)) -> tickets_por_mercadona2
 print(tickets_por_mercadona2)
 
-#Podemos ver que en 168 tickets se vende fruta o verdura, y en 24 tickets se vende pescado
 ```
+Respuesta: Podemos ver que en 168 tickets se vende fruta o verdura, y en 24 tickets se vende pescado
 
 8-¿Desde qué ciudades se emiten más tickets?
 
