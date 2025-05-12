@@ -515,6 +515,8 @@ df_final %>%
   summarise(df$direccion) -> diferencias_precio
 print(diferencias precio)
 ```
+
+
 6-¿A que horas del dia hay más ventas?
 ```{r}
 gasto_diario <- df %>% 
@@ -542,10 +544,12 @@ ggplot(gasto_por_hora, aes(x = factor(hora_limpia), y = gasto_total, fill = fact
        x = "Hora (número)",
        y = "Gasto total") +
   theme_minimal()
+```
+
+7-En cuantos tickets se venden frutas/verduras y pescados?
+```{r}
 
 ```
-7-En qué meses se venden más frutas/verduras, o pescados?
-
 
 8-¿Desde qué ciudades se emiten más tickets?
 df %>%
