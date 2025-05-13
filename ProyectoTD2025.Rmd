@@ -10,13 +10,13 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-# 1. Introducción
+# Introducción
 
 En la actualidad, la digitalización de los tickets de compra se ha convertido en una práctica común en grandes cadenas de supermercados. Estos tickets electrónicos, enviados en formato PDF al correo del cliente, no solo reducen el uso de papel, sino que también generan datos valiosos que pueden ser analizados para obtener información relevante sobre los hábitos de consumo, la evolución de precios y las preferencias de los compradores.
 
 Este proyecto tiene como objetivo desarrollar un sistema de análisis automatizado que permita extraer, procesar y visualizar la información contenida en los tickets de Mercadona. Mediante técnicas de tratamiento de datos en R, exploraremos patrones de compra, identificaremos los productos más vendidos, analizaremos la evolución temporal de los precios y determinaremos tendencias en función de la ubicación de la tienda y el momento de la compra.
 
-# 2. Material y Métodos
+# Material y Métodos
 
 Para llevar a cabo este proyecto se han seleccionando un conjunto de librerías específicas que respondieran a los distintos requerimientos del análisis. 
 
@@ -44,8 +44,8 @@ package.check <- lapply(packages, FUN = function(x) {
 })
 ```
 
-# 3. Importación de los datos
-## 3.1 Carga de ficheros
+# Importación de los datos
+## Carga de ficheros
 
 Para evitar errores durante el procesamiento posterior, se realizó un cambio en los nombres de los archivos PDF originales. Los archivos fueron renombrados de forma secuencial con un formato estándar. Esta acción se llevó a cabo una única vez, y por ello el código correspondiente fue comentado en el script, con el fin de prevenir que los archivos se sobrescriban accidentalmente al ejecutar el programa más de una vez.
 
@@ -75,7 +75,7 @@ n_archivos <- length(archivos)
 
 Para el proyecto se han importado un total de `r n_archivos` archivos.
 
-## 3.2 Carga de datos
+## Carga de datos
 
 Se construyó un data frame a partir de los datos extraídos, realizando las transformaciones necesarias para asegurar que cada variable tuviera el formato y tipo de dato adecuados.
 
@@ -83,7 +83,6 @@ Para la lectura de los archivos PDF se utilizaron funciones de la librería pdft
 
 Durante el procesamiento, se asignó el tipo de dato Date a la variable de fecha y se convirtieron en valores numéricos las variables decimales como el total de la compra, la base imponible y la cuota de IVA. Cabe señalar que muchos de los datos no pueden incorporarse directamente al data frame, ya que en el formato original aparecen combinados en una misma línea. Es el caso de la fecha, la hora y el número de operación, que debieron separarse y asignarse a variables distintas.
 
-Por motivos de espacio y legibilidad, no se incluye la visualización del data frame generado a partir de los tickets.
 
 ```{r tabla-variables}
 type <- c("comercio","empresa", "direccion", "cp", "telefono", "fecha", "hora", "op", "fs", "productos", "total", "forma_pago", "base_imp", "cuota", "nombre del comercio", "tipo y código de empresa", "dirección del comercio", "código postal", "teléfono del comercio", "fecha de la compra (día-mes-año)", "hora de la compra (horas y minutos)", "número del código de la operación", "código de la factura simplificada", "lista con los productos comprados", "dinero total de la compra", "forma de pago (tarjeta o en efectivo)", "base imponible (IVA)", "cuota del IVA")
@@ -92,7 +91,10 @@ knitr::kable(rticles::string_to_table(type, 2),align = 'c',
              format = "latex", booktab = TRUE, 
              caption = "Descripción de variables") 
 ```
-Las variables finales obtenidas se presentan en la Tabla \@ref(tab:tabla-variables).
+
+Las variables finales obtenidas se pueden observar en la Tabla \ref(tab:tabla-variables).
+
+En la Tabla \ref{tab:tabla_datos} se presentan las primeras observaciones del conjunto de datos procesado, que incluye información extraída de los tickets,
 
 
 ```{r, echo = FALSE}
@@ -116,7 +118,7 @@ cuota <- c() #Cuota
 ```
 
 
-```{r, echo = FALSE}
+```{r, include = FALSE}
 for (archivo in archivos) {
   
   pdf <- pdf_text(archivo) #leemos le archivo pdf
@@ -165,10 +167,12 @@ for (archivo in archivos) {
   cuota <- c(cuota, base_couta[3])
   
 }
+
+
 ```
 
 
-```{r, echo = FALSE}
+```{r , include= FALSE}
 df <- data.frame(comercio, empresa, direccion, cp, telefono, fecha, hora, 
                  op, fs, productos, total, forma_pago, base_imp, cuota,
                  stringsAsFactors = FALSE)
@@ -198,7 +202,21 @@ df$base_imp <- as.numeric(gsub(pattern = ",",replacement = ".",df$base_imp))
 df$cuota <- as.numeric(gsub(pattern = ",",replacement = ".",df$cuota))
 ```
 
-```{r, echo = FALSE}
+```{r tabla_datos, echo=FALSE}
+# Solo mostramos las primeras 10 filas para que no sea muy larga
+knitr::kable(head(df, 10),
+             align = 'c',
+             format = "latex", booktabs = TRUE,
+             caption = "Primeras observaciones del conjunto de datos procesado",
+             col.names = c("Dirección", "CP", "Teléfono", "Hora", "Operación", 
+                           "Productos", "Total", "Forma de pago", 
+                           "Base imponible", "Cuota IVA", "Año", "Mes", "Día", 
+                           "Tienda", "Caja", "Ticket"))
+
+```
+
+
+```{r, include= FALSE}
 aparcamientos <- c()
 for (archivo in archivos) {
   pdf <- pdf_text(archivo)
@@ -214,23 +232,23 @@ df_aparcamiento <- data.frame(archivo = archivos, aparcamiento = aparcamientos, 
 head(df_aparcamiento)
 
 ```
-# 4. Analizamos los productos
+# Analizamos los productos
 
 La información relativa a los productos comprados se encontraba inicialmente agrupada dentro de una única columna del data frame principal. Para facilitar su análisis, se extrajo esta columna a un nuevo data frame, separando los productos que venían concatenados en una misma celda.
 
-## 4.1 Productos pescateria
+## 1. Productos pescateria
 El procesamiento de los productos se realizó en varias etapas, según el tipo de producto y la forma en que aparecían en el ticket. En primer lugar, se identificaron los productos de pescadería, que siguen un formato particular: aparecen siempre precedidos por una línea con la palabra "PESCADO", seguida del nombre del producto en la línea siguiente y de los detalles de compra (peso, precio por kilo y total) en una tercera línea. A partir de esta estructura, se extrajeron los datos relevantes y se almacenaron en un nuevo data frame específico para pescado.
 
 
-## 4.2 Productos vendidos por peso
+## Productos vendidos por peso
 
 Después, se eliminaron las filas correspondientes a productos de pescadería para poder trabajar exclusivamente con los productos que también se venden por peso, como frutas y verduras. Estos artículos generalmente constan de dos líneas: la primera contiene el nombre del producto y la segunda incluye el peso, el precio por kilogramo y el importe total. A partir de esta estructura se construyó un segundo data frame con las frutas y verduras, extrayendo y transformando la información necesaria.
 
-## 4.2 Productos vendidos por unidad
+## Productos vendidos por unidad
 
 Una vez separados los productos por peso, se procedió a procesar el resto de productos, es decir, aquellos que se venden por unidades. En este caso, se extrajeron datos como la cantidad, el nombre del producto, el precio unitario y el importe total. Se aplicaron técnicas de procesamiento de texto para limpiar y estructurar la información, ya que algunos productos con una sola unidad incluían el precio directamente dentro del nombre del producto.
 
-# 4.4 productos analizados
+# Productos analizados
 Finalmente, los tres grupos de productos —pescado, frutas y verduras, y productos por unidades— se combinaron en un único data frame unificado. A este conjunto se le añadió una columna adicional que indicaba si el ticket incluía un servicio de aparcamiento, en caso de que esa información estuviera disponible. El resultado fue un data frame final, estructurado y homogéneo, con todos los productos organizados por tipo, cantidad, precio, importe y número de ticket, listo para su análisis posterior.
 
 
@@ -442,7 +460,7 @@ print(head(df_final, 10))
 
 ```
 
-#Preguntas
+# Preguntas
 
 1- ¿Cuáles son los productos menos vendidos por unidades? ¿Y por kilos?
 ```{r}
