@@ -525,25 +525,32 @@ df_final <- df_final %>% select(-tiene_aparcamiento) %>% drop_na()
 
 ## Análisis univariante 
 
-Primero analizaremos las variables distinguiendolas en dos grupos, variables categóricas y variables numéricas.
+Comenzaremos el análisis de las variables dividiéndolas en dos grupos: las variables categóricas y las variables numéricas.
 
-### Variables de tipo categórico
+### Variables categóricas
 
-Llamamos variable categórica a aquella que representa cualidades o características. En nuestro data frame están codificadas como _character_.
+Las variables categóricas representan cualidades o características, y en nuestro data frame están codificadas como tipo character.
 
-En el data frame de los tickets la mayoría de las variables son de tipo categórico, una de las más relevantes es la variable *fs* que es única, y por tanto, el identificativo de cada ticket.
+En el data frame de los tickets, la mayoría de las variables son de tipo categórico. Una de las más relevantes es la variable num_ticket, que es única para cada ticket y sirve como identificador.
 
-Luego tenemos las variables *comercio* y *empresa* que en todos los tickets es igual, pero esta forma de guardarlos está pensada por si se incluyeran otras empresas de supermercados. Ocurre lo mismo con el método de pago, en el que solo tenemos casos de pago con tarjeta, pero incluimos esta variable en el caso de que haya algún ticket con pago en efectivo.
+Otras variables categóricas en nuestro análisis incluyen comercio y empresa, que son constantes en todos los tickets. Sin embargo, esta estructura está pensada por si en el futuro se incluyen tickets de otros comercios o empresas. De manera similar, tenemos la variable forma_pago, que actualmente solo contiene registros de pagos realizados con tarjeta, pero se mantiene por si en algún ticket hay pagos en efectivo.
 
 ```{r include=FALSE}
-n_direc <- length(unique(df$direccion))
-n_cp <- length(unique(df$cp))
-d_productos <- length(unique(df_produc$descripcion))
+n_comercio <- length(unique(df_final$comercio))
+n_empresa <- length(unique(df_final$empresa))
+n_forma_pago <- length(unique(df_final$forma_pago))
+
 ```
-También observamos que tenemos `r n_direc` direcciones diferentes y `r n_cp` códigos postales.
+En cuanto a las variables categóricas en el data frame de productos, tenemos tipo, que clasifica los productos en categorías como "pescado", "fruta_verdura" y "unidades". Además, la variable nombre contiene los nombres de los productos.
 
-En el data frame de los productos tenemos también la variable *fs* y la variable *descripcion* donde están los nombres de los productos. En total tenemos `r d_productos` distintos registrados.
+En total, tenemos `r n_comercio` valores únicos en comercio, `r n_empresa` valores únicos en empresa, y `r n_forma_pago` valores únicos en forma_pago.
+```{r}
+n_tipo <- length(unique(df_final$tipo))
+n_nombre_producto <- length(unique(df_final$nombre))
 
+```
+
+También observamos que tenemos `r n_tipo` tipos diferentes de productos y `r n_nombre_producto` productos distintos registrados en total.
 
 ### Variables de tipo numérico
 
