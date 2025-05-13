@@ -648,28 +648,48 @@ df %>%
 ```
  En este segundo gráfico vemos que el supermercado ubicado en Calle Alicante 83 sigue destacando en ingresos, aunque es el de Avenida del Textil el que presenta una mayor ganancia media por ticket. Esto sugiere un rendimiento más eficiente, a pesar de no tener el mayor volumen de ventas.
 
-**Número productos - Precio total**
-Vamos a realizar un análisis de la relación entre el número de productos vendidos en cada ticket y el precio total de ese ticket para ver si existe una relación entre ambos.
+**Relación entre el Número de Productos y el Precio Total por Ticket**
+
+En este apartado analizamos si existe una relación directa entre el número de productos comprados en un ticket y el precio total pagado en dicho ticket. Para ello, realizamos un gráfico de dispersión y calculamos el coeficiente de correlación de Pearson.
+
 ```{r grafica3, echo=FALSE, out.width='85%'}
+library(dplyr)
+
+# Total de productos por ticket
+productos_por_ticket <- df_final %>%
+  group_by(num_ticket) %>%
+  summarise(total_productos = sum(cantidad, na.rm = TRUE))
+
+# Total gastado por ticket
+precios_por_ticket <- df_final %>%
+  group_by(num_ticket) %>%
+  summarise(precios = sum(importe, na.rm = TRUE))
+
+
+
 # Unir el número de productos por ticket con los precios por ticket
-datos_completos <- merge(productos_por_ticket, precios_por_ticket, by = "fs")
+datos_completos <- merge(productos_por_ticket, precios_por_ticket, by = "num_ticket")
 
 # Crear un gráfico de dispersión
 ggplot(datos_completos, aes(x = total_productos, y = precios)) +
   geom_point(color = "blue") +
-  labs(title = "Relación entre el número de productos y el precio por ticket",
-       x = "Número de productos por ticket",
-       y = "Precio por ticket") +
+  labs(
+    title = "Relación entre número de productos y precio total del ticket",
+    x = "Número de productos por ticket",
+    y = "Importe total (€)"
+  ) +
   theme_minimal()
 
+# Calcular correlación de Pearson
 cant_precio <- cor(datos_completos$total_productos, datos_completos$precios,
                    method = 'pearson') 
 cant_precio <- round(cant_precio, digits = 2)
+
 ```
 
-Este gráfico de dispersión (donde el eje x representa el número total de productos por ticket y el eje y representa el precio total por ticket) permite visualizar la relación entre el número de productos vendidos en un ticket y el precio total de ese ticket. 
-\bigskip
-Haciendo la correlación de *Pearson* obtenemos `r cant_precio`, que es muy cercano a $1$, lo que quiere decir que existe una relación lineal positiva entre estas dos variables, a medida que aumenta el número de productos, también aumenta el precio de manera proporcional.
+El gráfico anterior muestra cómo varía el importe total del ticket en función del número de productos adquiridos. Cada punto representa un ticket diferente.
+
+El coeficiente de correlación de Pearson es r cant_precio, un valor cercano a $1$, lo cual indica que existe una relación lineal positiva muy fuerte entre ambas variables. Es decir, cuantos más productos se compran en un ticket, mayor es el importe total pagado, lo que resulta coherente con el comportamiento esperado en compras de supermercado.
 
 
 
