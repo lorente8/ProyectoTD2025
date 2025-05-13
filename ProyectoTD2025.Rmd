@@ -1031,7 +1031,7 @@ ggplot(ventas_por_tipo, aes(x = reorder(tipo, total_unidades), y = total_unidade
 
 A través del análisis detallado de los tickets de compra, se han obtenido importantes hallazgos sobre los patrones de consumo en los distintos establecimientos. Hemos identificado qué productos son los más y menos vendidos, tanto por unidades como por kilos, así como aquellos que generan mayor ingreso. También se han detectado diferencias de precios del mismo producto entre tiendas, lo que podría deberse a políticas de precios locales o promociones específicas.
 
-El estudio de los tickets ha permitido observar variaciones en el comportamiento de compra a lo largo de la semana, el mes y el día, identificando los momentos de mayor y menor actividad. Esto puede ser útil para tomar decisiones operativas, como optimizar horarios de apertura o reforzar personal en momentos clave. Además, se han detectado combinaciones frecuentes de productos, lo que aporta pistas sobre los hábitos alimenticios de los clientes, reflejando un patrón de consumo alineado con una dieta mediterránea basada en frutas, verduras y pescado.
+El estudio de los tickets ha permitido observar variaciones en el comportamiento de compra a lo largo de la semana, el mes y el día, identificando los momentos de mayor y menor actividad. Esto puede ser útil para tomar decisiones operativas, como optimizar horarios de apertura o reforzar personal en momentos clave. Además, se han detectado combinaciones frecuentes de productos, lo que aporta pistas sobre los hábitos alimenticios de los clientes.
 
 En conjunto, estos análisis ofrecen una base sólida para tomar decisiones estratégicas orientadas a mejorar la eficiencia, ajustar la oferta de productos y potenciar la rentabilidad de cada tienda.
 
