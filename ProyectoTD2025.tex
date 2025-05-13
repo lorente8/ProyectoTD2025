@@ -4,7 +4,7 @@
 %=================================================================
 % pandoc conditionals added to preserve backwards compatibility with previous versions of rticles
 
-\documentclass[,,,oneauthor,pdftex]{Definitions/mdpi}
+\documentclass[,article,submit,moreauthors,pdftex]{Definitions/mdpi}
 
 
 %% Some pieces required from the pandoc template
@@ -81,14 +81,15 @@
 
 
 % Authors, for the paper (add full first names)
-\Author{$^{}$}
+\Author{Mar Alemany$^{}$, Martín González$^{}$, Mateo Reina$^{}$, Adrian
+Mena$^{}$}
 
 
 %\longauthorlist{yes}
 
 
 % MDPI internal command: Authors, for metadata in PDF
-\AuthorNames{}
+\AuthorNames{Mar Alemany, Martín González, Mateo Reina, Adrian Mena}
 
 % MDPI internal command: Authors, for citation in the left column
 
@@ -167,52 +168,22 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Pandoc syntax highlighting
-\usepackage{color}
-\usepackage{fancyvrb}
-\newcommand{\VerbBar}{|}
-\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
-\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
-% Add ',fontsize=\small' for more characters per line
-\usepackage{framed}
-\definecolor{shadecolor}{RGB}{248,248,248}
-\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
-\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
-\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
-\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\BuiltInTok}[1]{#1}
-\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
-\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
-\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
-\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
-\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
-\newcommand{\ExtensionTok}[1]{#1}
-\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
-\newcommand{\ImportTok}[1]{#1}
-\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
-\newcommand{\NormalTok}[1]{#1}
-\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
-\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
-\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
-\newcommand{\RegionMarkerTok}[1]{#1}
-\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
-\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 
 % tightlist command for lists without linebreak
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 
+% From pandoc table feature
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
 
 
 \usepackage{booktabs}
@@ -225,7 +196,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \hypertarget{introducciuxf3n}{%
-\section{1. Introducción}\label{introducciuxf3n}}
+\section{Introducción}\label{introducciuxf3n}}
 
 En la actualidad, la digitalización de los tickets de compra se ha
 convertido en una práctica común en grandes cadenas de supermercados.
@@ -244,7 +215,7 @@ precios y determinaremos tendencias en función de la ubicación de la
 tienda y el momento de la compra.
 
 \hypertarget{material-y-muxe9todos}{%
-\section{2. Material y Métodos}\label{material-y-muxe9todos}}
+\section{Material y Métodos}\label{material-y-muxe9todos}}
 
 Para llevar a cabo este proyecto se han seleccionando un conjunto de
 librerías específicas que respondieran a los distintos requerimientos
@@ -274,11 +245,10 @@ Ambos data frames estarán vinculados a través de la variable fs (factura
 simplificada).
 
 \hypertarget{importaciuxf3n-de-los-datos}{%
-\section{3. Importación de los
-datos}\label{importaciuxf3n-de-los-datos}}
+\section{Importación de los datos}\label{importaciuxf3n-de-los-datos}}
 
 \hypertarget{carga-de-ficheros}{%
-\subsection{3.1 Carga de ficheros}\label{carga-de-ficheros}}
+\subsection{Carga de ficheros}\label{carga-de-ficheros}}
 
 Para evitar errores durante el procesamiento posterior, se realizó un
 cambio en los nombres de los archivos PDF originales. Los archivos
@@ -298,7 +268,7 @@ necesidad de seleccionar manualmente cada archivo.
 Para el proyecto se han importado un total de 303 archivos.
 
 \hypertarget{carga-de-datos}{%
-\subsection{3.2 Carga de datos}\label{carga-de-datos}}
+\subsection{Carga de datos}\label{carga-de-datos}}
 
 Se construyó un data frame a partir de los datos extraídos, realizando
 las transformaciones necesarias para asegurar que cada variable tuviera
@@ -316,62 +286,43 @@ data frame, ya que en el formato original aparecen combinados en una
 misma línea. Es el caso de la fecha, la hora y el número de operación,
 que debieron separarse y asignarse a variables distintas.
 
-Por motivos de espacio y legibilidad, no se incluye la visualización del
-data frame generado a partir de los tickets.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{type }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"comercio"}\NormalTok{,}\StringTok{"empresa"}\NormalTok{, }\StringTok{"direccion"}\NormalTok{, }\StringTok{"cp"}\NormalTok{, }\StringTok{"telefono"}\NormalTok{, }\StringTok{"fecha"}\NormalTok{, }\StringTok{"hora"}\NormalTok{, }\StringTok{"op"}\NormalTok{, }\StringTok{"fs"}\NormalTok{, }\StringTok{"productos"}\NormalTok{, }\StringTok{"total"}\NormalTok{, }\StringTok{"forma\_pago"}\NormalTok{, }\StringTok{"base\_imp"}\NormalTok{, }\StringTok{"cuota"}\NormalTok{, }\StringTok{"nombre del comercio"}\NormalTok{, }\StringTok{"tipo y código de empresa"}\NormalTok{, }\StringTok{"dirección del comercio"}\NormalTok{, }\StringTok{"código postal"}\NormalTok{, }\StringTok{"teléfono del comercio"}\NormalTok{, }\StringTok{"fecha de la compra (día{-}mes{-}año)"}\NormalTok{, }\StringTok{"hora de la compra (horas y minutos)"}\NormalTok{, }\StringTok{"número del código de la operación"}\NormalTok{, }\StringTok{"código de la factura simplificada"}\NormalTok{, }\StringTok{"lista con los productos comprados"}\NormalTok{, }\StringTok{"dinero total de la compra"}\NormalTok{, }\StringTok{"forma de pago (tarjeta o en efectivo)"}\NormalTok{, }\StringTok{"base imponible (IVA)"}\NormalTok{, }\StringTok{"cuota del IVA"}\NormalTok{)}
-\NormalTok{knitr}\SpecialCharTok{::}\FunctionTok{kable}\NormalTok{(rticles}\SpecialCharTok{::}\FunctionTok{string\_to\_table}\NormalTok{(type, }\DecValTok{2}\NormalTok{),}\AttributeTok{align =} \StringTok{\textquotesingle{}c\textquotesingle{}}\NormalTok{, }
-             \AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"Variable"}\NormalTok{, }\StringTok{"Descripción"}\NormalTok{),}
-             \AttributeTok{format =} \StringTok{"latex"}\NormalTok{, }\AttributeTok{booktab =} \ConstantTok{TRUE}\NormalTok{, }
-             \AttributeTok{caption =} \StringTok{"Descripción de variables"}\NormalTok{) }
-\end{Highlighting}
-\end{Shaded}
-
 \begin{table}
 
-\caption{\label{tab:tabla-variables}Descripción de variables}
+\caption{\label{tab:tabla_variables}Descripción de variables}
 \centering
 \begin{tabular}[t]{cc}
 \toprule
 Variable & Descripción\\
 \midrule
-comercio & nombre del comercio\\
-empresa & tipo y código de empresa\\
-direccion & dirección del comercio\\
-cp & código postal\\
-telefono & teléfono del comercio\\
+comercio & Nombre del comercio\\
+empresa & Tipo y código de empresa\\
+direccion & Dirección del comercio\\
+cp & Código postal\\
+telefono & Teléfono del comercio\\
 \addlinespace
-fecha & fecha de la compra (día-mes-año)\\
-hora & hora de la compra (horas y minutos)\\
-op & número del código de la operación\\
-fs & código de la factura simplificada\\
-productos & lista con los productos comprados\\
+fecha & Fecha de la compra (día-mes-año)\\
+hora & Hora de la compra (horas y minutos)\\
+op & Número del código de la operación\\
+fs & Código de la factura simplificada\\
+productos & Lista con los productos comprados\\
 \addlinespace
-total & dinero total de la compra\\
-forma\_pago & forma de pago (tarjeta o en efectivo)\\
-base\_imp & base imponible (IVA)\\
-cuota & cuota del IVA\\
+total & Dinero total de la compra\\
+forma\_pago & Forma de pago (tarjeta o en efectivo)\\
+base\_imp & Base imponible (IVA)\\
+cuota & Cuota del IVA\\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Las variables finales obtenidas se presentan en la Tabla
-@ref(tab:tabla-variables).
+Las variables finales obtenidas se pueden observar en la Tabla
+\ref{tab:tabla_variables}.
 
-\begin{verbatim}
-##           archivo aparcamiento
-## 1   ./data/M1.pdf           NA
-## 2  ./data/M10.pdf           NA
-## 3 ./data/M100.pdf           NA
-## 4 ./data/M101.pdf           NA
-## 5 ./data/M102.pdf           NA
-## 6 ./data/M103.pdf           NA
-\end{verbatim}
+Por razones de espacio y legibilidad, no se muestra en el documento el
+conjunto de datos (df), ya que contiene un número elevado de
+observaciones y variables.
 
 \hypertarget{analizamos-los-productos}{%
-\section{4. Analizamos los productos}\label{analizamos-los-productos}}
+\section{Analizamos los productos}\label{analizamos-los-productos}}
 
 La información relativa a los productos comprados se encontraba
 inicialmente agrupada dentro de una única columna del data frame
@@ -380,7 +331,7 @@ nuevo data frame, separando los productos que venían concatenados en una
 misma celda.
 
 \hypertarget{productos-pescateria}{%
-\subsection{4.1 Productos pescateria}\label{productos-pescateria}}
+\subsection{Productos pescateria}\label{productos-pescateria}}
 
 El procesamiento de los productos se realizó en varias etapas, según el
 tipo de producto y la forma en que aparecían en el ticket. En primer
@@ -392,8 +343,34 @@ una tercera línea. A partir de esta estructura, se extrajeron los datos
 relevantes y se almacenaron en un nuevo data frame específico para
 pescado.
 
+\begin{table}
+
+\caption{\label{tab:tabla_pescado}Datos procesados para productos de pescadería}
+\centering
+\begin{tabular}[t]{ccccc}
+\toprule
+num\_ticket & nombre & peso\_kg & precio\_kg & importe\\
+\midrule
+168515 & SARDINA GR 13/20 & 0.390 & 6.95 & 2.71\\
+433003 & BOQUERÓN MED 51/80 & 0.756 & 4.95 & 3.74\\
+075372 & LENGUADO FRESC EUROP & 0.262 & 24.95 & 6.54\\
+491735 & CORVINA & 1.560 & 9.95 & 15.52\\
+491735 & CIGALA PEQUEÑA REF & 0.222 & 16.85 & 3.74\\
+\addlinespace
+087622 & LENGUADO FRESC EUROP & 0.376 & 18.95 & 7.13\\
+516718 & LENGUADO FRESC EUROP & 0.610 & 18.95 & 11.56\\
+696429 & BACALADILLA & 1.590 & 3.95 & 6.28\\
+682028 & SARDINA MED 21/35 & 0.366 & 5.95 & 2.18\\
+696429 & BACALADILLA & 1.590 & 3.95 & 6.28\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+En la siguiente tabla \ref{tab:tabla_pescado} se pueden observar los
+datos procesados para los productos de pescadería .
+
 \hypertarget{productos-vendidos-por-peso}{%
-\subsection{4.2 Productos vendidos por
+\subsection{Productos vendidos por
 peso}\label{productos-vendidos-por-peso}}
 
 Después, se eliminaron las filas correspondientes a productos de
@@ -405,8 +382,34 @@ importe total. A partir de esta estructura se construyó un segundo data
 frame con las frutas y verduras, extrayendo y transformando la
 información necesaria.
 
+\begin{table}
+
+\caption{\label{tab:tabla_fruta_verdura}Descripción de variables del conjunto de frutas y verduras}
+\centering
+\begin{tabular}[t]{ccccc}
+\toprule
+num\_ticket & nombre & peso\_kg & precio\_kg & importe\\
+\midrule
+301952 & MANZANA GOLDEN & 1.694 & 1.49 & 2.52\\
+168515 & LANGOSTINO COCIDO & 0.424 & 10.95 & 4.64\\
+405598 & PATATA & 1.378 & 1.99 & 2.74\\
+407209 & PLATANO & 1.202 & 2.75 & 3.31\\
+070987 & PATATA & 1.930 & 1.99 & 3.84\\
+\addlinespace
+070987 & TOMATE ENSALADA & 1.412 & 1.75 & 2.47\\
+330410 & PEPINO & 0.652 & 1.45 & 0.95\\
+330410 & BANANA & 0.936 & 1.45 & 1.36\\
+330410 & PARAGUAYO & 0.594 & 3.79 & 2.25\\
+330410 & MANZANA GOLDEN & 1.216 & 2.09 & 2.54\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+En la siguiente tabla \ref{tab:tabla_fruta_verdura} se pueden observar
+los datos procesados para los productos de fruta y verdura .
+
 \hypertarget{productos-vendidos-por-unidad}{%
-\subsection{4.2 Productos vendidos por
+\subsection{Productos vendidos por
 unidad}\label{productos-vendidos-por-unidad}}
 
 Una vez separados los productos por peso, se procedió a procesar el
@@ -417,8 +420,35 @@ procesamiento de texto para limpiar y estructurar la información, ya que
 algunos productos con una sola unidad incluían el precio directamente
 dentro del nombre del producto.
 
-\hypertarget{productos-analizados}{%
-\section{4.4 productos analizados}\label{productos-analizados}}
+\begin{table}
+
+\caption{\label{tab:tabla_productos_unidad}Descripción de variables del conjunto de productos por unidad}
+\centering
+\begin{tabular}[t]{ccccc}
+\toprule
+num\_ticket & nombre & cantidad & precio\_unitario & importe\\
+\midrule
+520925 & DONACIÓN & 5 & 1.00 & 5.00\\
+520925 & BARREÑO & 1 & 2.20 & 2.20\\
+520925 & PALO ANTIDESLIZANTE & 3 & 1.90 & 5.70\\
+520925 & MULTIUSOS & 1 & 2.55 & 2.55\\
+520925 & AGUA MINERAL & 2 & 0.73 & 1.46\\
+\addlinespace
+520925 & B.BASURA EXT.C.FÁCIL & 2 & 1.60 & 3.20\\
+520925 & ESCURRE FÁCIL & 1 & 2.85 & 2.85\\
+520925 & CUBO FREGAR C/RUEDAS & 1 & 3.85 & 3.85\\
+520925 & FRIEGASUELOS PINO & 1 & 0.95 & 0.95\\
+520925 & FIBRAS CRUZADAS & 2 & 2.10 & 4.20\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+En la siguiente tabla \ref{tab:tabla_productos_unidad} se pueden
+observar los datos procesados para los productos por unidad .
+
+\hypertarget{conjunto-completo-de-productos}{%
+\subsection{Conjunto completo de
+productos}\label{conjunto-completo-de-productos}}
 
 Finalmente, los tres grupos de productos ---pescado, frutas y verduras,
 y productos por unidades--- se combinaron en un único data frame
@@ -429,322 +459,535 @@ final, estructurado y homogéneo, con todos los productos organizados por
 tipo, cantidad, precio, importe y número de ticket, listo para su
 análisis posterior.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{df\_producto }\OtherTok{\textless{}{-}}\NormalTok{ df }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{select}\NormalTok{(}\FunctionTok{c}\NormalTok{(num\_ticket, productos)) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{separate\_rows}\NormalTok{(productos, }\AttributeTok{sep =} \StringTok{";"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+\begin{table}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Procesamiento de pescado por kg}
+\caption{\label{tab:tabla_final}Descripción de variables del conjunto de datos final}
+\centering
+\begin{tabular}[t]{ccccccc}
+\toprule
+num\_ticket & nombre & cantidad & precio & importe & tipo & tiene\_aparcamiento\\
+\midrule
+007267 & PERA CONFERENCIA & 0.854 & 2.55 & 2.18 & fruta\_verdura & NA\\
+007267 & MANZ. ROJA DULCE & 1.474 & 2.90 & 4.27 & fruta\_verdura & NA\\
+007267 & PIZZA BOLOÑESA & 1.000 & 2.60 & 2.60 & unidades & NA\\
+007267 & MIX FRUTOS ROJOS & 1.000 & 1.66 & 1.66 & unidades & NA\\
+007267 & PISTO DE VERDURAS & 1.000 & 2.30 & 2.30 & unidades & NA\\
+\addlinespace
+007267 & FILETE DE TRUCHA & 1.000 & 3.92 & 3.92 & unidades & NA\\
+007267 & PAN SEMILLAS & 1.000 & 1.60 & 1.60 & unidades & NA\\
+007267 & SNACK PIPAS & 1.000 & 1.40 & 1.40 & unidades & NA\\
+007267 & +PROT NATILLA VAINI & 1.000 & 1.75 & 1.75 & unidades & NA\\
+007267 & SNACK CHOCOLATE & 1.000 & 1.50 & 1.50 & unidades & NA\\
+\bottomrule
+\end{tabular}
+\end{table}
 
-\CommentTok{\# Identificar filas con "PESCADO"}
-\NormalTok{filas\_pescado }\OtherTok{\textless{}{-}} \FunctionTok{which}\NormalTok{(df\_producto}\SpecialCharTok{$}\NormalTok{productos }\SpecialCharTok{==} \StringTok{"PESCADO"}\NormalTok{)}
+En la siguiente tabla \ref{tab:tabla_final} se pueden observar los datos
+procesados para los productos por unidad .
 
-\CommentTok{\# Inicializar vectores para almacenar datos}
-\NormalTok{num\_ticket\_vec }\OtherTok{\textless{}{-}} \FunctionTok{character}\NormalTok{()}
-\NormalTok{nombre\_producto\_vec }\OtherTok{\textless{}{-}} \FunctionTok{character}\NormalTok{()}
-\NormalTok{peso\_kg\_vec }\OtherTok{\textless{}{-}} \FunctionTok{numeric}\NormalTok{()}
-\NormalTok{precio\_kg\_vec }\OtherTok{\textless{}{-}} \FunctionTok{numeric}\NormalTok{()}
-\NormalTok{precio\_total\_vec }\OtherTok{\textless{}{-}} \FunctionTok{numeric}\NormalTok{()}
+\hypertarget{analisis-exploratorio}{%
+\section{Analisis exploratorio}\label{analisis-exploratorio}}
 
-\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \FunctionTok{seq\_along}\NormalTok{(filas\_pescado)) \{}
-\NormalTok{  idx }\OtherTok{\textless{}{-}}\NormalTok{ filas\_pescado[i]}
-  
-  \CommentTok{\# Extraer información básica}
-\NormalTok{  num\_ticket }\OtherTok{\textless{}{-}}\NormalTok{ df\_producto}\SpecialCharTok{$}\NormalTok{num\_ticket[idx]}
-\NormalTok{  nombre }\OtherTok{\textless{}{-}}\NormalTok{ df\_producto}\SpecialCharTok{$}\NormalTok{productos[idx }\SpecialCharTok{+} \DecValTok{1}\NormalTok{]  }\CommentTok{\# Nombre en la siguiente fila}
-  
-  \CommentTok{\# Procesar la fila de detalles}
-\NormalTok{  detalles }\OtherTok{\textless{}{-}}\NormalTok{ df\_producto}\SpecialCharTok{$}\NormalTok{productos[idx }\SpecialCharTok{+} \DecValTok{2}\NormalTok{]}
-  
-  \CommentTok{\# Limpiar y dividir la cadena de detalles}
-\NormalTok{  detalles\_limpio }\OtherTok{\textless{}{-}} \FunctionTok{gsub}\NormalTok{(}\StringTok{","}\NormalTok{, }\StringTok{"."}\NormalTok{, detalles)  }\CommentTok{\# Reemplazar comas por puntos}
-\NormalTok{  detalles\_split }\OtherTok{\textless{}{-}} \FunctionTok{strsplit}\NormalTok{(}\FunctionTok{trimws}\NormalTok{(detalles\_limpio), }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s+"}\NormalTok{)[[}\DecValTok{1}\NormalTok{]]}
-  
-  \CommentTok{\# Extraer valores (asumiendo orden: peso, unidad, precio\_kg, moneda, precio\_total)}
-  \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{length}\NormalTok{(detalles\_split) }\SpecialCharTok{\textgreater{}=} \DecValTok{5}\NormalTok{) \{}
-\NormalTok{    peso\_kg }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(detalles\_split[}\DecValTok{1}\NormalTok{])}
-\NormalTok{    precio\_kg }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(detalles\_split[}\DecValTok{3}\NormalTok{])}
-\NormalTok{    importe }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(detalles\_split[}\DecValTok{5}\NormalTok{])}
-    
-    \CommentTok{\# Almacenar en vectores}
-\NormalTok{    num\_ticket\_vec }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(num\_ticket\_vec, num\_ticket)}
-\NormalTok{    nombre\_producto\_vec }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(nombre\_producto\_vec, nombre)}
-\NormalTok{    peso\_kg\_vec }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(peso\_kg\_vec, peso\_kg)}
-\NormalTok{    precio\_kg\_vec }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(precio\_kg\_vec, precio\_kg)}
-\NormalTok{    precio\_total\_vec }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(precio\_total\_vec, importe)}
-\NormalTok{  \}}
-\NormalTok{\}}
+\hypertarget{datos-faltantes}{%
+\subsection{Datos faltantes}\label{datos-faltantes}}
 
-\NormalTok{df\_pescado }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
-  \AttributeTok{num\_ticket =}\NormalTok{ num\_ticket\_vec,}
-  \AttributeTok{nombre =}\NormalTok{ nombre\_producto\_vec,}
-  \AttributeTok{peso\_kg =}\NormalTok{ peso\_kg\_vec,}
-  \AttributeTok{precio\_kg =}\NormalTok{ precio\_kg\_vec,}
-  \AttributeTok{importe =}\NormalTok{ precio\_total\_vec,}
-  \AttributeTok{stringsAsFactors =} \ConstantTok{FALSE}
-\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+Realizamos una comprobación para asegurarnos de que el data frame no
+contenga valores faltantes (exceptuando la variable aparcamiento, ya que
+cuando no se encuentra disponible, se asigna un valor NA). En caso de
+encontrar valores faltantes en otras variables, eliminamos las filas
+correspondientes.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Procesamiento fruta y la verdura}
+\hypertarget{anuxe1lisis-univariante}{%
+\subsection{Análisis univariante}\label{anuxe1lisis-univariante}}
 
-\CommentTok{\#Identificar TODOS los bloques de pescado (3 filas cada uno)}
-\NormalTok{bloques\_pescado }\OtherTok{\textless{}{-}} \FunctionTok{which}\NormalTok{(df\_producto}\SpecialCharTok{$}\NormalTok{productos }\SpecialCharTok{==} \StringTok{"PESCADO"}\NormalTok{)}
+Comenzaremos el análisis de las variables dividiéndolas en dos grupos:
+las variables categóricas y las variables numéricas.
 
-\CommentTok{\# Crear vector con TODAS las filas a eliminar (cada bloque son 3 filas)}
-\NormalTok{filas\_a\_eliminar }\OtherTok{\textless{}{-}} \FunctionTok{unlist}\NormalTok{(}\FunctionTok{lapply}\NormalTok{(bloques\_pescado, }\ControlFlowTok{function}\NormalTok{(x) x}\SpecialCharTok{:}\NormalTok{(x}\SpecialCharTok{+}\DecValTok{2}\NormalTok{)))}
+\hypertarget{variables-categuxf3ricas}{%
+\subsubsection{Variables categóricas}\label{variables-categuxf3ricas}}
 
-\CommentTok{\# Eliminar todos los bloques}
-\NormalTok{df\_sin\_pescado }\OtherTok{\textless{}{-}}\NormalTok{ df\_producto[}\SpecialCharTok{{-}}\NormalTok{filas\_a\_eliminar, ]}
+Las variables categóricas representan cualidades o características, y en
+nuestro data frame están codificadas como tipo character.
 
-\NormalTok{ind\_detalles\_kg }\OtherTok{\textless{}{-}} \FunctionTok{grep}\NormalTok{(}\StringTok{"kg.*€/kg"}\NormalTok{, df\_sin\_pescado}\SpecialCharTok{$}\NormalTok{productos, }\AttributeTok{value =} \ConstantTok{FALSE}\NormalTok{)}
+En el data frame de los tickets, la mayoría de las variables son de tipo
+categórico. Una de las más relevantes es la variable num\_ticket, que es
+única para cada ticket y sirve como identificador.
 
-\NormalTok{df\_fruta\_verdura }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
-  \AttributeTok{num\_ticket =}\NormalTok{ df\_sin\_pescado}\SpecialCharTok{$}\NormalTok{num\_ticket[ind\_detalles\_kg],}
-  \AttributeTok{nombre =}\NormalTok{ df\_sin\_pescado}\SpecialCharTok{$}\NormalTok{productos[ind\_detalles\_kg }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{],}
-  \AttributeTok{detalles =}\NormalTok{ df\_sin\_pescado}\SpecialCharTok{$}\NormalTok{productos[ind\_detalles\_kg],}
-  \AttributeTok{stringsAsFactors =} \ConstantTok{FALSE}
-\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-\FunctionTok{mutate}\NormalTok{(}
-  \CommentTok{\# Limpiar el nombre (eliminar números iniciales)}
-  \AttributeTok{nombre =} \FunctionTok{gsub}\NormalTok{(}\StringTok{"\^{}}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d+}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s*"}\NormalTok{, }\StringTok{""}\NormalTok{, nombre),}
-  
-  \CommentTok{\# Extraer peso (kg) {-} primer número en la línea}
-  \AttributeTok{peso\_kg =} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\StringTok{","}\NormalTok{, }\StringTok{"."}\NormalTok{, }\FunctionTok{str\_extract}\NormalTok{(detalles, }\StringTok{"\^{}[0{-}9,]+"}\NormalTok{))),}
-  
-  \CommentTok{\# Extraer precio por kg {-} método mejorado}
-  \AttributeTok{precio\_kg =} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\StringTok{","}\NormalTok{, }\StringTok{"."}\NormalTok{, }
-    \FunctionTok{str\_extract}\NormalTok{(detalles, }\StringTok{"[0{-}9,]+(?=}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s*€/kg)"}\NormalTok{))),}
-  
-  \CommentTok{\# Extraer importe total {-} último número en la línea}
-  \AttributeTok{importe =} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\StringTok{","}\NormalTok{, }\StringTok{"."}\NormalTok{, }
-    \FunctionTok{str\_extract}\NormalTok{(detalles, }\StringTok{"[0{-}9,]+$"}\NormalTok{)))}
-\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-\FunctionTok{select}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{detalles)}
-\end{Highlighting}
-\end{Shaded}
+Otras variables categóricas en nuestro análisis incluyen comercio y
+empresa, que son constantes en todos los tickets. Sin embargo, esta
+estructura está pensada por si en el futuro se incluyen tickets de otros
+comercios o empresas. De manera similar, tenemos la variable
+forma\_pago, que actualmente solo contiene registros de pagos realizados
+con tarjeta, pero se mantiene por si en algún ticket hay pagos en
+efectivo.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Procesamiento resto de productos sin kg}
+En cuanto a las variables categóricas en el data frame de productos,
+tenemos tipo, que clasifica los productos en categorías como
+``pescado'', ``fruta\_verdura'' y ``unidades''. Además, la variable
+nombre contiene los nombres de los productos.
 
-\CommentTok{\# Identificar las filas de detalles (kg y €/kg)}
-\NormalTok{ind\_detalles\_kg }\OtherTok{\textless{}{-}} \FunctionTok{grep}\NormalTok{(}\StringTok{"kg.*€/kg"}\NormalTok{, df\_sin\_pescado}\SpecialCharTok{$}\NormalTok{productos, }\AttributeTok{value =} \ConstantTok{FALSE}\NormalTok{)}
+En total, tenemos 0 valores únicos en comercio, 0 valores únicos en
+empresa, y 0 valores únicos en forma\_pago.
 
-\CommentTok{\# Las filas de nombres están justo antes de los detalles}
-\NormalTok{ind\_nombres\_kg }\OtherTok{\textless{}{-}}\NormalTok{ ind\_detalles\_kg }\SpecialCharTok{{-}} \DecValTok{1}
+También observamos que tenemos 3 tipos diferentes de productos y 1396
+productos distintos registrados en total.
 
-\CommentTok{\# Combinar todos los índices a eliminar}
-\NormalTok{filas\_fruta\_verdura }\OtherTok{\textless{}{-}} \FunctionTok{sort}\NormalTok{(}\FunctionTok{unique}\NormalTok{(}\FunctionTok{c}\NormalTok{(ind\_nombres\_kg, ind\_detalles\_kg)))}
+\hypertarget{variables-de-tipo-numuxe9rico}{%
+\subsubsection{Variables de tipo
+numérico}\label{variables-de-tipo-numuxe9rico}}
 
-\CommentTok{\# Eliminar filas ya procesadas}
-\NormalTok{df\_resto }\OtherTok{\textless{}{-}}\NormalTok{ df\_sin\_pescado[}\SpecialCharTok{{-}}\NormalTok{filas\_fruta\_verdura, ]}
+as variables numéricas representan cantidades o medidas cuantitativas
+dentro del conjunto de datos. En nuestro análisis, nos centramos
+principalmente en dos variables clave: cantidad (ya sea en unidades o en
+kilos) y precio (precio por kilo o unitario, según el tipo de producto).
 
-\NormalTok{df\_productos\_unidades }\OtherTok{\textless{}{-}}\NormalTok{ df\_resto }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}
-    \CommentTok{\# 1. Extraer cantidad (siempre es el primer número)}
-    \AttributeTok{cantidad =} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{str\_extract}\NormalTok{(productos, }\StringTok{"\^{}}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d+"}\NormalTok{)),}
-    
-    \CommentTok{\# 2. Extraer posible precio en el nombre (para productos de 1 unidad)}
-    \AttributeTok{precio\_en\_nombre =} \FunctionTok{ifelse}\NormalTok{(cantidad }\SpecialCharTok{==} \DecValTok{1}\NormalTok{,}
-                            \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\StringTok{","}\NormalTok{, }\StringTok{"."}\NormalTok{, }\FunctionTok{str\_extract}\NormalTok{(productos, }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d+,}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d+$"}\NormalTok{))),}
-                            \ConstantTok{NA\_real\_}\NormalTok{),}
-    
-    \CommentTok{\# 3. Procesamiento vectorizado de componentes}
-    \AttributeTok{componentes =} \FunctionTok{strsplit}\NormalTok{(productos, }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s+"}\NormalTok{),}
-    
-    \CommentTok{\# 4. Extraer importe normal (para productos con múltiples unidades)}
-    \AttributeTok{importe\_normal =} \FunctionTok{sapply}\NormalTok{(componentes, }\ControlFlowTok{function}\NormalTok{(x) \{}
-      \ControlFlowTok{if}\NormalTok{(}\FunctionTok{length}\NormalTok{(x) }\SpecialCharTok{\textgreater{}=} \DecValTok{3}\NormalTok{) }\FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{gsub}\NormalTok{(}\StringTok{","}\NormalTok{, }\StringTok{"."}\NormalTok{, x[}\FunctionTok{length}\NormalTok{(x)])) }\ControlFlowTok{else} \ConstantTok{NA\_real\_}
-\NormalTok{    \}),}
-    
-    \CommentTok{\# 5. Determinar el importe final}
-    \AttributeTok{importe =} \FunctionTok{ifelse}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(precio\_en\_nombre), precio\_en\_nombre, importe\_normal),}
-    
-    \CommentTok{\# 6. Extraer descripción limpia (MODIFICACIÓN CLAVE)}
-    \AttributeTok{nombre =} \FunctionTok{mapply}\NormalTok{(}\ControlFlowTok{function}\NormalTok{(comp, prod, cant, precio\_nombre) \{}
-      \CommentTok{\# Primero eliminar la cantidad inicial (si existe)}
-\NormalTok{      nombre\_limpio }\OtherTok{\textless{}{-}} \FunctionTok{gsub}\NormalTok{(}\StringTok{"\^{}}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d+}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s*"}\NormalTok{, }\StringTok{""}\NormalTok{, prod)}
-      
-      \ControlFlowTok{if}\NormalTok{(}\FunctionTok{length}\NormalTok{(comp) }\SpecialCharTok{\textless{}=} \DecValTok{2}\NormalTok{) }\FunctionTok{return}\NormalTok{(nombre\_limpio)  }\CommentTok{\# Caso simple}
-      
-      \ControlFlowTok{if}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(precio\_nombre)) \{}
-        \CommentTok{\# Para productos de 1 unidad: eliminar precio final}
-        \FunctionTok{gsub}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s+}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d+,}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d+$"}\NormalTok{, }\StringTok{""}\NormalTok{, nombre\_limpio)}
-\NormalTok{      \} }\ControlFlowTok{else}\NormalTok{ \{}
-        \CommentTok{\# Para múltiples unidades: eliminar elementos numéricos finales}
-        \FunctionTok{paste}\NormalTok{(comp[}\DecValTok{2}\SpecialCharTok{:}\NormalTok{(}\FunctionTok{length}\NormalTok{(comp)}\SpecialCharTok{{-}}\DecValTok{2}\NormalTok{)], }\AttributeTok{collapse=}\StringTok{" "}\NormalTok{)}
-\NormalTok{      \}}
-\NormalTok{    \}, componentes, productos, cantidad, precio\_en\_nombre, }\AttributeTok{SIMPLIFY =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-      \FunctionTok{str\_trim}\NormalTok{()  }\CommentTok{\# Eliminar espacios sobrantes}
-\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}
-    \CommentTok{\# 7. Calcular precio unitario}
-    \AttributeTok{precio\_unitario =}\NormalTok{ importe }\SpecialCharTok{/}\NormalTok{ cantidad}
-\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{select}\NormalTok{(num\_ticket, nombre, cantidad, precio\_unitario, importe)}
-\end{Highlighting}
-\end{Shaded}
+Para tener una visión general del comportamiento de las compras, primero
+calculamos el valor total gastado, sumando el importe de todos los
+productos. Además, analizamos cuántos productos se compran por ticket
+(es decir, la media de la suma de cantidades por cada ticket) y cuál es
+el gasto medio por ticket.
 
-\begin{verbatim}
-## Warning: There were 33 warnings in `mutate()`.
-## The first warning was:
-## i In argument: `importe_normal = sapply(...)`.
-## Caused by warning in `FUN()`:
-## ! NAs introducidos por coerción
-## i Run `dplyr::last_dplyr_warnings()` to see the 32 remaining warnings.
-\end{verbatim}
+El gasto total en todos los productos es: 14022.5 € La media de
+productos comprados por ticket es: 19.9 La media del importe total por
+ticket es: 48.35 €
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# dataframe final con todos los productos analizados:}
+Además, observamos que la variable cantidad contiene valores decimales
+en algunos casos, lo que se debe a que ciertos productos (como frutas,
+verduras o pescado) se venden al peso, mientras que otros se venden por
+unidades enteras.
 
-\CommentTok{\# Añadir columna \textquotesingle{}tipo\textquotesingle{} a cada dataframe}
-\NormalTok{df\_pescado }\OtherTok{\textless{}{-}}\NormalTok{ df\_pescado }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{tipo =} \StringTok{"pescado"}\NormalTok{)}
-\NormalTok{df\_fruta\_verdura }\OtherTok{\textless{}{-}}\NormalTok{ df\_fruta\_verdura }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{tipo =} \StringTok{"fruta\_verdura"}\NormalTok{)}
-\NormalTok{df\_productos\_unidades }\OtherTok{\textless{}{-}}\NormalTok{ df\_productos\_unidades }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{tipo =} \StringTok{"unidades"}\NormalTok{)}
+A continuación, mostramos un resumen de las cantidades redondeadas para
+tener una idea de las frecuencias de compra por tipo de producto:
 
-\CommentTok{\# Unificar columnas para combinar}
-\NormalTok{df\_final }\OtherTok{\textless{}{-}} \FunctionTok{bind\_rows}\NormalTok{(}
-\NormalTok{  df\_pescado }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{select}\NormalTok{(num\_ticket, nombre, }\AttributeTok{cantidad =}\NormalTok{ peso\_kg, }\AttributeTok{precio =}\NormalTok{ precio\_kg, importe, tipo),}
-\NormalTok{  df\_fruta\_verdura }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{select}\NormalTok{(num\_ticket, nombre, }\AttributeTok{cantidad =}\NormalTok{ peso\_kg, }\AttributeTok{precio =}\NormalTok{ precio\_kg, importe, tipo),}
-\NormalTok{  df\_productos\_unidades }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{select}\NormalTok{(num\_ticket, }\AttributeTok{nombre =}\NormalTok{ nombre, cantidad, }\AttributeTok{precio =}\NormalTok{ precio\_unitario, importe, tipo)}
-\NormalTok{)}
+\begin{longtable}[]{@{}lr@{}}
+\caption{Frecuencia de Cantidades Redondeadas de Productos
+Comprados}\tabularnewline
+\toprule\noalign{}
+Cantidad Redondeada & Frecuencia \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Cantidad Redondeada & Frecuencia \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & 79 \\
+1 & 4443 \\
+2 & 453 \\
+3 & 72 \\
+4 & 30 \\
+5 & 10 \\
+6 & 2 \\
+7 & 1 \\
+8 & 2 \\
+\end{longtable}
 
-\CommentTok{\# Crear columna tiene\_aparcamiento }
-\ControlFlowTok{if}\NormalTok{ (}\StringTok{"aparcamiento"} \SpecialCharTok{\%in\%} \FunctionTok{colnames}\NormalTok{(df\_aparcamiento)) \{}
-\NormalTok{  df\_aparcamiento }\OtherTok{\textless{}{-}}\NormalTok{ df\_aparcamiento }\SpecialCharTok{\%\textgreater{}\%}
-    \FunctionTok{mutate}\NormalTok{(}\AttributeTok{nombre\_archivo =} \FunctionTok{basename}\NormalTok{(archivo)) }\SpecialCharTok{\%\textgreater{}\%}
-    \FunctionTok{mutate}\NormalTok{(}\AttributeTok{num\_ticket =} \FunctionTok{str\_extract}\NormalTok{(nombre\_archivo, }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{d+"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
-    \FunctionTok{mutate}\NormalTok{(}\AttributeTok{tiene\_aparcamiento =} \SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(aparcamiento)) }\SpecialCharTok{\%\textgreater{}\%}
-    \FunctionTok{select}\NormalTok{(num\_ticket, tiene\_aparcamiento)}
+Con esto, podemos observar que en la mayoría de los casos se compraron 1
+o 2 unidades/kilos, siendo 1 la cantidad más frecuente.
 
-  \CommentTok{\# Convertir num\_ticket a carácter en ambos dataframes}
-\NormalTok{  df\_final }\OtherTok{\textless{}{-}}\NormalTok{ df\_final }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{num\_ticket =} \FunctionTok{as.character}\NormalTok{(num\_ticket))}
-\NormalTok{  df\_aparcamiento }\OtherTok{\textless{}{-}}\NormalTok{ df\_aparcamiento }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{num\_ticket =} \FunctionTok{as.character}\NormalTok{(num\_ticket))}
+\hypertarget{anuxe1lisis-multivariable}{%
+\subsection{Análisis multivariable}\label{anuxe1lisis-multivariable}}
 
-  \CommentTok{\# Combinar los datos}
-\NormalTok{  df\_final }\OtherTok{\textless{}{-}} \FunctionTok{left\_join}\NormalTok{(df\_final, df\_aparcamiento, }\AttributeTok{by =} \StringTok{"num\_ticket"}\NormalTok{)}
-\NormalTok{\} }\ControlFlowTok{else}\NormalTok{ \{}
-\NormalTok{  df\_final}\SpecialCharTok{$}\NormalTok{tiene\_aparcamiento }\OtherTok{\textless{}{-}} \ConstantTok{NA}  \CommentTok{\# columna vacía si no existe \textquotesingle{}aparcamiento\textquotesingle{}}
-\NormalTok{\}}
+\textbf{Relación entre la Dirección y las Ganancias} En este apartado
+analizamos si existe alguna relación entre la localización del
+supermercado (variable dirección) y los ingresos obtenidos. Para ello,
+generamos dos gráficos: uno que muestra la ganancia total por dirección
+y otro que representa la ganancia media por ticket en cada localización.
 
-\CommentTok{\# Resultado final ordenado}
-\NormalTok{df\_final }\OtherTok{\textless{}{-}}\NormalTok{ df\_final }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{arrange}\NormalTok{(num\_ticket)}
+\includegraphics[width=0.9\linewidth]{ProyectoTD2025_files/figure-latex/grafica1-1}
+En el gráfico anterior se puede observar que muchas direcciones cuentan
+únicamente con una venta registrada. Sin embargo, hay dos supermercados
+que destacan por tener un número de tickets significativamente superior
+al resto. En general, se aprecia que a mayor número de tickets, mayor es
+la ganancia total.
 
-\CommentTok{\# Verificación final}
-\FunctionTok{cat}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{Resumen del DataFrame final:}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+A continuación, comparamos las ganancias promedio por venta en cada
+supermercado, para entender mejor su rendimiento individual más allá del
+volumen total de ventas.
 
-\begin{verbatim}
-## 
-## Resumen del DataFrame final:
-\end{verbatim}
+\includegraphics[width=0.9\linewidth]{ProyectoTD2025_files/figure-latex/grafica2-1}
+En este segundo gráfico vemos que el supermercado ubicado en Calle
+Alicante 83 sigue destacando en ingresos, aunque es el de Avenida del
+Textil el que presenta una mayor ganancia media por ticket. Esto sugiere
+un rendimiento más eficiente, a pesar de no tener el mayor volumen de
+ventas.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{cat}\NormalTok{(}\StringTok{"{-} Pescado:"}\NormalTok{, }\FunctionTok{sum}\NormalTok{(df\_final}\SpecialCharTok{$}\NormalTok{tipo }\SpecialCharTok{==} \StringTok{"pescado"}\NormalTok{), }\StringTok{"registros}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+\textbf{Relación entre el Número de Productos y el Precio Total por
+Ticket}
 
-\begin{verbatim}
-## - Pescado: 28 registros
-\end{verbatim}
+En este apartado analizamos si existe una relación directa entre el
+número de productos comprados en un ticket y el precio total pagado en
+dicho ticket. Para ello, realizamos un gráfico de dispersión y
+calculamos el coeficiente de correlación de Pearson.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{cat}\NormalTok{(}\StringTok{"{-} Fruta/Verdura:"}\NormalTok{, }\FunctionTok{sum}\NormalTok{(df\_final}\SpecialCharTok{$}\NormalTok{tipo }\SpecialCharTok{==} \StringTok{"fruta\_verdura"}\NormalTok{), }\StringTok{"registros}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+\includegraphics[width=0.85\linewidth]{ProyectoTD2025_files/figure-latex/grafica3-1}
 
-\begin{verbatim}
-## - Fruta/Verdura: 395 registros
-\end{verbatim}
+El gráfico anterior muestra cómo varía el importe total del ticket en
+función del número de productos adquiridos. Cada punto representa un
+ticket diferente.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{cat}\NormalTok{(}\StringTok{"{-} Unidades:"}\NormalTok{, }\FunctionTok{sum}\NormalTok{(df\_final}\SpecialCharTok{$}\NormalTok{tipo }\SpecialCharTok{==} \StringTok{"unidades"}\NormalTok{), }\StringTok{"registros}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+El coeficiente de correlación de Pearson es r cant\_precio, un valor
+cercano a \(1\), lo cual indica que existe una relación lineal positiva
+muy fuerte entre ambas variables. Es decir, cuantos más productos se
+compran en un ticket, mayor es el importe total pagado, lo que resulta
+coherente con el comportamiento esperado en compras de supermercado.
 
-\begin{verbatim}
-## - Unidades: 4702 registros
-\end{verbatim}
+\bigskip
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{cat}\NormalTok{(}\StringTok{"{-} Total:"}\NormalTok{, }\FunctionTok{nrow}\NormalTok{(df\_final), }\StringTok{"registros}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+\hypertarget{preguntas}{%
+\section{Preguntas}\label{preguntas}}
 
-\begin{verbatim}
-## - Total: 5125 registros
-\end{verbatim}
+\hypertarget{cuuxe1les-son-los-5-productos-de-los-vendidos-por-unidades-con-muxe1s-ventas-cuuxe1ntas-unidades-de-cada-uno-se-han-vendido-y-por-kilos}{%
+\subsection{- ¿Cuáles son los 5 productos, de los vendidos por unidades,
+con más ventas ? ¿Cuántas unidades de cada uno se han vendido ? ¿Y por
+kilos?}\label{cuuxe1les-son-los-5-productos-de-los-vendidos-por-unidades-con-muxe1s-ventas-cuuxe1ntas-unidades-de-cada-uno-se-han-vendido-y-por-kilos}}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{print}\NormalTok{(}\FunctionTok{head}\NormalTok{(df\_final, }\DecValTok{10}\NormalTok{))}
-\end{Highlighting}
-\end{Shaded}
+\begin{longtable}[]{@{}llr@{}}
+\caption{Top 5 productos más vendidos por unidades}\tabularnewline
+\toprule\noalign{}
+& nombre & cantidad \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+& nombre & cantidad \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+110 & ATUN CLARO OLIVA & 62 \\
+1083 & QUESO LONCHAS CABRA & 53 \\
+164 & BOLSA PLASTICO & 51 \\
+684 & LECHE DESNAT. CALCIO & 49 \\
+1322 & YOGUR COCO & 40 \\
+\end{longtable}
 
-\begin{verbatim}
-##    num_ticket              nombre cantidad precio importe          tipo
-## 1      007267    PERA CONFERENCIA    0.854   2.55    2.18 fruta_verdura
-## 2      007267    MANZ. ROJA DULCE    1.474   2.90    4.27 fruta_verdura
-## 3      007267      PIZZA BOLOÑESA    1.000   2.60    2.60      unidades
-## 4      007267    MIX FRUTOS ROJOS    1.000   1.66    1.66      unidades
-## 5      007267   PISTO DE VERDURAS    1.000   2.30    2.30      unidades
-## 6      007267    FILETE DE TRUCHA    1.000   3.92    3.92      unidades
-## 7      007267        PAN SEMILLAS    1.000   1.60    1.60      unidades
-## 8      007267         SNACK PIPAS    1.000   1.40    1.40      unidades
-## 9      007267 +PROT NATILLA VAINI    1.000   1.75    1.75      unidades
-## 10     007267     SNACK CHOCOLATE    1.000   1.50    1.50      unidades
-##    tiene_aparcamiento
-## 1                  NA
-## 2                  NA
-## 3                  NA
-## 4                  NA
-## 5                  NA
-## 6                  NA
-## 7                  NA
-## 8                  NA
-## 9                  NA
-## 10                 NA
-\end{verbatim}
+\begin{longtable}[]{@{}llr@{}}
+\caption{Top 5 productos más vendidos por kilos}\tabularnewline
+\toprule\noalign{}
+& nombre & cantidad \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+& nombre & cantidad \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+49 & PLATANO & 62.868 \\
+5 & BANANA & 28.140 \\
+56 & SANDIA BAJA SEMILLAS & 22.843 \\
+42 & PEPINO & 19.624 \\
+12 & CALABACIN VERDE & 17.754 \\
+\end{longtable}
 
-\#Preguntas
+\hypertarget{si-consideramos-la-categoruxeda-de-frutas-y-verduras.-cuuxe1les-son-los-5-productos-muxe1s-vendidos-cuuxe1ntos-kilos-se-han-vendido-de-cada-uno-de-estos-productos}{%
+\subsection{-Si consideramos la categoría de FRUTAS Y VERDURAS. Cuáles
+son los 5 productos más vendidos ? ¿Cuántos kilos se han vendido de cada
+uno de estos productos
+?}\label{si-consideramos-la-categoruxeda-de-frutas-y-verduras.-cuuxe1les-son-los-5-productos-muxe1s-vendidos-cuuxe1ntos-kilos-se-han-vendido-de-cada-uno-de-estos-productos}}
 
-¿Cuáles son los productos menos vendidos por unidades? ¿Y por kilos?
+\begin{longtable}[]{@{}llr@{}}
+\caption{Top 5 productos más vendidos en la categoría Frutas y Verduras
+(en kilos)}\tabularnewline
+\toprule\noalign{}
+& Producto & Kilos vendidos \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+& Producto & Kilos vendidos \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+42 & PLATANO & 62.868 \\
+5 & BANANA & 28.140 \\
+49 & SANDIA BAJA SEMILLAS & 22.843 \\
+35 & PEPINO & 19.624 \\
+12 & CALABACIN VERDE & 17.754 \\
+\end{longtable}
 
-¿Qué productos han generado mayor ingreso total (precio x cantidad)?
+\hypertarget{si-consideramos-la-categoruxeda-de-pescado.-cuuxe1les-son-los-5-productos-muxe1s-vendidos-cuuxe1ntos-kilos-se-han-vendido-de-cada-uno-de-estos-productos}{%
+\subsection{-Si consideramos la categoría de PESCADO. Cuáles son los 5
+productos más vendidos ? ¿Cuántos kilos se han vendido de cada uno de
+estos productos
+?}\label{si-consideramos-la-categoruxeda-de-pescado.-cuuxe1les-son-los-5-productos-muxe1s-vendidos-cuuxe1ntos-kilos-se-han-vendido-de-cada-uno-de-estos-productos}}
 
-¿Cuáles productos han aumentado o disminuido su venta a lo largo del
-tiempo?
+\begin{longtable}[]{@{}llr@{}}
+\caption{Top 5 productos más vendidos en la categoría Pescado (en
+kilos)}\tabularnewline
+\toprule\noalign{}
+& Producto & Kilos vendidos \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+& Producto & Kilos vendidos \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & BACALADILLA & 3.180 \\
+6 & DORADA & 2.934 \\
+18 & SEPIA SUCIA REFRIG & 2.402 \\
+17 & SEPIA LONJA & 2.000 \\
+12 & RODABALLO & 1.788 \\
+\end{longtable}
 
-¿Qué productos se compran habitualmente juntos?
+\hypertarget{muestra-mediante-un-gruxe1fico-de-luxedneas-como-ha-variado-el-precio-por-kilo-de-las-bananas-y-los-pluxe1tanos-en-los-tickets-disponibles-a-lo-largo-del-tiempo.}{%
+\subsection{-Muestra mediante un gráfico de líneas como ha variado el
+precio por kilo de las bananas y los plátanos en los tickets
+disponibles, a lo largo del
+tiempo.}\label{muestra-mediante-un-gruxe1fico-de-luxedneas-como-ha-variado-el-precio-por-kilo-de-las-bananas-y-los-pluxe1tanos-en-los-tickets-disponibles-a-lo-largo-del-tiempo.}}
 
-¿Existen diferencias de precios para el mismo producto en diferentes
-tiendas o ubicaciones?
+\includegraphics[width=0.9\linewidth]{ProyectoTD2025_files/figure-latex/unnamed-chunk-21-1}
 
-¿Qué días de la semana hay más ventas? ¿Y a qué horas?
+\hypertarget{desde-quuxe9-ciudades-se-emiten-muxe1s-tickets}{%
+\subsection{-¿Desde qué ciudades se emiten más
+tickets?}\label{desde-quuxe9-ciudades-se-emiten-muxe1s-tickets}}
 
-¿En qué meses se venden más frutas/verduras, o pescados?
+\includegraphics[width=0.9\linewidth]{ProyectoTD2025_files/figure-latex/unnamed-chunk-22-1}
 
-¿Desde qué ciudades se emiten más tickets?
+La ciudad con más tickets emitidos es: C/ QUART 120Con un total de 51
+tickets
 
-¿Existen diferencias de consumo por ciudad?
+\hypertarget{muestra-mediante-un-diagrama-el-nuxfamero-de-tickets-recogidos-cada-duxeda-de-las-semana.-si-tuvieses-que-cerrar-un-duxeda-entre-semana-quuxe9-duxeda-lo-haruxedas}{%
+\subsection{-Muestra mediante un diagrama el número de tickets recogidos
+cada día de las semana. ¿Si tuvieses que cerrar un día entre semana qué
+día lo harías
+?}\label{muestra-mediante-un-diagrama-el-nuxfamero-de-tickets-recogidos-cada-duxeda-de-las-semana.-si-tuvieses-que-cerrar-un-duxeda-entre-semana-quuxe9-duxeda-lo-haruxedas}}
 
-¿Cuánto se gasta semanal o mensualmente en un supermercado?
+\includegraphics[width=0.9\linewidth]{ProyectoTD2025_files/figure-latex/unnamed-chunk-23-1}
+Si se tubiera que cerrar un dia entre semana este seria el jueves que es
+el dia que menos tickets se recogen.
 
-¿Influye la disponibilidad de aparcamiento en el importe total de la
-compra?
+\hypertarget{quuxe9-productos-han-generado-mayor-ingreso-total-precio-x-cantidad}{%
+\subsection{-¿Qué productos han generado mayor ingreso total (precio x
+cantidad)?}\label{quuxe9-productos-han-generado-mayor-ingreso-total-precio-x-cantidad}}
+
+\begin{longtable}[]{@{}llr@{}}
+\caption{Top 5 productos con mayor ingreso total}\tabularnewline
+\toprule\noalign{}
+& nombre & ingreso\_total \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+& nombre & ingreso\_total \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+375 & alistado mediano & 31.3300 \\
+3148 & bogavante crudo & 29.7000 \\
+3853 & bacalao entero & 23.2034 \\
+1842 & rodaballo & 19.7820 \\
+4657 & salmon entero & 19.4068 \\
+\end{longtable}
+
+\hypertarget{cuuxe1l-es-el-ticket-con-el-mayor-importe-total-y-quuxe9-porcentaje-representa-este-ticket-respecto-al-importe-total-de-todos-los-tickets}{%
+\subsection{-¿Cuál es el ticket con el mayor importe total y qué
+porcentaje representa este ticket respecto al importe total de todos los
+tickets?}\label{cuuxe1l-es-el-ticket-con-el-mayor-importe-total-y-quuxe9-porcentaje-representa-este-ticket-respecto-al-importe-total-de-todos-los-tickets}}
+
+Respuesta: El ticket con el mayor importe total es el número 397921, con
+un importe de 234,82 euros. Este ticket constituye el 1,67\% del importe
+total de todos los tickets.
+
+\par
+
+\hypertarget{quuxe9-productos-se-compran-habitualmente-juntos-que-podemos-entender-sobre-la-dieta-de-los-clientes}{%
+\subsection{-¿Qué productos se compran habitualmente juntos? ¿Que
+podemos entender sobre la dieta de los
+clientes?}\label{quuxe9-productos-se-compran-habitualmente-juntos-que-podemos-entender-sobre-la-dieta-de-los-clientes}}
+
+\begin{longtable}[]{@{}llr@{}}
+\caption{Los 10 productos que más se compran juntos}\tabularnewline
+\toprule\noalign{}
+item1 & item2 & frequency \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+item1 & item2 & frequency \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+leche desnat. calcio & queso lonchas cabra & 44 \\
+pan de pueblo & queso lonchas cabra & 43 \\
+brotes tiernos maxi & queso lonchas cabra & 40 \\
+plátano & queso lonchas cabra & 40 \\
+queso fresco cabra & queso lonchas cabra & 40 \\
+leche desn s/lact & queso lonchas cabra & 37 \\
+act o\% nat ed 8 & queso lonchas cabra & 31 \\
+filete pechuga & queso lonchas cabra & 30 \\
+parking & queso lonchas cabra & 27 \\
+queso lonchas cabra & zanahoria bolsa & 27 \\
+\end{longtable}
+
+Se han identificado pares de productos más frecuentemente comprados
+juntos, donde uno de ellos es casi siempre QUESO LONCHAS CABRA. Eso
+sugiere que este producto es muy popular y acompaña a muchos otros
+productos a la misma compra.
+
+\hypertarget{existen-diferencias-de-precios-para-el-mismo-producto-en-diferentes-tiendas-o-ubicaciones}{%
+\subsection{-¿Existen diferencias de precios para el mismo producto en
+diferentes tiendas o
+ubicaciones?}\label{existen-diferencias-de-precios-para-el-mismo-producto-en-diferentes-tiendas-o-ubicaciones}}
+
+\begin{longtable}[]{@{}llrr@{}}
+\caption{Diferencias de precios para el mismo producto en diferentes
+tiendas}\tabularnewline
+\toprule\noalign{}
+nombre & direccion & precio & n \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+nombre & direccion & precio & n \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
++ proteína arandanos & AVDA. VALLE DE LA BALLESTERA 58 & 1.47 & 2 \\
++ proteína arandanos & PLAZA FRANCISCA NAVARRO 8 & 1.55 & 5 \\
++prot natilla choco & C/ ELVIRA BOSCH S/N & 1.75 & 4 \\
++prot natilla vaini & AVDA. BLASCO IBÁÑEZ 95 & 1.75 & 5 \\
++prot natilla vaini & AVDA. VALENCIA 41 & 1.75 & 1 \\
++prot pla-açaí & PLAZA FRANCISCA NAVARRO 8 & 1.15 & 2 \\
++proteínas café & C/ ELVIRA BOSCH S/N & 1.90 & 1 \\
+1/2 conejo troceado & AVDA. VALENCIA 41 & 5.13 & 1 \\
+1/2 conejo troceado & AVDA. VALENCIA 41 & 6.46 & 1 \\
+1/2 conejo troceado & C/ ALICANTE 83 & 4.73 & 1 \\
+\end{longtable}
+
+\hypertarget{a-que-horas-del-dia-hay-muxe1s-ventas}{%
+\subsection{-¿A que horas del dia hay más
+ventas?}\label{a-que-horas-del-dia-hay-muxe1s-ventas}}
+
+\includegraphics[width=0.9\linewidth]{ProyectoTD2025_files/figure-latex/unnamed-chunk-28-1}
+
+\hypertarget{en-cuantos-tickets-se-venden-frutasverduras-y-pescados}{%
+\subsection{-En cuantos tickets se venden frutas/verduras y
+pescados?}\label{en-cuantos-tickets-se-venden-frutasverduras-y-pescados}}
+
+Número de tickets en los que se venden frutas/verduras: 168 Número de
+tickets en los que se venden pescados: 24
+
+\hypertarget{existen-diferencias-de-consumo-por-cada-mercadona}{%
+\subsection{-¿Existen diferencias de consumo por cada
+mercadona?}\label{existen-diferencias-de-consumo-por-cada-mercadona}}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.4932}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1644}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1918}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1507}}@{}}
+\caption{Estadísticas de Gasto Promedio, Mediana y Desviación Estándar
+por Mercadona}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+direccion
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+media\_gasto
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+mediana\_gasto
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+desv\_gasto
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+direccion
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+media\_gasto
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+mediana\_gasto
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+desv\_gasto
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+AVDA. DEL TEXTIL 21 & 112.02000 & 112.020 & NA \\
+C/ ALICANTE 83 & 106.74905 & 132.730 & 70.4205855 \\
+C/ MANUEL CANDELA 16 & 90.96500 & 96.780 & 42.6520779 \\
+CTRA. N-3 1 & 89.18000 & 89.180 & NA \\
+C/ OLTÁ 64 & 80.78000 & 80.780 & 89.6469977 \\
+C/ VICENTE BRULL 81 & 71.45800 & 55.220 & 70.8771580 \\
+AVDA. FERNANDO EL CATÓLICO 1 & 66.98800 & 57.330 & 25.5122455 \\
+C/ PERIODISTA AZZATI 26 & 66.30000 & 66.300 & 0.0000000 \\
+C/ REYES CATÓLICOS 18 & 64.68750 & 62.350 & 48.3358089 \\
+C/ PINTOR MAELLA 3 & 62.62000 & 62.710 & 42.3117586 \\
+AVDA. BLASCO IBÁÑEZ 95 & 58.12167 & 60.845 & 28.5231794 \\
+AVDA. MEDINA AZAHARA 2 & 52.07333 & 52.120 & 0.8609491 \\
+C/ PUPUT 51 & 49.74000 & 49.740 & NA \\
+C/ VALENCIA S/N & 46.94000 & 45.610 & 21.3230128 \\
+AVDA. VALENCIA 41 & 45.02083 & 32.490 & 36.0782802 \\
+C/ MENORCA (C.C. AQUA) 19 & 42.47974 & 36.715 & 26.4792739 \\
+AVDA. VALLE DE LA BALLESTERA 58 & 38.45400 & 38.620 & 24.2723975 \\
+C/ QUART 120 & 38.23176 & 37.000 & 18.6523093 \\
+PLAZA FRANCISCA NAVARRO 8 & 38.15846 & 35.515 & 17.5759747 \\
+C/ ELVIRA BOSCH S/N & 33.48200 & 30.940 & 16.0079221 \\
+C/ PINTOR PERIS ARAGÓ 34 & 32.19840 & 24.200 & 23.8732468 \\
+CARRERA MALILLA S/N & 30.32571 & 25.500 & 16.0475209 \\
+CTRA. GARRUCHA A VERA S/N & 27.46600 & 31.370 & 11.6894388 \\
+C/ ROGER DE LAURIA 19 & 26.98000 & 26.980 & NA \\
+C/ RÍO ESCALONA 25 & 20.99000 & 20.990 & NA \\
+C/ JERÓNIMO MONSORIU 60 & 20.80000 & 20.800 & NA \\
+C/ MARIANO DE CAVIA 32 & 19.85000 & 19.850 & NA \\
+AVDA. DE LA HISPANIDAD 36 & 14.46000 & 14.460 & NA \\
+AVDA. CARDENAL BENLLOCH 91 & 8.50000 & 8.500 & NA \\
+C/ DEL COMERÇ (POL.IND. ALCODAR) 11 & 3.90000 & 3.900 & NA \\
+C/ MARÍA VILLANGÓMEZ 4 & 3.08000 & 3.080 & NA \\
+C/ GENERAL AVILÉS 79 & 2.85000 & 2.500 & 1.4525839 \\
+CTRA. EIVISSA A S. JOSEP S/N & 0.77000 & 0.770 & NA \\
+C/ SAN VICENTE MÁRTIR 79 & 0.43000 & 0.430 & NA \\
+\end{longtable}
+
+\includegraphics[width=0.9\linewidth]{ProyectoTD2025_files/figure-latex/unnamed-chunk-30-1}
+
+\hypertarget{que-mes-y-que-dia-del-auxf1o-es-cuando-mas-dinero-se-gasta}{%
+\subsection{-¿Que mes y que dia del año es cuando mas dinero se
+gasta?}\label{que-mes-y-que-dia-del-auxf1o-es-cuando-mas-dinero-se-gasta}}
+
+\includegraphics[width=0.9\linewidth]{ProyectoTD2025_files/figure-latex/unnamed-chunk-31-1}
+
+\includegraphics[width=0.9\linewidth]{ProyectoTD2025_files/figure-latex/unnamed-chunk-32-1}
+El mes con más gasto es el mes 01 con un total de 2663.99€. El día con
+más gasto es el día 27 con un total de 1005.7€.
+
+\hypertarget{cuuxe1l-es-las-categoruxeda-de-productos-con-mayor-venta-en-tuxe9rminos-de-cantidad-y-cuuxe1l-es-su-contribuciuxf3n-porcentual-al-total-de-unidades-vendidas-hay-relaciuxf3n-entre-otras-categoruxedas}{%
+\subsection{-¿Cuál es las categoría de productos con mayor venta en
+términos de cantidad, y cuál es su contribución porcentual al total de
+unidades vendidas? Hay relación entre otras
+categorías?}\label{cuuxe1l-es-las-categoruxeda-de-productos-con-mayor-venta-en-tuxe9rminos-de-cantidad-y-cuuxe1l-es-su-contribuciuxf3n-porcentual-al-total-de-unidades-vendidas-hay-relaciuxf3n-entre-otras-categoruxedas}}
+
+\includegraphics[width=0.9\linewidth]{ProyectoTD2025_files/figure-latex/unnamed-chunk-33-1}
+
+\hypertarget{conclusiones}{%
+\section{Conclusiones}\label{conclusiones}}
+
+A través del análisis detallado de los tickets de compra, se han
+obtenido importantes hallazgos sobre los patrones de consumo en los
+distintos establecimientos. Hemos identificado qué productos son los más
+y menos vendidos, tanto por unidades como por kilos, así como aquellos
+que generan mayor ingreso. También se han detectado diferencias de
+precios del mismo producto entre tiendas, lo que podría deberse a
+políticas de precios locales o promociones específicas.
+
+El estudio de los tickets ha permitido observar variaciones en el
+comportamiento de compra a lo largo de la semana, el mes y el día,
+identificando los momentos de mayor y menor actividad. Esto puede ser
+útil para tomar decisiones operativas, como optimizar horarios de
+apertura o reforzar personal en momentos clave. Además, se han detectado
+combinaciones frecuentes de productos, lo que aporta pistas sobre los
+hábitos alimenticios de los clientes, reflejando un patrón de consumo
+alineado con una dieta mediterránea basada en frutas, verduras y
+pescado.
+
+En conjunto, estos análisis ofrecen una base sólida para tomar
+decisiones estratégicas orientadas a mejorar la eficiencia, ajustar la
+oferta de productos y potenciar la rentabilidad de cada tienda.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

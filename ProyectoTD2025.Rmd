@@ -1,7 +1,13 @@
 ---
 title: "ProyectoTD2025"
-author: "Mar Alemany, Martín González, Mateo Reina, Sina Taheri, Adrian Mena, Sergio Nadal"
-date: "2025-03-28"
+author: 
+  - name: Mar Alemany
+  - name: Martín González
+  - name: Mateo Reina
+  - name: Adrian Mena
+
+type: article
+status: submit
 output: 
   rticles::mdpi_article:
     extra_dependencies: ["booktabs", "longtable"]
@@ -974,6 +980,10 @@ ggplot(gasto_mensual, aes(x = factor(mes), y = gasto_total_mensual, fill = gasto
        y = "Gasto total (€)") +
   scale_fill_gradient(low = "lightgreen", high = "darkgreen") +  
   theme_minimal()
+
+
+```
+```{r,echo=FALSE,  fig.width=5.7,fig.height=4, out.width='90%'}
 
 # Gasto diario
 gasto_diario <- df %>%
