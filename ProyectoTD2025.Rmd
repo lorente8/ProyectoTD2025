@@ -5,6 +5,7 @@ author:
   - name: Martín González
   - name: Mateo Reina
   - name: Adrian Mena
+  - name: Sina Taheri
 
 type: article
 status: submit
