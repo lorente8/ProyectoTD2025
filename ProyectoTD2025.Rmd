@@ -194,7 +194,7 @@ df$anio <- as.numeric(format(df$fecha, "%Y"))
 df$mes <- as.numeric(format(df$fecha, "%m"))
 df$dia <- as.numeric(format(df$fecha, "%d"))
 # Elimina la columna fecha
-df$fecha <- NULL
+#df$fecha <- NULL
 
 # Separar la columna fs en tres partes
 fs_split <- strsplit(df$fs, "-")
@@ -211,19 +211,6 @@ df$empresa <- NULL
 df$total <- as.numeric(gsub(pattern = ",",replacement = ".",df$total))
 df$base_imp <- as.numeric(gsub(pattern = ",",replacement = ".",df$base_imp))
 df$cuota <- as.numeric(gsub(pattern = ",",replacement = ".",df$cuota))
-```
-
-```{r tabla_datos, include=FALSE, results='asis'}
-# Solo mostramos las primeras 10 filas para que no sea muy larga
-knitr::kable(head(df, 10),
-             align = 'c',
-             format = "latex", booktabs = TRUE, longtable = TRUE,
-             caption = "Primeras observaciones del conjunto de datos procesado",
-             col.names = c("Dirección", "CP", "Teléfono", "Hora", "Operación", 
-                           "Productos", "Total", "Forma de pago", 
-                           "Base imponible", "Cuota IVA", "Año", "Mes", "Día", 
-                           "Tienda", "Caja", "Ticket"))
-
 ```
 
 
@@ -544,7 +531,7 @@ n_forma_pago <- length(unique(df_final$forma_pago))
 En cuanto a las variables categóricas en el data frame de productos, tenemos tipo, que clasifica los productos en categorías como "pescado", "fruta_verdura" y "unidades". Además, la variable nombre contiene los nombres de los productos.
 
 En total, tenemos `r n_comercio` valores únicos en comercio, `r n_empresa` valores únicos en empresa, y `r n_forma_pago` valores únicos en forma_pago.
-```{r}
+```{r, include=FALSE}
 n_tipo <- length(unique(df_final$tipo))
 n_nombre_producto <- length(unique(df_final$nombre))
 
@@ -558,7 +545,7 @@ as variables numéricas representan cantidades o medidas cuantitativas dentro de
 
 Para tener una visión general del comportamiento de las compras, primero calculamos el valor total gastado, sumando el importe de todos los productos. Además, analizamos cuántos productos se compran por ticket (es decir, la media de la suma de cantidades por cada ticket) y cuál es el gasto medio por ticket.
 
-```{r, echo=FALSE}
+```{r, include=FALSE}
 # Total gastado en todos los productos
 precio_total <- sum(df_final$importe, na.rm = TRUE)
 
@@ -583,6 +570,9 @@ cat("La media de productos comprados por ticket es:", round(media_productos_tick
 cat("La media del importe total por ticket es:", round(media_importe_ticket, 2), "€\n")
 
 ```
+El gasto total en todos los productos es: 14022.5 €
+La media de productos comprados por ticket es: 19.9 
+La media del importe total por ticket es: 48.35 €
 
 Además, observamos que la variable cantidad contiene valores decimales en algunos casos, lo que se debe a que ciertos productos (como frutas, verduras o pescado) se venden al peso, mientras que otros se venden por unidades enteras.
 
@@ -593,8 +583,10 @@ fac <- df_final %>%
   pull(cantidad_redondeada) %>%
   as.factor()
 
-summary(fac)
-
+tabla_frecuencias <- table(fac)
+tabla_frecuencias_df <- as.data.frame(tabla_frecuencias)
+kable(tabla_frecuencias_df, col.names = c("Cantidad Redondeada", "Frecuencia"), 
+      caption = "Frecuencia de Cantidades Redondeadas de Productos Comprados")
 ```
 Con esto, podemos observar que en la mayoría de los casos se compraron 1 o 2 unidades/kilos, siendo 1 la cantidad más frecuente.
 
@@ -691,190 +683,219 @@ El gráfico anterior muestra cómo varía el importe total del ticket en funció
 
 El coeficiente de correlación de Pearson es r cant_precio, un valor cercano a $1$, lo cual indica que existe una relación lineal positiva muy fuerte entre ambas variables. Es decir, cuantos más productos se compran en un ticket, mayor es el importe total pagado, lo que resulta coherente con el comportamiento esperado en compras de supermercado.
 
-
-
-
-
-
-
+\bigskip
 
 
 # Preguntas
 
-1- ¿Cuáles son los productos menos vendidos por unidades? ¿Y por kilos?
-```{r}
-
+## - ¿Cuáles son los 5 productos, de los vendidos por unidades, con más ventas ? ¿Cuántas unidades de cada uno se han vendido ? ¿Y por kilos?
+```{r, echo=FALSE}
+# Productos menos vendidos por unidades
 unidades <- df_final[df_final$tipo == "unidades", ]
 unidades_agrupadas <- aggregate(cantidad ~ nombre, data = unidades, sum)
 unidades_ordenadas <- unidades_agrupadas[order(unidades_agrupadas$cantidad), ]
 
-head(unidades_ordenadas, n = 3)
-```
+# Mostrar la tabla de productos menos vendidos por unidades
+productos_menos_vendidos_unidades <- head(unidades_ordenadas, n = 3)
+productos_menos_vendidos_unidades %>%
+  kable(caption = "Top 3 productos menos vendidos por unidades")
 
-```{r}
-kilos <- df_final[df_final$tipo == "fruta_verdura", ]
+# Productos menos vendidos por kilos (pescado y fruta_verdura)
+kilos <- df_final[df_final$tipo %in% c("pescado", "fruta_verdura"), ]
 kilos_agrupados <- aggregate(cantidad ~ nombre, data = kilos, sum)
 kilos_ordenados <- kilos_agrupados[order(kilos_agrupados$cantidad), ]
-head(kilos_ordenados, n = 3)
+
+# Mostrar la tabla de productos menos vendidos por kilos
+productos_menos_vendidos_kilos <- head(kilos_ordenados, n = 3)
+productos_menos_vendidos_kilos %>%
+  kable(caption = "Top 3 productos menos vendidos por kilos")
+
 
 ```
-Respuesta: El producto menos vendido por unidades son PROTEÍNAS CAFÉ, 1/2 POLLO PARTIDO	y 12 HUEVOS MEDIANOS-M.
-Y el producto menos vendido por kilo es Pera Rocha con 0.364kg
 
-2-¿Qué productos han generado mayor ingreso total (precio x cantidad)?
-```{r}
-# Calcular ingreso total por producto (importe = precio × cantidad)
+
+
+## -¿Qué productos han generado mayor ingreso total (precio x cantidad)?
+```{r, echo=FALSE}
 df_final$ingreso_total <- df_final$precio * df_final$cantidad
 
-# Ordenar por ingreso total descendente
 productos_ordenados <- df_final[order(-df_final$ingreso_total), ]
 
-# Mostrar los productos con mayor ingreso total
+productos_top <- head(productos_ordenados[, c("nombre", "ingreso_total")], 5)
 
-print(productos_ordenados[, c("nombre", "ingreso_total")])
+productos_top %>%
+  kable(caption = "Top 5 productos con mayor ingreso total")
 
-# Top 3 productos con mayor ingreso total
-
-print(head(productos_ordenados[, c("nombre", "ingreso_total")], 3))
 
 ```
-Respuesta: Como vemos Alistado Mediano con 31.33 es mayor
+ Como vemos Alistado Mediano con 31.33 es mayor 
 
-3-¿Cuál es el ticket con el mayor importe total y qué porcentaje representa este ticket respecto al importe total de todos los tickets?
+
+## -¿Cuál es el ticket con el mayor importe total y qué porcentaje representa este ticket respecto al importe total de todos los tickets?
   
-```{r}
+```{r, include=FALSE}
+importe_por_ticket <- df_final %>%
+  group_by(num_ticket) %>%
+  summarise(importe_total = sum(importe, na.rm = TRUE)) %>%
+  arrange(desc(importe_total))
 
-# Calcular importe total por ticket y ordenar
-ticket_mayor <- df_final %>% group_by(num_ticket) %>% summarise(importe_total = sum(importe, na.rm = TRUE)) %>% arrange(desc(importe_total)) %>%
-  head(1)  # Tomamos el primero (mayor importe)
+ticket_mayor <- head(importe_por_ticket, 1)
 
-# Importe total general
 total_ventas <- sum(df_final$importe, na.rm = TRUE)
 
-# Calcular porcentaje
 porcentaje <- round((ticket_mayor$importe_total / total_ventas) * 100, 2)
 
+list(
+  ticket_con_mayor_importe = ticket_mayor,
+  porcentaje_del_total = paste0(porcentaje, "%")
+)
 
-list( ticket_mayor = ticket_mayor, porcentaje_del_total = paste0(porcentaje, "%"))
 
 ```
 Respuesta: El ticket con el mayor importe total es el número 397921, con un importe de 234,82 euros.
-Este ticket constituye el 1,67% del importe total de todos los tickets.
-
-4-¿Qué productos se compran habitualmente juntos? ¿Que podemos entender sobre la dieta de los clientes?
-```{r}
+Este ticket constituye el 1,67% del importe total de todos los tickets. \par
+ 
+## -¿Qué productos se compran habitualmente juntos? ¿Que podemos entender sobre la dieta de los clientes?
+```{r, echo=FALSE, warning=FALSE}
 product_pairs <- df_final %>% rename(item1 = nombre) %>% inner_join(df_final, by = "num_ticket") %>%
 rename(item2 = nombre) %>% filter(item1 < item2)  
-                           # Esto evita pares duplicados y pares del mismo producto
-
-
-# calcula productos pares
+                         
 pair_counts <- product_pairs %>% group_by(item1, item2) %>% summarise(frequency = n(), .groups = "drop") %>%
 arrange(desc(frequency))
 
-# top 20
-head(pair_counts, 20)
+
+
+head(pair_counts, 10) %>%
+  kable(caption = "Los 10 productos que más se compran juntos")
 
 
 ```
-Respuesta: Has identificado pares de productos más frecuentemente comprados juntos, donde uno de ellos es casi siempre QUESO LONCHAS CABRA. Eso sugiere que este producto es muy popular y acompaña a muchos otros productos a la misma compra.
-Observamos que:
-1-La presencia de productos sin lactosa y Desnatada indica preocupación para comer más saludable.
-2-En conjunto, los hábitos reflejan una dieta equilibrada, con atención a la salud y lo natural.
-
-5-¿Existen diferencias de precios para el mismo producto en diferentes tiendas o ubicaciones?
-
-library(dplyr)
-df_final %>%
-  group_by(nombre,precio) %>%
-  summarise(df$direccion) -> diferencias_precio
-print(diferencias precio)
+Respuesta: Se han identificado pares de productos más frecuentemente comprados juntos, donde uno de ellos es casi siempre QUESO LONCHAS CABRA. Eso sugiere que este producto es muy popular y acompaña a muchos otros productos a la misma compra.
 
 
+## -¿Existen diferencias de precios para el mismo producto en diferentes tiendas o ubicaciones?
+```{r,echo=FALSE, warning=FALSE}
 
-6-¿A que horas del dia hay más ventas?
+# Unimos para tener la dirección asociada al ticket
+df_completo <- left_join(df_final, df %>% select(num_ticket, direccion), by = "num_ticket")
+
+
+diferencias_precio <- df_completo %>%
+  group_by(nombre, direccion, precio) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  arrange(nombre, direccion)
+
+diferencias_precio %>%
+  head(10) %>%
+  kable(caption = "Diferencias de precios para el mismo producto en diferentes tiendas")
+
+
+
+```
+
+
+## -¿A que horas del dia hay más ventas?
+```{r, echo=FALSE, fig.width=5.7,fig.height=4, out.width='90%'}
+df$hora <- as.POSIXct(df$hora, format = "%H:%M")  
+df$hora_limpia <- hour(df$hora)
 
 gasto_diario <- df %>% 
-  group_by(hora) %>% 
-  summarise(gasto_total_diario= sum(total, na.rm=TRUE)) %>%
-  arrange(desc(gasto_total_diario))
-print(gasto_diario) 
-
-gasto_total_diario <- gasto_diario %>%
-  mutate(hora_limpia= hour(hms(hora))       #Para extraer las horas de 0 a 23
-
-#Agrupar por hora redondeada
-gasto_por_hora <- gasto_diario %>%
-  mutate(hora_completa=paste0(hora, ":00"), hora_limpia=hour(hms(hora_completa))) %>%
   group_by(hora_limpia) %>%
-  summarise(gasto_total = sum(gasto_total_diario, na.rm = TRUE)) %>%
-  arrange(desc(gasto_total))
-print(gasto_por_hora)
+  summarise(gasto_total_diario = sum(total, na.rm = TRUE)) %>%
+  arrange(desc(gasto_total_diario))
 
-#La hora en la que más se gasta son las 13:00h
+ggplot(gasto_diario, aes(x = factor(hora_limpia), y = gasto_total_diario)) +
+  geom_col(fill = "steelblue", show.legend = FALSE) +  
+  labs(title = "Gasto total por horas del día",
+       x = "Hora del día (de 0 a 23)",
+       y = "Gasto total (€)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-ggplot(gasto_por_hora, aes(x = factor(hora_limpia), y = gasto_total, fill = factor(hora_limpia))) +
-  geom_col(show.legend = FALSE) +
-  labs(title = "Gasto total por horas",
-       x = "Hora (número)",
-       y = "Gasto total") +
-  theme_minimal()
-
-
-7-En cuantos tickets se venden frutas/verduras y pescados?
-```{r}
-df_fruta_verdura %>%
-  summarise(n_tickets = n_distinct(num_ticket)) %>%
-  arrange(desc(n_tickets)) -> tickets_por_mercadona
-print(tickets_por_mercadona)
-
-df_pescado %>%
-  summarise(n_tickets= n_distinct(num_ticket)) %>%
-  arrange(desc(n_tickets)) -> tickets_por_mercadona2
-print(tickets_por_mercadona2) 
 
 ```
-Respuesta: Podemos ver que en 168 tickets se vende fruta o verdura, y en 24 tickets se vende pescado
+
+
+## -En cuantos tickets se venden frutas/verduras y pescados?
+```{r, echo=FALSE}
+# Contamos los tickets en los que se venden frutas/verduras
+tickets_fruta_verdura <- df_fruta_verdura %>%
+  summarise(n_tickets = n_distinct(num_ticket)) 
+
+
+# Contamos los tickets en los que se venden pescados
+tickets_pescado <- df_pescado %>%
+  summarise(n_tickets = n_distinct(num_ticket))
+
+```
+Número de tickets en los que se venden frutas/verduras:  168 
+Número de tickets en los que se venden pescados:  24 
 
 8-¿Desde qué ciudades se emiten más tickets?
-
-df %>%
+```{r, echo=FALSE, fig.width=5.7,fig.height=4, out.width='90%'}
+# Contamos los tickets por cada dirección
+tickets_por_mercadona <- df %>%
   group_by(direccion) %>%
   summarise(n_tickets = n_distinct(num_ticket)) %>%
-  arrange(desc(n_ticket)) <- tickets_por_mercadona
-print(tickets_por_mercadona)
-# Se emiten mas tickets desde el mercadona de "C/Quart 120"
+  arrange(desc(n_tickets)) 
 
-9-¿Existen diferencias de consumo por cada mercadona?
-df%>%
-  group_by(direccion)
+ggplot(tickets_por_mercadona, aes(x = reorder(direccion, n_tickets), y = n_tickets)) +
+  geom_point(aes(color = n_tickets), size = 4, alpha = 0.7) +  
+  geom_text(aes(label = n_tickets), vjust = -0.5, size = 3) +  
+  labs(title = "Número de Tickets Emitidos por Ciudad",
+       x = "Ciudad", y = "Número de Tickets") +
+  theme_minimal() +
+  scale_color_gradient(low = "lightblue", high = "blue") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+
+```
+
+La ciudad con más tickets emitidos es:  C/ QUART 120Con un total de  51 tickets
+
+## -¿Existen diferencias de consumo por cada mercadona?
+```{r,echo=FALSE,  fig.width=5.7,fig.height=4, out.width='90%'}
+
+gasto_por_mercadona <- df %>%
+  group_by(direccion) %>%
   summarise(
-    media_gasto=mean(total, na.rm = TRUE)
-    mediana_gasto=median(total,  na.rm = TRUE)
-    desv_gasto=sd(total, na.rm = TRUE)
+    media_gasto = mean(total, na.rm = TRUE),
+    mediana_gasto = median(total, na.rm = TRUE),
+    desv_gasto = sd(total, na.rm = TRUE)
   ) %>%
-  arrange(desc(media_gasto)) <- gasto_por_mercadona
-print(gasto_por_mercadona)
-# Si que hay diferencia de consumo, en cada mercadona la media de consumo es difernete, el mercadona con la media de consumo mas alto es "Avda. del textil 21"
+  arrange(desc(media_gasto)) 
+
+kable(gasto_por_mercadona, caption = "Estadísticas de Gasto Promedio, Mediana y Desviación Estándar por Mercadona", booktabs = TRUE)
+
+ggplot(gasto_por_mercadona, aes(x = reorder(direccion, media_gasto), y = media_gasto, fill = direccion)) +
+  geom_bar(stat = "identity", show.legend = FALSE) +
+  geom_text(aes(label = round(media_gasto, 2)), vjust = -0.5) +
+  labs(title = "Gasto Promedio por Mercadona", x = "Mercadona", y = "Gasto Promedio (€)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+```
 
 
-10-¿Que mes y que dia del año es cuando mas dinero se gasta?
+## -¿Que mes y que dia del año es cuando mas dinero se gasta?
+```{r,echo=FALSE,  fig.width=5.7,fig.height=4, out.width='90%'}
+
+# Extraer el mes y el día de la fecha
+df$mes <- format(df$fecha, "%m")  
+df$dia <- format(df$fecha, "%d")  
+
 # Gasto mensual
 gasto_mensual <- df %>%
   group_by(mes) %>%
   summarise(gasto_total_mensual = sum(total, na.rm = TRUE)) %>%
   arrange(desc(gasto_total_mensual))
 
-print(gasto_mensual)
-# El mes del año con mas gasto es enero, seguido de marzo y febrero
-
-ggplot(gasto_mensual, aes(x = factor(mes), y = gasto_total_mensual, fill = factor(mes))) +
+# Graficar gasto total por mes
+ggplot(gasto_mensual, aes(x = factor(mes), y = gasto_total_mensual, fill = gasto_total_mensual)) +
   geom_col(show.legend = FALSE) +
   labs(title = "Gasto total por mes",
        x = "Mes (número)",
-       y = "Gasto total") +
+       y = "Gasto total (€)") +
+  scale_fill_gradient(low = "lightgreen", high = "darkgreen") +  
   theme_minimal()
-
 
 # Gasto diario
 gasto_diario <- df %>%
@@ -882,68 +903,41 @@ gasto_diario <- df %>%
   summarise(gasto_total_diario = sum(total, na.rm = TRUE)) %>%
   arrange(desc(gasto_total_diario))
 
-print(gasto_diario)
-# El dia del mes con más gasto es el dia 27 de cada mes 
-
-ggplot(gasto_diario, aes(x = factor(dia), y = gasto_total_diario, fill = factor(dia))) +
+# Graficar gasto total por día
+ggplot(gasto_diario, aes(x = factor(dia), y = gasto_total_diario, fill = gasto_total_diario)) +
   geom_col(show.legend = FALSE) +
-  labs(title = "Gasto total por dia",
-       x = "Dia (número)",
-       y = "Gasto total") +
+  labs(title = "Gasto total por día",
+       x = "Día (número)",
+       y = "Gasto total (€)") +
+  scale_fill_gradient(low = "lightblue", high = "darkblue") + 
   theme_minimal()
 
-11-¿Influye la disponibilidad de aparcamiento en el importe total de la compra?
-```{r}
-resultados <- df_final %>% filter(!is.na(tiene_aparcamiento)) %>% group_by(tiene_aparcamiento) %>%
-summarise(
-    n_compras = n(),
-    media_total = mean(total, na.rm = TRUE),
-    mediana_total = median(total, na.rm = TRUE),
-    sd_total = sd(total, na.rm = TRUE),
-    min_total = min(total, na.rm = TRUE),
-    max_total = max(total, na.rm = TRUE)
-  ) %>% arrange(desc(media_total))
-
-
-print(resultados) 
-
-
-
 ```
-Respuesta: No hay datos de aparcamiento, pués no influye.
+El mes con más gasto es el mes 01 con un total de 2663.99€.
+El día con más gasto es el día 27 con un total de 1005.7€.
 
-12-¿Cuál es las categoría de productos con mayor venta en términos de cantidad, y cuál es su contribución porcentual al total de unidades vendidas? Hay relación entre otras categorías?
-```{r}
+## -¿Cuál es las categoría de productos con mayor venta en términos de cantidad, y cuál es su contribución porcentual al total de unidades vendidas? Hay relación entre otras categorías?
+```{r, echo=FALSE,  fig.width=5.7,fig.height=4, out.width='90%'}
 
-# Calcular total de unidades vendidas por categoría
+# Calcular total de unidades vendidas por categoría (tipo de producto)
 ventas_por_tipo <- df_final %>% 
   filter(!is.na(tipo)) %>%  
   group_by(tipo) %>%
   summarise(total_unidades = sum(cantidad, na.rm = TRUE)) %>%
-  arrange(desc(total_unidades))
+  arrange(desc(total_unidades))  
 
-# Calcular total general de unidades 
 total_unidades_filtrado <- sum(ventas_por_tipo$total_unidades)
 
-# Añadir columna de porcentaje correctamente calculado
 ventas_por_tipo <- ventas_por_tipo %>% 
   mutate(porcentaje = round((total_unidades / total_unidades_filtrado) * 100, 2))
-ventas_por_tipo
-```
-Cuanto es el importe total de pescado? Hay relacion entre el consumo de pescado y comprar de pescado?
-# En estos códigos, podemos aplicar summarise para obtener el ingreso de pescado y fruta_verdura, y el porcentaje obtenido. Además, podemos ver que dividir importe de categoría entre importe total resulta en obtener un porcentaje que podemos aprovechar en análisis.
-```{r}
 
-df_final %>% summarise(total_importe = sum(ingreso_total, na.rm = TRUE),
-                       importe_pescado = sum(ingreso_total[tipo == "pescado"], na.rm = TRUE),
-                       porcentaje_importe_pescado = importe_pescado / total_importe * 100)
+ggplot(ventas_por_tipo, aes(x = reorder(tipo, total_unidades), y = total_unidades, fill = tipo)) +
+  geom_bar(stat = "identity", show.legend = FALSE) +
+  geom_text(aes(label = paste(total_unidades, "(", porcentaje, "%)")), vjust = -0.5) +
+  labs(title = "Unidades Vendidas por Categoría", x = "Categoría", y = "Total de Unidades Vendidas") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  
 
 ```
 
-```{r}
-df_final %>% summarise(total_importe = sum(ingreso_total, na.rm = TRUE),
-                       importe_fruta_verdura = sum(ingreso_total[tipo == "fruta_verdura"], na.rm = TRUE),
-                       porcentaje_importe_fruta_verdura = importe_fruta_verdura / total_importe * 100)
 
-```
-Respuesta: Unidades son mayor en términos de cantidad con 92.71%. Podemos ver que la importe total de pescado es la más baja entre estas tres categorías y también representa aproximadamente el 0.5% de las compras. El porcentaje de los valores vendidos y el costo de esos valores son números bastante cercanos. Se puede decir que el pescado tiene un costo más alto, ya que en relación con la cantidad comprada, tiene una mayor proporción de los costos en comparación con su porcentaje de compra.
