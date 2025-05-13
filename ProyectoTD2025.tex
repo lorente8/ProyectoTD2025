@@ -237,13 +237,13 @@ la integración de código, resultados y texto explicativo.
 Utilizaremos dos data frames para manejar los datos de manera más
 eficiente. El primer data frame contendrá la información general del
 ticket, como la dirección del supermercado, la fecha y hora de la
-compra, el monto total, entre otros. En este caso, todos los productos
-registrados en el ticket se almacenarán como una sola cadena de texto en
-una única variable. El segundo data frame desglosará los productos en
-variables separadas
+compra, entre otros. En este caso, todos los productos registrados en el
+ticket se almacenarán como una sola cadena de texto en una única
+variable. El segundo data frame desglosará los productos en variables
+separadas
 
-Ambos data frames estarán vinculados a través de la variable fs (factura
-simplificada).
+Ambos data frames estarán vinculados a través de la variable
+num\_ticket.
 
 \hypertarget{importaciuxf3n-de-los-datos}{%
 \section{Importación de los datos}\label{importaciuxf3n-de-los-datos}}
@@ -385,7 +385,7 @@ información necesaria.
 
 \begin{table}
 
-\caption{\label{tab:tabla_fruta_verdura}Descripción de variables del conjunto de frutas y verduras}
+\caption{\label{tab:tabla_fruta_verdura}Conjunto de frutas y verduras}
 \centering
 \begin{tabular}[t]{ccccc}
 \toprule
@@ -423,7 +423,7 @@ dentro del nombre del producto.
 
 \begin{table}
 
-\caption{\label{tab:tabla_productos_unidad}Descripción de variables del conjunto de productos por unidad}
+\caption{\label{tab:tabla_productos_unidad}Conjunto de productos por unidad}
 \centering
 \begin{tabular}[t]{ccccc}
 \toprule
@@ -462,7 +462,7 @@ análisis posterior.
 
 \begin{table}
 
-\caption{\label{tab:tabla_final}Descripción de variables del conjunto de datos final}
+\caption{\label{tab:tabla_final}Conjunto de datos productos}
 \centering
 \begin{tabular}[t]{ccccccc}
 \toprule
@@ -537,7 +537,7 @@ productos distintos registrados en total.
 \subsubsection{Variables de tipo
 numérico}\label{variables-de-tipo-numuxe9rico}}
 
-as variables numéricas representan cantidades o medidas cuantitativas
+Las variables numéricas representan cantidades o medidas cuantitativas
 dentro del conjunto de datos. En nuestro análisis, nos centramos
 principalmente en dos variables clave: cantidad (ya sea en unidades o en
 kilos) y precio (precio por kilo o unitario, según el tipo de producto).

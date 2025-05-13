@@ -31,9 +31,9 @@ Para la manipulación de datos se emplearon los paquetes tidyverse (incluyendo d
 
 Las visualizaciones se generaron utilizando ggplot2, seleccionado por su versatilidad para crear gráficos de alta calidad. Para la presentación de resultados en formatos reproducibles se implementó knitr, facilitando la integración de código, resultados y texto explicativo.
 
-Utilizaremos dos data frames para manejar los datos de manera más eficiente. El primer data frame contendrá la información general del ticket, como la dirección del supermercado, la fecha y hora de la compra, el monto total, entre otros. En este caso, todos los productos registrados en el ticket se almacenarán como una sola cadena de texto en una única variable. El segundo data frame desglosará los productos en variables separadas
+Utilizaremos dos data frames para manejar los datos de manera más eficiente. El primer data frame contendrá la información general del ticket, como la dirección del supermercado, la fecha y hora de la compra, entre otros. En este caso, todos los productos registrados en el ticket se almacenarán como una sola cadena de texto en una única variable. El segundo data frame desglosará los productos en variables separadas
 
-Ambos data frames estarán vinculados a través de la variable fs (factura simplificada).
+Ambos data frames estarán vinculados a través de la variable num_ticket.
 
 ```{r, include=FALSE}
 #Nos aseguramos de que no haya nada cargado en el Environment
@@ -360,7 +360,7 @@ select(-detalles)
 
 ```{r tabla_fruta_verdura, echo=FALSE, results='asis'}
 knitr::kable(head(df_fruta_verdura, 10), align = 'c', format = "latex", booktabs = TRUE,
-             caption = "Descripción de variables del conjunto de frutas y verduras")
+             caption = "Conjunto de frutas y verduras")
 
 ```
 
@@ -436,7 +436,7 @@ df_productos_unidades <- df_resto %>%
 
 
 knitr::kable(head(df_productos_unidades, 10), align = 'c', format = "latex", booktabs = TRUE,
-             caption = "Descripción de variables del conjunto de productos por unidad")
+             caption = "Conjunto de productos por unidad")
 
 ```
 
@@ -490,7 +490,7 @@ df_final <- df_final %>% arrange(num_ticket)
 ```{r tabla_final, echo=FALSE, results='asis'}
 
 knitr::kable(head(df_final, 10), align = 'c', format = "latex", booktabs = TRUE,
-             caption = "Descripción de variables del conjunto de datos final")
+             caption = "Conjunto de datos productos")
 
 ```
 
@@ -548,7 +548,7 @@ También observamos que tenemos `r n_tipo` tipos diferentes de productos y `r n_
 
 ### Variables de tipo numérico
 
-as variables numéricas representan cantidades o medidas cuantitativas dentro del conjunto de datos. En nuestro análisis, nos centramos principalmente en dos variables clave: cantidad (ya sea en unidades o en kilos) y precio (precio por kilo o unitario, según el tipo de producto).
+Las variables numéricas representan cantidades o medidas cuantitativas dentro del conjunto de datos. En nuestro análisis, nos centramos principalmente en dos variables clave: cantidad (ya sea en unidades o en kilos) y precio (precio por kilo o unitario, según el tipo de producto).
 
 Para tener una visión general del comportamiento de las compras, primero calculamos el valor total gastado, sumando el importe de todos los productos. Además, analizamos cuántos productos se compran por ticket (es decir, la media de la suma de cantidades por cada ticket) y cuál es el gasto medio por ticket.
 
@@ -652,8 +652,6 @@ df %>%
 En este apartado analizamos si existe una relación directa entre el número de productos comprados en un ticket y el precio total pagado en dicho ticket. Para ello, realizamos un gráfico de dispersión y calculamos el coeficiente de correlación de Pearson.
 
 ```{r grafica3, echo=FALSE, out.width='85%'}
-library(dplyr)
-
 # Total de productos por ticket
 productos_por_ticket <- df_final %>%
   group_by(num_ticket) %>%
