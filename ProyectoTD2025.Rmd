@@ -690,29 +690,128 @@ El coeficiente de correlación de Pearson es r cant_precio, un valor cercano a $
 
 ## - ¿Cuáles son los 5 productos, de los vendidos por unidades, con más ventas ? ¿Cuántas unidades de cada uno se han vendido ? ¿Y por kilos?
 ```{r, echo=FALSE}
-# Productos menos vendidos por unidades
+# Productos más vendidos por unidades
 unidades <- df_final[df_final$tipo == "unidades", ]
 unidades_agrupadas <- aggregate(cantidad ~ nombre, data = unidades, sum)
-unidades_ordenadas <- unidades_agrupadas[order(unidades_agrupadas$cantidad), ]
+unidades_ordenadas <- unidades_agrupadas[order(-unidades_agrupadas$cantidad), ]
 
-# Mostrar la tabla de productos menos vendidos por unidades
-productos_menos_vendidos_unidades <- head(unidades_ordenadas, n = 3)
-productos_menos_vendidos_unidades %>%
-  kable(caption = "Top 3 productos menos vendidos por unidades")
+productos_mas_vendidos_unidades <- head(unidades_ordenadas, n = 5)
+productos_mas_vendidos_unidades %>%
+  kable(caption = "Top 5 productos más vendidos por unidades")
 
-# Productos menos vendidos por kilos (pescado y fruta_verdura)
+# Productos más vendidos por kilos (pescado y fruta_verdura)
 kilos <- df_final[df_final$tipo %in% c("pescado", "fruta_verdura"), ]
 kilos_agrupados <- aggregate(cantidad ~ nombre, data = kilos, sum)
-kilos_ordenados <- kilos_agrupados[order(kilos_agrupados$cantidad), ]
+kilos_ordenados <- kilos_agrupados[order(-kilos_agrupados$cantidad), ]
 
-# Mostrar la tabla de productos menos vendidos por kilos
-productos_menos_vendidos_kilos <- head(kilos_ordenados, n = 3)
-productos_menos_vendidos_kilos %>%
-  kable(caption = "Top 3 productos menos vendidos por kilos")
+productos_mas_vendidos_kilos <- head(kilos_ordenados, n = 5)
+productos_mas_vendidos_kilos %>%
+  kable(caption = "Top 5 productos más vendidos por kilos")
+
+
+```
+## -Si consideramos la categoría de FRUTAS Y VERDURAS. Cuáles son los 5 productos más vendidos ? ¿Cuántos kilos se han vendido de cada uno de estos productos ?
+```{r, echo=FALSE, warning=FALSE}
+# Filtrar solo productos de la categoría fruta_verdura
+frutas_verduras <- df_final[df_final$tipo == "fruta_verdura", ]
+
+fv_agrupado <- aggregate(cantidad ~ nombre, data = frutas_verduras, sum)
+
+fv_ordenado <- fv_agrupado[order(-fv_agrupado$cantidad), ]
+
+top5_frutas_verduras <- head(fv_ordenado, 5)
+
+top5_frutas_verduras %>%
+  kable(caption = "Top 5 productos más vendidos en la categoría Frutas y Verduras (en kilos)", col.names = c("Producto", "Kilos vendidos"))
+
+```
+## -Si consideramos la categoría de PESCADO. Cuáles son los 5 productos más vendidos ? ¿Cuántos kilos se han vendido de cada uno de estos productos ?
+```{r, echo=FALSE, warning=FALSE}
+pescado <- df_final[df_final$tipo == "pescado", ]
+
+pescado_agrupado <- aggregate(cantidad ~ nombre, data = pescado, sum)
+
+pescado_ordenado <- pescado_agrupado[order(-pescado_agrupado$cantidad), ]
+
+top5_pescado <- head(pescado_ordenado, 5)
+
+top5_pescado %>%
+  kable(caption = "Top 5 productos más vendidos en la categoría Pescado (en kilos)", col.names = c("Producto", "Kilos vendidos"))
+
+```
+
+## -Muestra mediante un gráfico de líneas como ha variado el precio por kilo de las bananas y los plátanos en los tickets disponibles, a lo largo del tiempo.
+```{r, echo=FALSE, warning=FALSE,  fig.width=5.7,fig.height=4, out.width='90%'}
+
+df_final <- df_final %>%
+  mutate(nombre = tolower(nombre),
+         nombre = case_when(
+           nombre %in% c("platano", "plátano", "platanos") ~ "plátano",
+           nombre %in% c("banana", "bananas") ~ "banana",
+           TRUE ~ nombre
+         ))
+
+banana_platano <- df_final %>%
+  filter(nombre %in% c("banana", "plátano")) %>%
+  left_join(df %>% select(num_ticket, fecha), by = "num_ticket") %>%
+  filter(!is.na(fecha))
+
+  ggplot(banana_platano, aes(x = fecha, y = precio, color = nombre)) +
+    geom_line(aes(group = nombre), alpha = 0.7) +
+    geom_point(size = 1.2, alpha = 0.6) +
+    labs(title = "Evolución del Precio por Kilo: Banana y Plátano",
+         x = "Fecha",
+         y = "Precio por Kilo (€)",
+         color = "Producto") +
+    theme_minimal()
 
 
 ```
 
+## -¿Desde qué ciudades se emiten más tickets?
+```{r, echo=FALSE, fig.width=5.7,fig.height=4, out.width='90%'}
+# Contamos los tickets por cada dirección
+tickets_por_mercadona <- df %>%
+  group_by(direccion) %>%
+  summarise(n_tickets = n_distinct(num_ticket)) %>%
+  arrange(desc(n_tickets)) 
+
+ggplot(tickets_por_mercadona, aes(x = reorder(direccion, n_tickets), y = n_tickets)) +
+  geom_point(aes(color = n_tickets), size = 4, alpha = 0.7) +  
+  geom_text(aes(label = n_tickets), vjust = -0.5, size = 3) +  
+  labs(title = "Número de Tickets Emitidos por Ciudad",
+       x = "Ciudad", y = "Número de Tickets") +
+  theme_minimal() +
+  scale_color_gradient(low = "lightblue", high = "blue") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+
+```
+
+La ciudad con más tickets emitidos es:  C/ QUART 120Con un total de  51 tickets
+
+## -Muestra mediante un diagrama el número de tickets recogidos cada día de las semana. ¿Si tuvieses que cerrar un día entre semana qué día lo harías ?
+
+```{r, echo=FALSE, fig.width=5.7,fig.height=4, out.width='90%'}
+
+df$fecha <- as.Date(df$fecha)
+
+df$dow <- wday(df$fecha, label = TRUE, abbr = FALSE, week_start = 1)
+
+tickets_por_dia <- df %>%
+  group_by(dow) %>%
+  summarise(n_tickets = n_distinct(num_ticket)) %>%
+  arrange(match(dow, c("lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo")))
+
+ggplot(tickets_por_dia, aes(x = dow, y = n_tickets, fill = dow)) +
+  geom_col(show.legend = FALSE) +
+  geom_text(aes(label = n_tickets), vjust = -0.5, size = 3) +
+  labs(title = "Número de Tickets por Día de la Semana",
+       x = "Día de la semana",
+       y = "Número de tickets") +
+  theme_minimal()
+
+```
+Si se tubiera que cerrar un dia entre semana este seria el jueves que es el dia que menos tickets se recogen.
 
 
 ## -¿Qué productos han generado mayor ingreso total (precio x cantidad)?
@@ -728,7 +827,6 @@ productos_top %>%
 
 
 ```
- Como vemos Alistado Mediano con 31.33 es mayor 
 
 
 ## -¿Cuál es el ticket con el mayor importe total y qué porcentaje representa este ticket respecto al importe total de todos los tickets?
@@ -770,7 +868,7 @@ head(pair_counts, 10) %>%
 
 
 ```
-Respuesta: Se han identificado pares de productos más frecuentemente comprados juntos, donde uno de ellos es casi siempre QUESO LONCHAS CABRA. Eso sugiere que este producto es muy popular y acompaña a muchos otros productos a la misma compra.
+Se han identificado pares de productos más frecuentemente comprados juntos, donde uno de ellos es casi siempre QUESO LONCHAS CABRA. Eso sugiere que este producto es muy popular y acompaña a muchos otros productos a la misma compra.
 
 
 ## -¿Existen diferencias de precios para el mismo producto en diferentes tiendas o ubicaciones?
@@ -831,26 +929,6 @@ tickets_pescado <- df_pescado %>%
 Número de tickets en los que se venden frutas/verduras:  168 
 Número de tickets en los que se venden pescados:  24 
 
-8-¿Desde qué ciudades se emiten más tickets?
-```{r, echo=FALSE, fig.width=5.7,fig.height=4, out.width='90%'}
-# Contamos los tickets por cada dirección
-tickets_por_mercadona <- df %>%
-  group_by(direccion) %>%
-  summarise(n_tickets = n_distinct(num_ticket)) %>%
-  arrange(desc(n_tickets)) 
-
-ggplot(tickets_por_mercadona, aes(x = reorder(direccion, n_tickets), y = n_tickets)) +
-  geom_point(aes(color = n_tickets), size = 4, alpha = 0.7) +  
-  geom_text(aes(label = n_tickets), vjust = -0.5, size = 3) +  
-  labs(title = "Número de Tickets Emitidos por Ciudad",
-       x = "Ciudad", y = "Número de Tickets") +
-  theme_minimal() +
-  scale_color_gradient(low = "lightblue", high = "blue") + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
-
-```
-
-La ciudad con más tickets emitidos es:  C/ QUART 120Con un total de  51 tickets
 
 ## -¿Existen diferencias de consumo por cada mercadona?
 ```{r,echo=FALSE,  fig.width=5.7,fig.height=4, out.width='90%'}
@@ -940,4 +1018,11 @@ ggplot(ventas_por_tipo, aes(x = reorder(tipo, total_unidades), y = total_unidade
 
 ```
 
+# Conclusiones
+
+A través del análisis detallado de los tickets de compra, se han obtenido importantes hallazgos sobre los patrones de consumo en los distintos establecimientos. Hemos identificado qué productos son los más y menos vendidos, tanto por unidades como por kilos, así como aquellos que generan mayor ingreso. También se han detectado diferencias de precios del mismo producto entre tiendas, lo que podría deberse a políticas de precios locales o promociones específicas.
+
+El estudio de los tickets ha permitido observar variaciones en el comportamiento de compra a lo largo de la semana, el mes y el día, identificando los momentos de mayor y menor actividad. Esto puede ser útil para tomar decisiones operativas, como optimizar horarios de apertura o reforzar personal en momentos clave. Además, se han detectado combinaciones frecuentes de productos, lo que aporta pistas sobre los hábitos alimenticios de los clientes, reflejando un patrón de consumo alineado con una dieta mediterránea basada en frutas, verduras y pescado.
+
+En conjunto, estos análisis ofrecen una base sólida para tomar decisiones estratégicas orientadas a mejorar la eficiencia, ajustar la oferta de productos y potenciar la rentabilidad de cada tienda.
 
