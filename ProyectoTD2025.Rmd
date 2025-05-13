@@ -504,6 +504,160 @@ En la siguiente tabla \ref{tab:tabla_final} se pueden observar los datos procesa
 
 
 
+# Analisis exploratorio
+
+## Datos faltantes
+Realizamos una comprobación para asegurarnos de que el data frame no contenga valores faltantes (exceptuando la variable aparcamiento, ya que cuando no se encuentra disponible, se asigna un valor NA). En caso de encontrar valores faltantes en otras variables, eliminamos las filas correspondientes.
+
+```{r, include=FALSE}
+# Comprobación de valores faltantes en df_final
+# Excluimos la columna 'tiene_aparcamiento' si existe
+
+# Verificar si hay valores faltantes en el dataframe
+missing_data <- df_final %>% select(-tiene_aparcamiento) %>% summarise_all(~ sum(is.na(.)))
+
+
+# Si se encuentran valores faltantes, eliminamos las filas correspondientes
+df_final <- df_final %>% select(-tiene_aparcamiento) %>% drop_na()
+
+
+```
+
+## Análisis univariante 
+
+Primero analizaremos las variables distinguiendolas en dos grupos, variables categóricas y variables numéricas.
+
+### Variables de tipo categórico
+
+Llamamos variable categórica a aquella que representa cualidades o características. En nuestro data frame están codificadas como _character_.
+
+En el data frame de los tickets la mayoría de las variables son de tipo categórico, una de las más relevantes es la variable *fs* que es única, y por tanto, el identificativo de cada ticket.
+
+Luego tenemos las variables *comercio* y *empresa* que en todos los tickets es igual, pero esta forma de guardarlos está pensada por si se incluyeran otras empresas de supermercados. Ocurre lo mismo con el método de pago, en el que solo tenemos casos de pago con tarjeta, pero incluimos esta variable en el caso de que haya algún ticket con pago en efectivo.
+
+```{r include=FALSE}
+n_direc <- length(unique(df$direccion))
+n_cp <- length(unique(df$cp))
+d_productos <- length(unique(df_produc$descripcion))
+```
+También observamos que tenemos `r n_direc` direcciones diferentes y `r n_cp` códigos postales.
+
+En el data frame de los productos tenemos también la variable *fs* y la variable *descripcion* donde están los nombres de los productos. En total tenemos `r d_productos` distintos registrados.
+
+
+### Variables de tipo numérico
+
+Las variables numéricas son aquellas que representan cantidades o medidas cuantitativas en un conjunto de datos, en nuestro analisis nos vamos a centrar el las variables numericas del precio y cantidad. 
+
+Para tener una vision general del proyecto hemos calculado la suma total de los precios de todos los productos en el conjunto de datos, que representa el valor total gastado en las ventas. 
+
+Por otra parte se calcula la media de productos comprados en cada ticke, esto se logra agrupando los productos por ticket y sumando la cantidad de productos en cada uno para sacar la media de esta cantidad. Y la media de los precios de todos los tickets, lo que proporciona una estimación del precio promedio pagado en cada compra.
+
+```{r echo=FALSE}
+#Numero productos totales
+total_productos <- nrow(df_produc)
+
+#Total de productos en cada ticket
+productos_por_ticket <- df_produc %>%
+  group_by(fs) %>%
+  summarise(total_productos = sum(cantidad))
+
+#Numero precio totales
+precio_total <- sum(df_produc$precio)
+cat("El precio total de la suma de todos los productos es:", precio_total, "\n")
+
+#Precios total por cada ticket
+precios_por_ticket <- df_produc %>%
+  group_by(fs) %>%
+  summarise(precios = sum(importe))
+
+#Media de productos por ticket
+media_general <- mean(productos_por_ticket$total_productos, na.rm = TRUE)
+cat("La media de productos comprados en cada ticket es de:", media_general, "\n")
+
+#Media de precios por ticket
+media <- mean(precios_por_ticket$precios)
+cat("La media de precio por ticket es de:", media, "\n")
+```
+
+```{r include=FALSE}
+unique(df_produc$cantidad)
+fac <- df_produc %>% mutate(cantidad = round(cantidad,0))
+unique(fac$cantidad)
+fac <-as.factor(fac$cantidad)
+```
+También nos llama la atención que la variable cantidad contiene números decimales porque la cantidad en algunos productos son kilos, pero en la mayoría serían solo unidades.
+\bigsip
+Cantidades registradas redondeadas:
+```{r}
+summary(fac)
+```
+
+Dicho esto, podemos observar que en más de 1200 productos que tenemos en los tickets, la cantidad comprada ha sido 1, la cantidad más alta de un producto comprada es 8, y hay 17 productos con precio al kilo, cuya cantidad el kilo.
+
+## Análisis multivariable
+
+**Dirección - Número ganancias**
+Queremos ver si hay relación entre la localización del supermercado y las ganancias que produce. Haremos dos gráficas para comprobarlo, una sumando la ganancia total de ese supermercado y otra haciendo la media entre sus ventas registradas.
+
+```{r grafica1, echo = FALSE, fig.width=5.7,fig.height=3.5, out.width='90%'}
+df %>% group_by(direccion) %>% 
+  summarise(ventas = n(),
+            ganancia_total = sum(total)) %>%
+  ggplot(aes(x=direccion,y=ganancia_total)) +
+  geom_point() +
+  geom_text(aes(label = ventas), hjust = 1.5, vjust = 0.5)+
+  labs(title = "Ganancia total en cada dirreción",
+       x = "Dirección", y = "Ganancia") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1,size=6),
+        legend.position = "right")
+```
+
+En el gráfico podemos ver que en muchas dirreciones solo tenemos registrada una venta Y que tenemos dos direcciones donde la cantidad de tickets es mucho mayor que en el resto. 
+También podemos ver que cuantos más tickets las gancias suben, pero tenemos dos casos que podrían ser outliers. 
+Vemos que una dirección solo tiene un ticket pero el precio total es bastante superior que en el resto donde solo hay un venta registrada. Y también observamos que hay una dirección en la que se han registrado $21$ ventas, pero la ganancia total es mayor que en la dirección donde se han registrado $24$.
+\bigskip
+Ahora compararemos las ganancias de cada supermercado en proporción a las ventas registradas.
+
+```{r grafica2, echo = FALSE, fig.width=5.7,fig.height=4, out.width='90%'}
+df %>% group_by(direccion) %>% 
+  summarise(ventas = n(),
+            ganancia_media = sum(total)/n()) %>%
+  ggplot(aes(x=direccion,y=ganancia_media)) +
+  geom_point() +
+  geom_text(aes(label = ventas), hjust = 1.5, vjust = 0.5)+
+  labs(title = "Ganancia media en cada dirreción",
+       x = "Dirección", y = "Ganancia") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 6))
+```
+ Vemos que en el mercadona que está en la Calle Alicante 83 se sigue ganando más dinero que en el resto de supermercados, pero vemos de media el mercadona que está en la avenida del tenxtil gana más dinero. 
+ 
+También podemos ver que hay tres _outliers_, que consiguen bastante menos dinero, en porcentaje, que el resto de los mercadonas.
+
+\bigskip
+\bigskip
+**Número productos - Precio total**
+Vamos a realizar un análisis de la relación entre el número de productos vendidos en cada ticket y el precio total de ese ticket para ver si existe una relación entre ambos.
+```{r grafica3, echo=FALSE, out.width='85%'}
+# Unir el número de productos por ticket con los precios por ticket
+datos_completos <- merge(productos_por_ticket, precios_por_ticket, by = "fs")
+
+# Crear un gráfico de dispersión
+ggplot(datos_completos, aes(x = total_productos, y = precios)) +
+  geom_point(color = "blue") +
+  labs(title = "Relación entre el número de productos y el precio por ticket",
+       x = "Número de productos por ticket",
+       y = "Precio por ticket") +
+  theme_minimal()
+
+cant_precio <- cor(datos_completos$total_productos, datos_completos$precios,
+                   method = 'pearson') 
+cant_precio <- round(cant_precio, digits = 2)
+```
+
+Este gráfico de dispersión (donde el eje x representa el número total de productos por ticket y el eje y representa el precio total por ticket) permite visualizar la relación entre el número de productos vendidos en un ticket y el precio total de ese ticket. 
+\bigskip
+Haciendo la correlación de *Pearson* obtenemos `r cant_precio`, que es muy cercano a $1$, lo que quiere decir que existe una relación lineal positiva entre estas dos variables, a medida que aumenta el número de productos, también aumenta el precio de manera proporcional.
 
 
 
