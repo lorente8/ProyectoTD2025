@@ -554,95 +554,100 @@ También observamos que tenemos `r n_tipo` tipos diferentes de productos y `r n_
 
 ### Variables de tipo numérico
 
-Las variables numéricas son aquellas que representan cantidades o medidas cuantitativas en un conjunto de datos, en nuestro analisis nos vamos a centrar el las variables numericas del precio y cantidad. 
+as variables numéricas representan cantidades o medidas cuantitativas dentro del conjunto de datos. En nuestro análisis, nos centramos principalmente en dos variables clave: cantidad (ya sea en unidades o en kilos) y precio (precio por kilo o unitario, según el tipo de producto).
 
-Para tener una vision general del proyecto hemos calculado la suma total de los precios de todos los productos en el conjunto de datos, que representa el valor total gastado en las ventas. 
+Para tener una visión general del comportamiento de las compras, primero calculamos el valor total gastado, sumando el importe de todos los productos. Además, analizamos cuántos productos se compran por ticket (es decir, la media de la suma de cantidades por cada ticket) y cuál es el gasto medio por ticket.
 
-Por otra parte se calcula la media de productos comprados en cada ticke, esto se logra agrupando los productos por ticket y sumando la cantidad de productos en cada uno para sacar la media de esta cantidad. Y la media de los precios de todos los tickets, lo que proporciona una estimación del precio promedio pagado en cada compra.
+```{r, echo=FALSE}
+# Total gastado en todos los productos
+precio_total <- sum(df_final$importe, na.rm = TRUE)
 
-```{r echo=FALSE}
-#Numero productos totales
-total_productos <- nrow(df_produc)
+# Agrupación por ticket para calcular total de productos por ticket
+productos_por_ticket <- df_final %>%
+  group_by(num_ticket) %>%
+  summarise(total_productos = sum(cantidad, na.rm = TRUE))
 
-#Total de productos en cada ticket
-productos_por_ticket <- df_produc %>%
-  group_by(fs) %>%
-  summarise(total_productos = sum(cantidad))
+# Media de productos comprados por ticket
+media_productos_ticket <- mean(productos_por_ticket$total_productos, na.rm = TRUE)
 
-#Numero precio totales
-precio_total <- sum(df_produc$precio)
-cat("El precio total de la suma de todos los productos es:", precio_total, "\n")
+# Gastos por ticket
+importe_por_ticket <- df_final %>%
+  group_by(num_ticket) %>%
+  summarise(total_importe = sum(importe, na.rm = TRUE))
 
-#Precios total por cada ticket
-precios_por_ticket <- df_produc %>%
-  group_by(fs) %>%
-  summarise(precios = sum(importe))
+# Media de importe por ticket
+media_importe_ticket <- mean(importe_por_ticket$total_importe, na.rm = TRUE)
 
-#Media de productos por ticket
-media_general <- mean(productos_por_ticket$total_productos, na.rm = TRUE)
-cat("La media de productos comprados en cada ticket es de:", media_general, "\n")
+cat("El gasto total en todos los productos es:", round(precio_total, 2), "€\n")
+cat("La media de productos comprados por ticket es:", round(media_productos_ticket, 2), "\n")
+cat("La media del importe total por ticket es:", round(media_importe_ticket, 2), "€\n")
 
-#Media de precios por ticket
-media <- mean(precios_por_ticket$precios)
-cat("La media de precio por ticket es de:", media, "\n")
 ```
 
-```{r include=FALSE}
-unique(df_produc$cantidad)
-fac <- df_produc %>% mutate(cantidad = round(cantidad,0))
-unique(fac$cantidad)
-fac <-as.factor(fac$cantidad)
-```
-También nos llama la atención que la variable cantidad contiene números decimales porque la cantidad en algunos productos son kilos, pero en la mayoría serían solo unidades.
-\bigsip
-Cantidades registradas redondeadas:
-```{r}
+Además, observamos que la variable cantidad contiene valores decimales en algunos casos, lo que se debe a que ciertos productos (como frutas, verduras o pescado) se venden al peso, mientras que otros se venden por unidades enteras.
+
+A continuación, mostramos un resumen de las cantidades redondeadas para tener una idea de las frecuencias de compra por tipo de producto:
+```{r, echo=FALSE}
+fac <- df_final %>%
+  mutate(cantidad_redondeada = round(cantidad, 0)) %>%
+  pull(cantidad_redondeada) %>%
+  as.factor()
+
 summary(fac)
-```
 
-Dicho esto, podemos observar que en más de 1200 productos que tenemos en los tickets, la cantidad comprada ha sido 1, la cantidad más alta de un producto comprada es 8, y hay 17 productos con precio al kilo, cuya cantidad el kilo.
+```
+Con esto, podemos observar que en la mayoría de los casos se compraron 1 o 2 unidades/kilos, siendo 1 la cantidad más frecuente.
 
 ## Análisis multivariable
 
-**Dirección - Número ganancias**
-Queremos ver si hay relación entre la localización del supermercado y las ganancias que produce. Haremos dos gráficas para comprobarlo, una sumando la ganancia total de ese supermercado y otra haciendo la media entre sus ventas registradas.
+**Relación entre la Dirección y las Ganancias**
+En este apartado analizamos si existe alguna relación entre la localización del supermercado (variable dirección) y los ingresos obtenidos. Para ello, generamos dos gráficos: uno que muestra la ganancia total por dirección y otro que representa la ganancia media por ticket en cada localización.
 
 ```{r grafica1, echo = FALSE, fig.width=5.7,fig.height=3.5, out.width='90%'}
-df %>% group_by(direccion) %>% 
-  summarise(ventas = n(),
-            ganancia_total = sum(total)) %>%
-  ggplot(aes(x=direccion,y=ganancia_total)) +
+df %>%
+  group_by(direccion) %>%
+  summarise(
+    ventas = n(),
+    ganancia_total = sum(total, na.rm = TRUE)
+  ) %>%
+  ggplot(aes(x = direccion, y = ganancia_total)) +
   geom_point() +
-  geom_text(aes(label = ventas), hjust = 1.5, vjust = 0.5)+
-  labs(title = "Ganancia total en cada dirreción",
-       x = "Dirección", y = "Ganancia") +
-  theme(axis.text.x = element_text(angle = 60, hjust = 1,size=6),
-        legend.position = "right")
-```
+  geom_text(aes(label = ventas), hjust = 1.5, vjust = 0.5) +
+  labs(
+    title = "Ganancia total por dirección",
+    x = "Dirección",
+    y = "Ganancia total (€)"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 60, hjust = 1, size = 6),
+    legend.position = "right"
+  )
 
-En el gráfico podemos ver que en muchas dirreciones solo tenemos registrada una venta Y que tenemos dos direcciones donde la cantidad de tickets es mucho mayor que en el resto. 
-También podemos ver que cuantos más tickets las gancias suben, pero tenemos dos casos que podrían ser outliers. 
-Vemos que una dirección solo tiene un ticket pero el precio total es bastante superior que en el resto donde solo hay un venta registrada. Y también observamos que hay una dirección en la que se han registrado $21$ ventas, pero la ganancia total es mayor que en la dirección donde se han registrado $24$.
-\bigskip
-Ahora compararemos las ganancias de cada supermercado en proporción a las ventas registradas.
+```
+En el gráfico anterior se puede observar que muchas direcciones cuentan únicamente con una venta registrada. Sin embargo, hay dos supermercados que destacan por tener un número de tickets significativamente superior al resto. En general, se aprecia que a mayor número de tickets, mayor es la ganancia total. 
+
+A continuación, comparamos las ganancias promedio por venta en cada supermercado, para entender mejor su rendimiento individual más allá del volumen total de ventas.
 
 ```{r grafica2, echo = FALSE, fig.width=5.7,fig.height=4, out.width='90%'}
-df %>% group_by(direccion) %>% 
-  summarise(ventas = n(),
-            ganancia_media = sum(total)/n()) %>%
-  ggplot(aes(x=direccion,y=ganancia_media)) +
+df %>%
+  group_by(direccion) %>%
+  summarise(
+    ventas = n(),
+    ganancia_media = mean(total, na.rm = TRUE)
+  ) %>%
+  ggplot(aes(x = direccion, y = ganancia_media)) +
   geom_point() +
-  geom_text(aes(label = ventas), hjust = 1.5, vjust = 0.5)+
-  labs(title = "Ganancia media en cada dirreción",
-       x = "Dirección", y = "Ganancia") +
+  geom_text(aes(label = ventas), hjust = 1.5, vjust = 0.5) +
+  labs(
+    title = "Ganancia media por dirección",
+    x = "Dirección",
+    y = "Ganancia media por ticket (€)"
+  ) +
   theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 6))
-```
- Vemos que en el mercadona que está en la Calle Alicante 83 se sigue ganando más dinero que en el resto de supermercados, pero vemos de media el mercadona que está en la avenida del tenxtil gana más dinero. 
- 
-También podemos ver que hay tres _outliers_, que consiguen bastante menos dinero, en porcentaje, que el resto de los mercadonas.
 
-\bigskip
-\bigskip
+```
+ En este segundo gráfico vemos que el supermercado ubicado en Calle Alicante 83 sigue destacando en ingresos, aunque es el de Avenida del Textil el que presenta una mayor ganancia media por ticket. Esto sugiere un rendimiento más eficiente, a pesar de no tener el mayor volumen de ventas.
+
 **Número productos - Precio total**
 Vamos a realizar un análisis de la relación entre el número de productos vendidos en cada ticket y el precio total de ese ticket para ver si existe una relación entre ambos.
 ```{r grafica3, echo=FALSE, out.width='85%'}
